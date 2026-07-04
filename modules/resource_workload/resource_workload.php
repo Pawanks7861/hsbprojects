@@ -3,7 +3,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 /*
 Module Name: Staff workload
-Description: Workload management module for PerfexCRM.
+Description: Workload management.
 Version: 1.0.7
 Requires at least: 2.3.*
 Author: Buildify360
