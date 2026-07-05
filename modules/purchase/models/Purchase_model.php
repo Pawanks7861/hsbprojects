@@ -4615,7 +4615,7 @@ class Purchase_model extends App_Model
             </div>';
         $html .= '<br>
                 <br>
-                <br>
+                <br> 
                 <br>
                 <table class="table">
                     <tbody>
