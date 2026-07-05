@@ -4606,10 +4606,9 @@ class Purchase_model extends App_Model
         $html .= ' </tbody></table>';
 
         $html .= '<div>&nbsp;</div>';
-        $vendornote_with_break = str_replace('ANNEXURE - B', '<div style="page-break-after:always"></div><div style="text-align:center; ">ANNEXURE - B</div>', $pur_order->vendornote);
         $html .= '<div class="col-md-12 mtop15">
         Note:
-            <p class="bold">' . nl2br($vendornote_with_break) . '</p>';
+            <p class="bold">' . nl2br($pur_order->vendornote) . '</p>';
 
         $html .= '
         <p class="bold">' . nl2br($pur_order->terms) . '</p>
@@ -4622,8 +4621,8 @@ class Purchase_model extends App_Model
                     <tbody>
                     <tr>';
 
-        $sign = site_url(PURCHASE_PATH . 'pur_order/signature/sign.png');
-        $html .= '
+       $sign = site_url(PURCHASE_PATH . 'pur_order/signature/sign.png');
+        $html .= ' 
             <table width="100%">
                 <tbody>';
         if ($pur_order->approve_status == 2) {
@@ -4632,7 +4631,6 @@ class Purchase_model extends App_Model
                         <td class="td_ali_font">';
             $html .= '<img src="' . $sign . '" width="120">';
         }
-
 
         $html .= '<h3>' . mb_strtoupper('AUTHORISED SIGNATORY') . '</h3>
                             HARDEV SINGH
