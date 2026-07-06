@@ -14731,4 +14731,28 @@ class Purchase_model extends App_Model
 
         return false;
     }
+
+
+    public function get_work_order_attachments($id)
+    {
+
+        $this->db->where('rel_id', $id);
+        $this->db->where('rel_type', 'wo_order');
+        return $this->db->get(db_prefix() . 'files')->result_array();
+    }
+    public function get_inv_payment_work_order($wo_order)
+    {
+        $this->db->where('wo_order', $wo_order);
+        $list_inv = $this->db->get(db_prefix() . 'pur_invoices')->result_array();
+        $data_rs = [];
+        foreach ($list_inv as $inv) {
+            $this->db->where('pur_invoice', $inv['id']);
+            $inv_payments = $this->db->get(db_prefix() . 'pur_invoice_payment')->result_array();
+            foreach ($inv_payments as $payment) {
+                $data_rs[] = $payment;
+            }
+        }
+
+        return $data_rs;
+    }
 }

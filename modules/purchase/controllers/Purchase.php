@@ -9032,4 +9032,60 @@ class purchase extends AdminController
             'estimate_html' => $estimate_html,
         ]);
     }
+
+    public function get_wo_order_data_ajax($id, $to_return = false)
+    {
+        if (!has_permission('work_orders', '', 'view') && !has_permission('work_orders', '', 'view_own')) {
+            echo _l('access_denied');
+            die;
+        }
+
+        if (!$id) {
+            die('No purchase order found');
+        }
+
+        $estimate = $this->purchase_model->get_wo_order($id);
+
+        if(has_permission('work_orders', '', 'view_own') && !is_admin()){
+            $staffid = get_staff_user_id();
+
+            $approve_access = total_rows(db_prefix().'pur_approval_details', ['staffid' => $staffid, 'rel_type' => 'pur_order', 'rel_id' => $id]);
+
+            if($estimate->buyer != $staffid && $estimate->addedfrom != $staffid && !is_vendor_admin($estimate->vendor) && $approve_access == 0){
+                echo _l('access_denied');
+                die;
+            }
+        }
+
+        $this->load->model('payment_modes_model');
+        $data['payment_modes'] = $this->payment_modes_model->get('', [
+            'expenses_only !=' => 1,
+        ]);
+
+        $data['payment'] = $this->purchase_model->get_inv_payment_work_order($id);
+        $data['pur_order_attachments'] = $this->purchase_model->get_work_order_attachments($id);
+        $data['estimate_detail'] = $this->purchase_model->get_wo_order_detail($id);
+        $data['estimate']          = $estimate;
+        $data['members']           = $this->staff_model->get('', ['active' => 1]);
+        $data['vendor_contacts'] = $this->purchase_model->get_contacts($estimate->vendor);
+        $send_mail_approve = $this->session->userdata("send_mail_approve");
+        if((isset($send_mail_approve)) && $send_mail_approve != ''){
+            $data['send_mail_approve'] = $send_mail_approve;
+            $this->session->unset_userdata("send_mail_approve");
+        }
+        $data['invoices'] = $this->purchase_model->get_invoices_by_po($id);
+        $data['check_appr'] = $this->purchase_model->get_approve_setting('pur_order');
+        $data['get_staff_sign'] = $this->purchase_model->get_staff_sign($id,'pur_order');
+        $data['check_approve_status'] = $this->purchase_model->check_approval_details($id,'pur_order');
+        $data['list_approve_status'] = $this->purchase_model->get_list_approval_details($id,'pur_order');
+        $data['tax_data'] = $this->purchase_model->get_html_tax_pur_order($id);
+        $data['check_approval_setting'] = $this->purchase_model->check_approval_setting($estimate->project,'pur_order',0);
+        $data['attachments'] = $this->purchase_model->get_purchase_attachments('pur_order', $id);
+        
+        if ($to_return == false) {
+            $this->load->view('work_order/wo_order_preview', $data);
+        } else {
+            return $this->load->view('work_order/wo_order_preview', $data, true);
+        }
+    }
 }

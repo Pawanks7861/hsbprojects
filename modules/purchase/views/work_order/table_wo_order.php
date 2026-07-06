@@ -194,17 +194,17 @@ foreach ($rResult as $aRow) {
 
             $numberOutput = '';
 
-            $numberOutput = '<a href="' . admin_url('purchase/purchase_order/' . $aRow['id']) . '"  onclick="init_wo_order(' . $aRow['id'] . '); return false;" >' . $aRow['wo_order_number'] . '</a>';
+            $numberOutput = '<a href="' . admin_url('purchase/work_order/' . $aRow['id']) . '"  onclick="init_wo_order(' . $aRow['id'] . '); return false;" >' . $aRow['wo_order_number'] . '</a>';
 
             $numberOutput .= '<div class="row-options">';
 
-            if (has_permission('purchase_orders', '', 'view') || has_permission('purchase_orders', '', 'view_own')) {
-                $numberOutput .= ' <a href="' . admin_url('purchase/purchase_order/' . $aRow['id']) . '" onclick="init_wo_order(' . $aRow['id'] . '); return false;" >' . _l('view') . '</a>';
+            if (has_permission('work_orders', '', 'view') || has_permission('work_orders', '', 'view_own')) {
+                $numberOutput .= ' <a href="' . admin_url('purchase/work_order/' . $aRow['id']) . '" onclick="init_wo_order(' . $aRow['id'] . '); return false;" >' . _l('view') . '</a>';
             }
-            if ((has_permission('purchase_orders', '', 'edit') || is_admin()) && $aRow['approve_status'] != 2) {
+            if ((has_permission('work_orders', '', 'edit') || is_admin()) && $aRow['approve_status'] != 2) {
                 $numberOutput .= ' | <a href="' . admin_url('purchase/wo_order/' . $aRow['id']) . '">' . _l('edit') . '</a>';
             }
-            if (has_permission('purchase_orders', '', 'delete') || is_admin()) {
+            if (has_permission('work_orders', '', 'delete') || is_admin()) {
                 $numberOutput .= ' | <a href="' . admin_url('purchase/delete_wo_order/' . $aRow['id']) . '" class="text-danger _delete">' . _l('delete') . '</a>';
             }
             $numberOutput .= '</div>';

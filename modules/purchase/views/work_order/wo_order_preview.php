@@ -26,7 +26,7 @@
                <ul class="nav nav-tabs nav-tabs-horizontal mbot15" role="tablist">
                   <li role="presentation" class="active">
                      <a href="#tab_estimate" aria-controls="tab_estimate" role="tab" data-toggle="tab">
-                     <?php echo _l('pur_order'); ?>
+                     <?php echo _l('work_order'); ?>
                      </a>
                   </li>
                   <li role="presentation">
