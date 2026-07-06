@@ -2,7 +2,7 @@
 // Theese lines should aways at the end of the document left side. Dont indent these lines
 $html = <<<EOF
 <div class="div_pdf">
-$pur_order
+$wo_order
 </div>
 EOF;
 

@@ -34,7 +34,7 @@
                      <?php echo _l('payment_record'); ?>
                      </a>
                   </li>   
-                  <li role="presentation">
+                  <!-- <li role="presentation">
                      <a href="#tab_reminders" onclick="initDataTable('.table-reminders', admin_url + 'misc/get_reminders/' + <?php echo pur_html_entity_decode($estimate->id) ;?> + '/' + 'purchase_order', undefined, undefined, undefined,[1,'asc']); return false;" aria-controls="tab_reminders" role="tab" data-toggle="tab">
                      <?php echo _l('estimate_reminders'); ?>
                      <?php
@@ -51,7 +51,7 @@
                         }
                         ?>
                      </a>
-                  </li>
+                  </li> -->
                      <?php
                      $customer_custom_fields = false;
                      if(total_rows(db_prefix().'customfields',array('fieldto'=>'pur_order','active'=>1)) > 0 ){
@@ -63,11 +63,11 @@
                      </a>
                   </li>
                   <?php } ?>
-                  <li role="presentation">
+                  <!-- <li role="presentation">
                      <a href="#tab_tasks" onclick="init_rel_tasks_table(<?php echo pur_html_entity_decode($estimate->id); ?>,'pur_order'); return false;" aria-controls="tab_tasks" role="tab" data-toggle="tab">
                      <?php echo _l('tasks'); ?>
                      </a>
-                  </li>
+                  </li> -->
                   <li role="presentation" class="tab-separator">
                      <a href="#tab_notes" onclick="get_sales_notes(<?php echo pur_html_entity_decode($estimate->id); ?>,'purchase'); return false" aria-controls="tab_notes" role="tab" data-toggle="tab">
                      <?php echo _l('estimate_notes'); ?>
@@ -145,17 +145,17 @@
                <div class="btn-group pull-right">
                   <a href="javascript:void(0)" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-file-pdf"></i><?php if(is_mobile()){echo ' PDF';} ?> <span class="caret"></span></a>
                   <ul class="dropdown-menu dropdown-menu-right">
-                     <li class="hidden-xs"><a href="<?php echo admin_url('purchase/purorder_pdf/'.$estimate->id.'?output_type=I'); ?>"><?php echo _l('view_pdf'); ?></a></li>
-                     <li class="hidden-xs"><a href="<?php echo admin_url('purchase/purorder_pdf/'.$estimate->id.'?output_type=I'); ?>" target="_blank"><?php echo _l('view_pdf_in_new_window'); ?></a></li>
-                     <li><a href="<?php echo admin_url('purchase/purorder_pdf/'.$estimate->id); ?>"><?php echo _l('download'); ?></a></li>
+                     <li class="hidden-xs"><a href="<?php echo admin_url('purchase/woorder_pdf/'.$estimate->id.'?output_type=I'); ?>"><?php echo _l('view_pdf'); ?></a></li>
+                     <li class="hidden-xs"><a href="<?php echo admin_url('purchase/woorder_pdf/'.$estimate->id.'?output_type=I'); ?>" target="_blank"><?php echo _l('view_pdf_in_new_window'); ?></a></li>
+                     <li><a href="<?php echo admin_url('purchase/woorder_pdf/'.$estimate->id); ?>"><?php echo _l('download'); ?></a></li>
                      <li>
-                        <a href="<?php echo admin_url('purchase/purorder_pdf/'.$estimate->id.'?print=true'); ?>" target="_blank">
+                        <a href="<?php echo admin_url('purchase/woorder_pdf/'.$estimate->id.'?print=true'); ?>" target="_blank">
                         <?php echo _l('print'); ?>
                         </a>
                      </li>
                   </ul>
 
-                  <a href="javascript:void(0)" onclick="send_po('<?php echo pur_html_entity_decode($estimate->id); ?>'); return false;" class="btn btn-success mleft10" ><i class="fa fa-envelope" data-toggle="tooltip" title="<?php echo _l('send_to_vendor') ?>"></i></a>
+                  <!-- <a href="javascript:void(0)" onclick="send_po('<?php echo pur_html_entity_decode($estimate->id); ?>'); return false;" class="btn btn-success mleft10" ><i class="fa fa-envelope" data-toggle="tooltip" title="<?php echo _l('send_to_vendor') ?>"></i></a> -->
                </div>
 
                <?php if(is_admin()){ ?>
@@ -186,7 +186,7 @@
                         <?php foreach($statuses as $status){ ?>
                           <?php if($status != $estimate->order_status){ ?>
                             <li>
-                               <a href="<?php echo admin_url('purchase/mark_pur_order_as/'.$status.'/'.$estimate->id); ?>"><?php echo _l('invoice_mark_as',_l($status)); ?></a>
+                               <a href="<?php echo admin_url('purchase/mark_wo_order_as/'.$status.'/'.$estimate->id); ?>"><?php echo _l('invoice_mark_as',_l($status)); ?></a>
                             </li>
                         <?php } ?>
                       <?php } ?>    
@@ -194,14 +194,14 @@
 
                         <?php if(has_permission('purchase_order_return','','edit') && $estimate->approve_status != 2){ ?>
                         <li>
-                           <a href="<?php echo admin_url('purchase/pur_order/'.$estimate->id); ?>"><?php echo _l('edit'); ?></a>
+                           <a href="<?php echo admin_url('purchase/wo_order/'.$estimate->id); ?>"><?php echo _l('edit'); ?></a>
                         </li>
                         <?php } ?>
 
                         
                         <?php if(has_permission('purchase_order_return','','delete')){ ?>
                         <li>
-                           <a href="<?php echo admin_url('purchase/delete_pur_order/'.$estimate->id); ?>" class="text-danger delete-text _delete"><?php echo _l('delete_invoice'); ?></a>
+                           <a href="<?php echo admin_url('purchase/delete_wo_order/'.$estimate->id); ?>" class="text-danger delete-text _delete"><?php echo _l('delete_invoice'); ?></a>
                         </li>
                         <?php } ?>
            
@@ -212,15 +212,15 @@
 
                <?php if($estimate->approve_status != 2){ ?>
                   <div class="pull-right _buttons mright10">
-                     <?php if(has_permission('purchase_orders','','edit')){ ?>
-                     <a href="<?php echo admin_url('purchase/pur_order/'.$estimate->id); ?>" class="btn btn-default btn-with-tooltip" data-toggle="tooltip" title="<?php echo _l('edit'); ?>" data-placement="bottom"><i class="fa fa-pencil-square"></i></a>
+                     <?php if(has_permission('work_orders','','edit')){ ?>
+                     <a href="<?php echo admin_url('purchase/wo_order/'.$estimate->id); ?>" class="btn btn-default btn-with-tooltip" data-toggle="tooltip" title="<?php echo _l('edit'); ?>" data-placement="bottom"><i class="fa fa-pencil-square"></i></a>
                      <?php } ?>
 
                   </div>
                <?php } ?>
 
                <?php if(has_permission('purchase_order_change_approve_status', '', 'edit') && $check_approval_setting == true){ ?>     
-               <select name="status" id="status" class="selectpicker pull-right mright10" onchange="change_status_pur_order(this,<?php echo ($estimate->id); ?>); return false;" data-live-search="true" data-width="35%" data-none-selected-text="<?php echo _l('pur_change_status_to'); ?>">
+               <select name="status" id="status" class="selectpicker pull-right mright10" onchange="change_status_wo_order(this,<?php echo ($estimate->id); ?>); return false;" data-live-search="true" data-width="35%" data-none-selected-text="<?php echo _l('pur_change_status_to'); ?>">
                  <option value=""></option>
                  <option value="1" class="<?php if($estimate->approve_status == 1) { echo 'hide';}?>"><?php echo _l('purchase_draft'); ?></option>
                  <option value="2" class="<?php if($estimate->approve_status == 2) { echo 'hide';}?>"><?php echo _l('purchase_approved'); ?></option>
@@ -231,16 +231,16 @@
                
                <div class="col-md-12 padr_div_0">
                   <br>
-                  <div class="pull-right _buttons  ">
+                  <!-- <div class="pull-right _buttons  ">
                      <a href="javascript:void(0)" onclick="copy_public_link(<?php echo pur_html_entity_decode($estimate->id); ?>); return false;" class="btn btn-warning btn-with-tooltip mleft10" data-toggle="tooltip" title="<?php if($estimate->hash == ''){ echo _l('create_public_link'); }else{ echo _l('copy_public_link'); } ?>" data-placement="bottom"><i class="fa fa-clone "></i></a>
                   </div>
                   <div class="pull-right col-md-6">
                      <?php if($estimate->hash != '' && $estimate->hash != null){
-                      echo render_input('link_public','', site_url('purchase/vendors_portal/pur_order/'.$estimate->id.'/'.$estimate->hash)); 
+                      echo render_input('link_public','', site_url('purchase/vendors_portal/wo_order/'.$estimate->id.'/'.$estimate->hash)); 
                      }else{
                          echo render_input('link_public','', ''); 
                      } ?>
-                  </div>
+                  </div> -->
                </div>
             </div>
          </div>
@@ -250,9 +250,9 @@
          <div class="tab-content">
             <?php if($customer_custom_fields) { ?>
               <div role="tabpanel" class="tab-pane" id="custom_fields">
-                <?php echo form_open(admin_url('purchase/update_customfield_po/'.$estimate->id)); ?>
+                <?php echo form_open(admin_url('purchase/update_customfield_wo_order/'.$estimate->id)); ?>
                  <?php $rel_id=( isset($estimate) ? $estimate->id : false); ?>
-                 <?php echo render_custom_fields( 'pur_order',$rel_id); ?>
+                 <?php echo render_custom_fields( 'wo_order',$rel_id); ?>
 
                 <div class="bor_top_0" >
                    <button id="obgy_btn2" type="submit" class="btn btn-info pull-right"><?php echo _l('submit'); ?></button>
@@ -333,7 +333,7 @@
                                   ?></p>
                                  <?php if($value['approve'] == 2){ 
                                   ?>
-                                  <img src="<?php echo site_url(PURCHASE_PATH.'pur_order/signature/'.$estimate->id.'/signature_'.$value['id'].'.png'); ?>" class="img_style">
+                                  <img src="<?php echo site_url(PURCHASE_PATH.'wo_order/signature/'.$estimate->id.'/signature_'.$value['id'].'.png'); ?>" class="img_style">
                                    <br><br>
                                  <p class="bold text-center text-success"><?php echo _l('signed').' '._dt($value['date']); ?></p> 
                                  <?php } ?> 
@@ -574,7 +574,7 @@
                   if(isset($attachments) && count($attachments) > 0) { 
                      foreach($attachments as $value){
                        echo '<div class="col-md-6" style="padding-bottom: 10px">';
-                       $path = get_upload_path_by_type('purchase').'pur_order/'.$value['rel_id'].'/'.$value['file_name'];
+                       $path = get_upload_path_by_type('purchase').'wo_order/'.$value['rel_id'].'/'.$value['file_name'];
                        $is_image = is_image($path);
                        if($is_image){
                           echo '<div class="preview_image">';

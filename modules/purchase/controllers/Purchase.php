@@ -9078,14 +9078,96 @@ class purchase extends AdminController
         $data['get_staff_sign'] = $this->purchase_model->get_staff_sign($id,'pur_order');
         $data['check_approve_status'] = $this->purchase_model->check_approval_details($id,'pur_order');
         $data['list_approve_status'] = $this->purchase_model->get_list_approval_details($id,'pur_order');
-        $data['tax_data'] = $this->purchase_model->get_html_tax_pur_order($id);
-        $data['check_approval_setting'] = $this->purchase_model->check_approval_setting($estimate->project,'pur_order',0);
-        $data['attachments'] = $this->purchase_model->get_purchase_attachments('pur_order', $id);
+        $data['tax_data'] = $this->purchase_model->get_html_tax_wo_order($id);
+        $data['check_approval_setting'] = $this->purchase_model->check_approval_setting($estimate->project,'wo_order',0);
+        $data['attachments'] = $this->purchase_model->get_purchase_attachments('wo_order', $id);
         
         if ($to_return == false) {
             $this->load->view('work_order/wo_order_preview', $data);
         } else {
             return $this->load->view('work_order/wo_order_preview', $data, true);
         }
+    }
+
+    public function change_status_wo_order($status,$id){
+        $change = $this->purchase_model->change_status_wo_order($status,$id);
+        if($change == true){
+            
+            $message = _l('change_status_wo_order').' '._l('successfully');
+            echo json_encode([
+                'result' => $message,
+            ]);
+        }else{
+            $message = _l('change_status_wo_order').' '._l('fail');
+            echo json_encode([
+                'result' => $message,
+            ]);
+        }
+    }
+
+
+    public function mark_wo_order_as( $status, $wo_order){
+        
+        $this->db->where('id', $wo_order);
+        $this->db->update(db_prefix().'wo_orders', ['order_status' => $status]);
+        if ($this->db->affected_rows() > 0) {
+            if($status == 'delivered'){
+                $this->db->where('id', $wo_order);
+                $this->db->update(db_prefix().'wo_orders', ['delivery_status' => 1, 'delivery_date' => date('Y-m-d')]);
+            }else{
+                $this->db->where('id', $wo_order);
+                $this->db->update(db_prefix().'wo_orders', ['delivery_status' => 0]);
+            }
+
+            set_alert('success', _l('updated_successfully', _l('order_status')));
+        }
+
+        redirect(admin_url('purchase/work_order/' . $wo_order));
+    }
+
+    public function woorder_pdf($id)
+    {
+        if (!$id) {
+            redirect(admin_url('purchase/work_order'));
+        }
+
+        $wo_request = $this->purchase_model->get_woorder_pdf_html($id);
+        
+        try {
+            $pdf = $this->purchase_model->woorder_pdf($wo_request);
+        } catch (Exception $e) {
+            echo pur_html_entity_decode($e->getMessage());
+            die;
+        }
+        
+        $type = 'D';
+
+        if ($this->input->get('output_type')) {
+            $type = $this->input->get('output_type');
+        }
+
+        if ($this->input->get('print')) {
+            $type = 'I';
+        }
+
+        $pdf->Output('work_order.pdf', $type);
+    }
+
+    public function delete_wo_order($id){
+        if (!has_permission('work_orders', '', 'delete')) {
+            access_denied('work_order');
+        }
+        if (!$id) {
+            redirect(admin_url('purchase/work_order'));
+        }
+        $success = $this->purchase_model->delete_wo_order($id);
+        if (is_array($success)) {
+            set_alert('warning', _l('work_order'));
+        } elseif ($success == true) {
+            set_alert('success', _l('deleted', _l('work_order')));
+        } else {
+            set_alert('warning', _l('problem_deleting', _l('work_order')));
+        }
+        redirect(admin_url('purchase/work_order'));
     }
 }

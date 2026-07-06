@@ -34,7 +34,7 @@
                      <?php echo _l('payment_record'); ?>
                      </a>
                   </li>   
-                  <li role="presentation">
+                  <!-- <li role="presentation">
                      <a href="#tab_reminders" onclick="initDataTable('.table-reminders', admin_url + 'misc/get_reminders/' + <?php echo pur_html_entity_decode($estimate->id) ;?> + '/' + 'purchase_order', undefined, undefined, undefined,[1,'asc']); return false;" aria-controls="tab_reminders" role="tab" data-toggle="tab">
                      <?php echo _l('estimate_reminders'); ?>
                      <?php
@@ -51,7 +51,7 @@
                         }
                         ?>
                      </a>
-                  </li>
+                  </li> -->
                      <?php
                      $customer_custom_fields = false;
                      if(total_rows(db_prefix().'customfields',array('fieldto'=>'pur_order','active'=>1)) > 0 ){
@@ -63,11 +63,11 @@
                      </a>
                   </li>
                   <?php } ?>
-                  <li role="presentation">
+                  <!-- <li role="presentation">
                      <a href="#tab_tasks" onclick="init_rel_tasks_table(<?php echo pur_html_entity_decode($estimate->id); ?>,'pur_order'); return false;" aria-controls="tab_tasks" role="tab" data-toggle="tab">
                      <?php echo _l('tasks'); ?>
                      </a>
-                  </li>
+                  </li> -->
                   <li role="presentation" class="tab-separator">
                      <a href="#tab_notes" onclick="get_sales_notes(<?php echo pur_html_entity_decode($estimate->id); ?>,'purchase'); return false" aria-controls="tab_notes" role="tab" data-toggle="tab">
                      <?php echo _l('estimate_notes'); ?>
@@ -155,7 +155,7 @@
                      </li>
                   </ul>
 
-                  <a href="javascript:void(0)" onclick="send_po('<?php echo pur_html_entity_decode($estimate->id); ?>'); return false;" class="btn btn-success mleft10" ><i class="fa fa-envelope" data-toggle="tooltip" title="<?php echo _l('send_to_vendor') ?>"></i></a>
+                  <!-- <a href="javascript:void(0)" onclick="send_po('<?php echo pur_html_entity_decode($estimate->id); ?>'); return false;" class="btn btn-success mleft10" ><i class="fa fa-envelope" data-toggle="tooltip" title="<?php echo _l('send_to_vendor') ?>"></i></a> -->
                </div>
 
                <?php if(is_admin()){ ?>
@@ -231,16 +231,16 @@
                
                <div class="col-md-12 padr_div_0">
                   <br>
-                  <div class="pull-right _buttons  ">
+                  <!-- <div class="pull-right _buttons  ">
                      <a href="javascript:void(0)" onclick="copy_public_link(<?php echo pur_html_entity_decode($estimate->id); ?>); return false;" class="btn btn-warning btn-with-tooltip mleft10" data-toggle="tooltip" title="<?php if($estimate->hash == ''){ echo _l('create_public_link'); }else{ echo _l('copy_public_link'); } ?>" data-placement="bottom"><i class="fa fa-clone "></i></a>
-                  </div>
-                  <div class="pull-right col-md-6">
+                  </div> -->
+                  <!-- <div class="pull-right col-md-6">
                      <?php if($estimate->hash != '' && $estimate->hash != null){
                       echo render_input('link_public','', site_url('purchase/vendors_portal/pur_order/'.$estimate->id.'/'.$estimate->hash)); 
                      }else{
                          echo render_input('link_public','', ''); 
                      } ?>
-                  </div>
+                  </div> -->
                </div>
             </div>
          </div>

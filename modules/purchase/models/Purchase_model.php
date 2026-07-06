@@ -14715,7 +14715,7 @@ class Purchase_model extends App_Model
                 handle_custom_fields_post($insert_id, $custom_fields);
             }
 
-            $_taxes = $this->get_html_tax_pur_order($insert_id);
+            $_taxes = $this->get_html_tax_wo_order($insert_id);
             foreach ($_taxes['taxes_val'] as $tax_val) {
                 $total['total_tax'] += $tax_val;
             }
@@ -14754,5 +14754,649 @@ class Purchase_model extends App_Model
         }
 
         return $data_rs;
+    }
+
+    public function change_status_wo_order($status, $id)
+    {
+        $this->db->where('id', $id);
+        $this->db->update(db_prefix() . 'wo_orders', ['approve_status' => $status]);
+        if ($this->db->affected_rows() > 0) {
+
+            hooks()->do_action('after_work_order_approve', $id);
+            if ($status == 2 || $status == 3) {
+                // $this->send_mail_to_sender('work_order', $status, $id);
+                $cron_email = array();
+                $cron_email_options = array();
+                $cron_email['type'] = "purchase";
+                $cron_email_options['rel_type'] = 'wo_order';
+                $cron_email_options['rel_name'] = 'work_order';
+                $cron_email_options['insert_id'] = $id;
+                $cron_email_options['user_id'] = get_staff_user_id();
+                $cron_email_options['status'] = $status;
+                $cron_email_options['sender'] = 'yes';
+                $cron_email['options'] = json_encode($cron_email_options, true);
+                $this->db->insert(db_prefix() . 'cron_email', $cron_email);
+            }
+
+            // hooks()->apply_filters('create_goods_receipt',['status' => $status,'id' => $id]);
+            return true;
+        }
+        return false;
+    }
+
+    public function get_woorder_pdf_html($wo_order_id)
+    {
+
+        $wo_order = $this->get_wo_order($wo_order_id);
+        $wo_order_detail = $this->get_wo_order_detail($wo_order_id);
+        $company_name = get_option('invoice_company_name');
+
+        $address = get_option('invoice_company_address');
+        $day = date('d', strtotime($wo_order->order_date));
+        $month = date('m', strtotime($wo_order->order_date));
+        $year = date('Y', strtotime($wo_order->order_date));
+        $logo = '';
+        $delivery_date = '';
+        $project_detail = '';
+        $buyer = '';
+        $delivery_person = '';
+        $ship_to = format_po_ship_to_info($wo_order);
+        $company_logo = get_option('company_logo_dark');
+        if (!empty($company_logo)) {
+            $logo = '<img src="' . base_url('uploads/company/' . $company_logo) . '" width="230" >';
+        }
+        if (!empty($wo_order->delivery_date)) {
+            $delivery_date = '<span style="text-align: right;"><b>' . _l('delivery_date') . ':</b> ' . date('d-m-Y', strtotime($wo_order->delivery_date)) . '</span><br />';
+        }
+        if (!empty(get_project_name_by_id($wo_order->project))) {
+            $project_detail = '<br /><span><b>' . _l('project') . ':</b> ' . get_project_name_by_id($wo_order->project) . '<br />' . format_project_client_info($wo_order->project) . '</span><br />';
+        }
+
+
+        $pur_request = $this->get_purchase_request($wo_order->pur_request);
+        $pur_request_name = '';
+        if (!empty($pur_request)) {
+            $pur_request_name = '<span style="text-align: right;"><b>' . _l('pur_request') . ':</b> #' . $pur_request->pur_rq_code . '</span><br />';
+        }
+        $ship_to_detail = '';
+        if (!empty($ship_to)) {
+            $ship_to_detail = '<span style="text-align: right;">' . $ship_to . '</span><br /><br />';
+        }
+        if (!empty(($wo_order->order_date))) {
+            $order_date = '<span><b>' . _l('order_date') . ':</b> ' . date('d M Y', strtotime($wo_order->order_date)) . '<br /></span><br />';
+        }
+        if (get_option('company_vat')) {
+            $gst = '<span><b>GST :</b> ' . get_option('company_vat') . '<br /></span>';
+        }
+        if (get_option('invoice_company_phonenumber')) {
+            $ph = '<span><b>Phone :</b> ' . get_option('invoice_company_phonenumber') . '<br /></span>';
+        }
+        if (get_option('smtp_email')) {
+            $email = '<span><b>Email :</b> ' . get_option('smtp_email') . '<br /></span>';
+        }
+        if (get_option('main_domain')) {
+            $domain = '<span><b>Website :</b> ' . get_option('main_domain') . '<br /></span>';
+        }
+
+
+        $html = '<table class="table">
+        <tbody>
+          <tr>
+            <td>
+                ' . $logo . '
+                ' . format_organization_info() . '<br/>' . '
+                ' . $ph  . '
+                ' . $gst . '
+                ' . $email . '
+                ' . $domain . '
+            </td>
+            <td style="position: absolute; float: right;">
+                <span style="text-align: right; font-size: 25px"><b>' . mb_strtoupper(_l('work_order')) . '</b></span><br />
+                <span style="text-align: right;">' . $wo_order->wo_order_number . ' - ' . $wo_order->wo_order_name . '</span><br /><br />
+                ' . $order_date . '
+                <span style="text-align: right;">' . format_pdf_vendor_info($wo_order->vendor) . '</span><br />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <table class="table">
+        <tbody>
+          <tr>
+            <td>
+                ' . $project_detail . '
+            </td>
+            <td style="position: absolute; float: right;">
+                ' . $ship_to_detail . '
+                ' . $delivery_date . '
+                ' . $delivery_person . '
+                ' . $pur_request_name . '
+            </td>
+          </tr>
+        </tbody>
+      </table>
+                
+      <br><br>
+      ';
+        $order_summary_with_break = $wo_order->order_summary;
+
+
+        $html .=  '<div style="page-break-after:always">' . $order_summary_with_break . '<br><b>Payment Terms: </b>' . get_payment_term_name($wo_order->payment_days) . '</div>
+
+        <table class="table purorder-item bor" style="width: 100%">
+        <thead>
+          <tr>
+            <th class="thead-dark" style="width: 15%">' . _l('items') . '</th>
+            <th class="thead-dark" align="left" style="width: 25%">' . _l('item_description') . '</th>
+            <th class="thead-dark" align="left" style="width: 10%">' . _l('hsn_sac') . '</th>
+            <th class="thead-dark" align="right" style="width: 10%">' . _l('quantity') . '</th>
+            <th class="thead-dark" align="right" style="width: 10%">' . _l('unit_price') . '</th>
+            <th class="thead-dark" align="right" style="width: 10%">' . _l('tax_percentage') . '</th>
+            <th class="thead-dark" align="right" style="width: 10%">' . _l('tax') . '</th>
+            <th class="thead-dark" align="right" style="width: 12%">' . _l('total') . '</th>
+          </tr>
+          </thead>
+          <tbody>';
+        $sub_total_amn = 0;
+        $tax_total = 0;
+        $t_mn = 0;
+        $discount_total = 0;
+        foreach ($wo_order_detail as $row) {
+            $items = $this->get_items_by_id($row['item_code']);
+            $units = $this->get_units_by_id($row['unit_id']);
+            $unit_name = pur_get_unit_name($row['unit_id']);
+            $html .= '<tr nobr="true" class="sortable">
+            <td style="width: 15%">' . $items->commodity_code . ' - ' . $items->description . '</td>
+            <td align="left" style="width: 25%">' . str_replace("<br />", " ", $row['description']) . '</td>
+            <td align="right" style="width: 10%">' . get_hsn_sac_code_by_id($row['hsn_code']) . '</td>
+            <td align="right" style="width: 10%">' . $row['quantity']  . ' ' . $unit_name . '</td>
+            <td align="right" style="width: 10%">' . '₹ ' . app_format_money($row['unit_price'], '') . '</td>
+            
+            <td align="right" style="width: 10%">' . app_format_money($row['tax_rate'], '') . '</td>
+            <td align="right" style="width: 10%">' . '₹ ' . app_format_money($row['total'] - $row['into_money'], '') . '</td>
+            <td align="right" style="width: 12%">' . '₹ ' . app_format_money($row['total_money'], '') . '</td>
+          </tr>';
+
+            $t_mn += $row['total_money'];
+            $tax_total += $row['total'] - $row['into_money'];
+            $sub_total_amn += $row['total_money'] - $tax_total;
+        }
+        $html .=  '</tbody>
+      </table><br><br>';
+
+        $html .= '<table class="table text-right"><tbody>';
+        if ($wo_order->discount_total > 0 || $tax_total > 0) {
+            $html .= '<tr id="subtotal">
+            <td width="33%"></td>
+            <td>' . _l('subtotal') . ' </td>
+            <td class="subtotal">
+            ' . '₹ ' . app_format_money($wo_order->subtotal, '') . '
+            </td>
+            </tr>';
+        }
+        if ($tax_total > 0) {
+            $html .= '<tr id="tax">
+            <td width="33%"></td>
+            <td>' . _l('Tax') . ' </td>
+            <td class="taxtotal">
+            ' . '₹ ' . app_format_money($tax_total, '') . '
+            </td>
+            </tr>';
+        }
+        if ($wo_order->discount_total > 0) {
+            $html .= '<tr id="subtotal">
+                  <td width="33%"></td>
+                     <td>' . _l('discount(%)') . '(%)' . '</td>
+                     <td class="subtotal">
+                        ' . app_format_money($wo_order->discount_percent, '') . ' %' . '
+                     </td>
+                  </tr>
+                  <tr id="subtotal">
+                  <td width="33%"></td>
+                     <td>' . _l('discount(money)') . '</td>
+                     <td class="subtotal">
+                        ' . '₹ ' . app_format_money($wo_order->discount_total, '') . '
+                     </td>
+                  </tr>';
+        }
+        $html .= '<tr id="round_odd">
+                 <td width="33%"></td>
+                 <td><strong>' . _l('Round Off') . '</strong></td>
+                 <td class="subtotal">
+                    ' . '₹ ' . app_format_money($wo_order->shipping_fee, '') . '
+                 </td>
+              </tr>';
+        $html .= '<tr id="subtotal">
+                 <td width="33%"></td>
+                 <td><strong>' . _l('total') . '</strong></td>
+                 <td class="subtotal">
+                    ' . '₹ ' . app_format_money($wo_order->total, '') . '
+                 </td>
+              </tr>';
+
+        $html .= ' </tbody></table>';
+
+        $html .= '<div>&nbsp;</div>';
+        $html .= '<div class="col-md-12 mtop15">
+        Note:
+            <p class="bold">' . nl2br($wo_order->vendornote) . '</p>';
+
+        $html .= '
+        <p class="bold">' . nl2br($wo_order->terms) . '</p>
+            </div>';
+        $html .= '<br>
+                <br>
+                <br> 
+                <br>
+                <table class="table">
+                    <tbody>
+                    <tr>';
+
+        $sign = site_url(PURCHASE_PATH . 'pur_order/signature/sign.png');
+        $html .= ' 
+            <table width="100%">
+                <tbody>';
+        if ($wo_order->approve_status == 2) {
+            $html .= '<tr>
+                        <td class="td_width_55"></td>
+                        <td class="td_ali_font">';
+            $html .= '<img src="' . $sign . '" width="120">';
+        }
+
+        $html .= '<h3>' . mb_strtoupper('AUTHORISED SIGNATORY') . '</h3>
+                            HARDEV SINGH
+                        </td>
+                    </tr>
+                </tbody>
+            </table>';
+        $html .= '<link href="' . module_dir_url(PURCHASE_MODULE_NAME, 'assets/css/pur_order_pdf.css') . '"  rel="stylesheet" type="text/css" />';
+        return $html;
+    }
+
+    public function woorder_pdf($wo_order)
+    {
+        return app_pdf('wo_order', module_dir_path(PURCHASE_MODULE_NAME, 'libraries/pdf/Wo_order_pdf'), $wo_order);
+    }
+
+    public function delete_wo_order($id)
+    {
+                
+        hooks()->do_action('before_wo_order_deleted', $id);
+
+        $affectedRows = 0;
+        $this->db->where('wo_order', $id);
+        $this->db->delete(db_prefix() . 'wo_order_detail');
+        if ($this->db->affected_rows() > 0) {
+            $affectedRows++;
+        }
+
+        $this->db->where('rel_id', $id);
+        $this->db->where('rel_type', 'wo_order');
+        $this->db->delete(db_prefix() . 'files');
+        if ($this->db->affected_rows() > 0) {
+            $affectedRows++;
+        }
+
+        if (is_dir(PURCHASE_MODULE_UPLOAD_FOLDER . '/wo_order/' . $id)) {
+            delete_dir(PURCHASE_MODULE_UPLOAD_FOLDER . '/wo_order/' . $id);
+        }
+            
+        $this->db->where('wo_order', $id);
+        $this->db->delete(db_prefix() . 'wo_order_payment');
+        if ($this->db->affected_rows() > 0) {
+            $affectedRows++;
+        }
+
+        $this->db->where('rel_type', 'wo_order');
+        $this->db->where('rel_id', $id);
+        $this->db->delete(db_prefix() . 'notes');
+
+        // $this->db->where('rel_type', 'wo_order');
+        // $this->db->where('rel_id', $id);
+        // $this->db->delete(db_prefix() . 'reminders');
+
+        $this->db->where('fieldto', 'wo_order');
+        $this->db->where('relid', $id);
+        $this->db->delete(db_prefix() . 'customfieldsvalues');
+
+        $this->db->where('id', $id);
+        $this->db->delete(db_prefix() . 'wo_orders');
+
+        $this->db->where('rel_id', $id);
+        $this->db->where('rel_type', 'wo_order');
+        $this->db->delete(db_prefix() . 'taggables');
+        if ($this->db->affected_rows() > 0) {
+            $affectedRows++;
+        }
+
+        if ($this->db->affected_rows() > 0) {
+            $affectedRows++;
+        }
+
+        if ($affectedRows > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    public function update_wo_order($data, $id)
+    {
+        $affectedRows = 0;
+
+        unset($data['item_select']);
+        unset($data['item_name']);
+        unset($data['description']);
+        unset($data['total']);
+        unset($data['quantity']);
+        unset($data['unit_price']);
+        unset($data['unit_name']);
+        unset($data['item_code']);
+        unset($data['unit_id']);
+        unset($data['discount']);
+        unset($data['into_money']);
+        unset($data['tax_rate']);
+        unset($data['tax_name']);
+        unset($data['discount_money']);
+        unset($data['total_money']);
+        unset($data['additional_discount']);
+        unset($data['tax_value']);
+        unset($data['isedit']);
+        unset($data['hsn_code']);
+        if (isset($data['tax_select'])) {
+            unset($data['tax_select']);
+        }
+
+        $new_order = [];
+        if (isset($data['newitems'])) {
+            $new_order = $data['newitems'];
+            unset($data['newitems']);
+        }
+
+        $update_order = [];
+        if (isset($data['items'])) {
+            $update_order = $data['items'];
+            unset($data['items']);
+        }
+
+        $remove_order = [];
+        if (isset($data['removed_items'])) {
+            $remove_order = $data['removed_items'];
+            unset($data['removed_items']);
+        }
+
+        $data['to_currency'] = $data['currency'];
+
+        $prefix = get_purchase_option('wo_order_prefix');
+        $data['wo_order_number'] = $data['wo_order_number'];
+
+        $data['order_date'] = to_sql_date($data['order_date']);
+
+        $data['delivery_date'] = to_sql_date($data['delivery_date']);
+
+        $data['datecreated'] = date('Y-m-d H:i:s');
+
+        $data['addedfrom'] = get_staff_user_id();
+
+        if (isset($data['clients']) && count($data['clients']) > 0) {
+            $data['clients'] = implode(',', $data['clients']);
+        }
+
+        if (isset($data['order_discount'])) {
+            $order_discount = $data['order_discount'];
+            if ($data['add_discount_type'] == 'percent') {
+                $data['discount_percent'] = $order_discount;
+            }
+
+            unset($data['order_discount']);
+        }
+
+        unset($data['add_discount_type']);
+
+        if (isset($data['dc_total'])) {
+            $data['discount_total'] = $data['dc_total'];
+            unset($data['dc_total']);
+        }
+
+        if (isset($data['total_mn'])) {
+            $data['subtotal'] = $data['total_mn'];
+            unset($data['total_mn']);
+        }
+
+        if (isset($data['grand_total'])) {
+            $data['total'] = $data['grand_total'];
+            unset($data['grand_total']);
+        }
+
+        if (isset($data['tags'])) {
+            if (handle_tags_save($data['tags'], $id, 'wo_order')) {
+                $affectedRows++;
+            }
+            unset($data['tags']);
+        }
+
+        if (isset($data['custom_fields'])) {
+            $custom_fields = $data['custom_fields'];
+            if (handle_custom_fields_post($id, $custom_fields)) {
+                $affectedRows++;
+            }
+            unset($data['custom_fields']);
+        }
+
+        $this->db->where('id', $id);
+        $this->db->update(db_prefix() . 'wo_orders', $data);
+        $this->save_purchase_files('wo_order', $id);
+
+        if ($this->db->affected_rows() > 0) {
+            $affectedRows++;
+        }
+
+        if (count($new_order) > 0) {
+            foreach ($new_order as $key => $rqd) {
+
+                $dt_data = [];
+                $dt_data['wo_order'] = $id;
+                $dt_data['item_code'] = $rqd['item_code'];
+                $dt_data['unit_id'] = isset($rqd['unit_id']) ? $rqd['unit_id'] : null;
+                $dt_data['unit_price'] = $rqd['unit_price'];
+                $dt_data['into_money'] = $rqd['into_money'];
+                $dt_data['total'] = $rqd['total'];
+                $dt_data['tax_value'] = $rqd['tax_value'];
+                $dt_data['item_name'] = $rqd['item_name'];
+                $dt_data['total_money'] = $rqd['total_money'];
+                $dt_data['discount_money'] = $rqd['discount_money'];
+                $dt_data['discount_%'] = $rqd['discount'];
+                $dt_data['description'] = nl2br($rqd['item_description']);
+                $dt_data['hsn_code'] = $rqd['hsn_code'];
+                $tax_money = 0;
+                $tax_rate_value = 0;
+                $tax_rate = null;
+                $tax_id = null;
+                $tax_name = null;
+
+                if (isset($rqd['tax_select'])) {
+                    $tax_rate_data = $this->pur_get_tax_rate($rqd['tax_select']);
+                    $tax_rate_value = $tax_rate_data['tax_rate'];
+                    $tax_rate = $tax_rate_data['tax_rate_str'];
+                    $tax_id = $tax_rate_data['tax_id_str'];
+                    $tax_name = $tax_rate_data['tax_name_str'];
+                }
+
+                $dt_data['tax'] = $tax_id;
+                $dt_data['tax_rate'] = $tax_rate;
+                $dt_data['tax_name'] = $tax_name;
+
+                $dt_data['quantity'] = ($rqd['quantity'] != '' && $rqd['quantity'] != null) ? $rqd['quantity'] : 0;
+
+                $this->db->insert(db_prefix() . 'wo_order_detail', $dt_data);
+                $new_quote_insert_id = $this->db->insert_id();
+                if ($new_quote_insert_id) {
+                    $affectedRows++;
+                }
+            }
+        }
+
+        if (count($update_order) > 0) {
+            foreach ($update_order as $_key => $rqd) {
+                $dt_data = [];
+                $dt_data['wo_order'] = $id;
+                $dt_data['item_code'] = $rqd['item_code'];
+                $dt_data['unit_id'] = isset($rqd['unit_name']) ? $rqd['unit_name'] : null;
+                $dt_data['unit_price'] = $rqd['unit_price'];
+                $dt_data['into_money'] = $rqd['into_money'];
+                $dt_data['total'] = $rqd['total'];
+                $dt_data['tax_value'] = $rqd['tax_value'];
+                $dt_data['item_name'] = $rqd['item_name'];
+                $dt_data['total_money'] = $rqd['total_money'];
+                $dt_data['discount_money'] = $rqd['discount_money'];
+                $dt_data['discount_%'] = $rqd['discount'];
+                $dt_data['description'] = nl2br($rqd['item_description']);
+                $dt_data['hsn_code'] = $rqd['hsn_code'];
+                $tax_money = 0;
+                $tax_rate_value = 0;
+                $tax_rate = null;
+                $tax_id = null;
+                $tax_name = null;
+
+                if (isset($rqd['tax_select'])) {
+                    $tax_rate_data = $this->pur_get_tax_rate($rqd['tax_select']);
+                    $tax_rate_value = $tax_rate_data['tax_rate'];
+                    $tax_rate = $tax_rate_data['tax_rate_str'];
+                    $tax_id = $tax_rate_data['tax_id_str'];
+                    $tax_name = $tax_rate_data['tax_name_str'];
+                }
+
+                $dt_data['tax'] = $tax_id;
+                $dt_data['tax_rate'] = $tax_rate;
+                $dt_data['tax_name'] = $tax_name;
+
+                $dt_data['quantity'] = ($rqd['quantity'] != '' && $rqd['quantity'] != null) ? $rqd['quantity'] : 0;
+
+                $this->db->where('id', $rqd['id']);
+                $this->db->update(db_prefix() . 'wo_order_detail', $dt_data);
+                if ($this->db->affected_rows() > 0) {
+                    $affectedRows++;
+                }
+            }
+        }
+
+        if (count($remove_order) > 0) {
+            foreach ($remove_order as $remove_id) {
+                $this->db->where('id', $remove_id);
+                if ($this->db->delete(db_prefix() . 'wo_order_detail')) {
+                    $affectedRows++;
+                }
+            }
+        }
+
+
+        $total = [];
+        $total['total_tax'] = 0;
+        $_taxes = $this->get_html_tax_wo_order($id);
+        foreach ($_taxes['taxes_val'] as $tax_val) {
+            $total['total_tax'] += $tax_val;
+        }
+
+
+        $this->db->where('id', $id);
+        $this->db->update(db_prefix() . 'wo_orders', $total);
+        if ($this->db->affected_rows() > 0) {
+            $affectedRows++;
+        }
+
+        if ($affectedRows > 0) {
+
+
+            return true;
+        }
+
+        return false;
+    }
+    public function get_html_tax_wo_order($id)
+    {
+        $html = '';
+        $preview_html = '';
+        $pdf_html = '';
+        $taxes = [];
+        $t_rate = [];
+        $tax_val = [];
+        $tax_val_rs = [];
+        $tax_name = [];
+        $rs = [];
+
+        $order = $this->get_wo_order($id);
+
+        $this->load->model('currencies_model');
+        $base_currency = $this->currencies_model->get_base_currency();
+
+        if ($order->currency != 0 && $order->currency != null) {
+            $base_currency = pur_get_currency_by_id($order->currency);
+        }
+
+
+        $this->db->where('wo_order', $id);
+        $details = $this->db->get(db_prefix() . 'wo_order_detail')->result_array();
+        $item_discount = 0;
+
+        foreach ($details as $row) {
+            if ($row['tax'] != '') {
+                $tax_arr = explode('|', $row['tax']);
+
+                $tax_rate_arr = [];
+                if ($row['tax_rate'] != '') {
+                    $tax_rate_arr = explode('|', $row['tax_rate']);
+                }
+
+                foreach ($tax_arr as $k => $tax_it) {
+                    if (!isset($tax_rate_arr[$k])) {
+                        $tax_rate_arr[$k] = $this->tax_rate_by_id($tax_it);
+                    }
+
+                    if (!in_array($tax_it, $taxes)) {
+                        $taxes[$tax_it] = $tax_it;
+                        $t_rate[$tax_it] = $tax_rate_arr[$k];
+                        $tax_name[$tax_it] = $this->get_tax_name($tax_it) . ' (' . $tax_rate_arr[$k] . '%)';
+                    }
+                }
+            }
+
+            $item_discount += $row['discount_money'];
+        }
+
+        if (count($tax_name) > 0) {
+            $discount_total = $item_discount + $order->discount_total;
+
+            foreach ($tax_name as $key => $tn) {
+                $tax_val[$key] = 0;
+                foreach ($details as $row_dt) {
+                    if (!(strpos($row_dt['tax'] ?? '', $taxes[$key]) === false)) {
+                        $total = ($row_dt['into_money'] * $t_rate[$key] / 100);
+
+                        if ($order->discount_type == 'before_tax') {
+                            $t = 0;
+                            if ($order->subtotal > 0) {
+                                $t     = ($discount_total / $order->subtotal) * 100;
+                            }
+                            $tax_val[$key] += ($total - $total * $t / 100);
+                        } else {
+                            $tax_val[$key] += $total;
+                        }
+                    }
+                }
+
+
+
+                $pdf_html .= '<tr id="subtotal"><td width="33%"></td><td>' . $tn . '</td><td>' . app_format_money($tax_val[$key], '') . '</td></tr>';
+                $preview_html .= '<tr id="subtotal"><td>' . $tn . '</td><td>' . app_format_money($tax_val[$key], $base_currency->name) . '</td><tr>';
+                $html .= '<tr class="tax-area_pr"><td>' . $tn . '</td><td width="65%">' . app_format_money($tax_val[$key], '') . ' ' . ($base_currency->name) . '</td></tr>';
+                $tax_val_rs[] = $tax_val[$key];
+            }
+        }
+
+        $rs['pdf_html'] = $pdf_html;
+        $rs['preview_html'] = $preview_html;
+        $rs['html'] = $html;
+        $rs['taxes'] = $taxes;
+        $rs['taxes_val'] = $tax_val_rs;
+        return $rs;
     }
 }
