@@ -133,6 +133,7 @@ class purchase extends AdminController
             $data['tab'][] = ['name' => 'quotations','icon' => '<i class="fa fa-file-powerpoint menu-icon"></i>'];
             $data['tab'][] = ['name' => 'contracts', 'icon' => '<i class="fa fa-file-text menu-icon"></i>'];
             $data['tab'][] = ['name' => 'purchase_order', 'icon' => '<i class="fa fa-cart-plus menu-icon"></i>'];
+            $data['tab'][] = ['name' => 'work_order', 'icon' => '<i class="fa fa-check menu-icon"></i>'];
             $data['tab'][] = ['name' => 'purchase_invoice', 'icon' => '<i class="fa fa-clipboard menu-icon"></i>'];
             $data['tab'][] = ['name' => 'debit_notes', 'icon' => '<i class="fa fa-credit-card menu-icon"></i>'];
             $data['tab'][] = ['name' => 'purchase_statement', 'icon' => '<i class="fa fa-building menu-icon"></i>'];
@@ -8816,5 +8817,219 @@ class purchase extends AdminController
     {
         $this->app->get_table_data(module_views_path('purchase', 'payments/table_pur_payments'));
     }
+    
+    public function work_order($id = ''){
+        if(!has_permission('work_order', '', 'view') && !is_admin() && !has_permission('work_order', '', 'view_own')){
+            access_denied('purchase');
+        }
+        $this->load->model('expenses_model');
+        $this->load->model('payment_modes_model');
+        $this->load->model('taxes_model');
+        $this->load->model('currencies_model');
+        $this->load->model('departments_model');
+        $this->load->model('projects_model');
+        $this->load->model('clients_model');
 
+        $data['work_orderid']            = $id;
+        $data['title'] = _l('purchase_order');
+
+        $data['departments'] = $this->departments_model->get();
+        $data['projects'] = $this->projects_model->get();
+        $data['currency'] = $this->currencies_model->get_base_currency();
+        $data['payment_modes'] = $this->payment_modes_model->get('', [], true);
+        $data['currencies']         = $this->currencies_model->get();
+        $data['taxes']              = $this->taxes_model->get();
+        $data['vendors'] = $this->purchase_model->get_vendor();
+        $data['expense_categories'] = $this->expenses_model->get_category();
+        $data['item_tags'] = $this->purchase_model->get_item_tag_filter();
+        $data['customers'] = $this->clients_model->get();
+        $data['pur_request'] = $this->purchase_model->get_pur_request_by_status(2);
+
+        $data['projects'] = $this->projects_model->get();
+        
+        $this->load->view('work_order/manage', $data);
+    }
+
+    public function table_wo_order(){
+        $this->app->get_table_data(module_views_path('purchase', 'work_order/table_wo_order'));
+    }
+
+
+    public function wo_order($id = ''){
+        if ($this->input->post()) {
+            $pur_order_data = $this->input->post();
+            $pur_order_data['terms'] = $this->input->post('terms', false);
+            $pur_order_data['vendornote'] = $this->input->post('vendornote', false);
+            $pur_order_data['order_summary'] = $this->input->post('order_summary', false);
+            if ($id == '') {
+                if (!has_permission('work_orders', '', 'create')) {
+                    access_denied('work_order');
+                }
+                $id = $this->purchase_model->add_wo_order($pur_order_data);
+                if ($id) {
+                    set_alert('success', _l('added_successfully', _l('wo_order')));
+                    
+                    redirect(admin_url('purchase/work_order/' . $id));
+                    
+                }
+            } else {
+                if (!has_permission('work_orders', '', 'edit')) {
+                    access_denied('work_order');
+                }
+                $success = $this->purchase_model->update_wo_order($pur_order_data, $id);
+                if ($success) {
+                    set_alert('success', _l('updated_successfully', _l('wo_order')));
+                }
+                redirect(admin_url('purchase/work_order/' . $id));
+                
+            }
+        }
+
+        $this->load->model('currencies_model');
+        $data['base_currency'] = $this->currencies_model->get_base_currency();
+
+        $wo_order_row_template = $this->purchase_model->create_work_order_row_template();
+
+        if ($id == '') {
+            $title = _l('create_new_wo_order');
+        } else {
+            $data['wo_order_detail'] = $this->purchase_model->get_wo_order_detail($id);
+            $data['wo_order'] = $this->purchase_model->get_wo_order($id);
+            $data['attachments'] = $this->purchase_model->get_purchase_attachments('wo_order', $id);
+
+            $currency_rate = 1;
+            if($data['wo_order']->currency != 0 && $data['wo_order']->currency_rate != null){
+                $currency_rate = $data['wo_order']->currency_rate;
+            }
+
+            $to_currency = $data['base_currency']->name;
+            if($data['wo_order']->currency != 0 && $data['wo_order']->to_currency != null) {
+                $to_currency = $data['wo_order']->to_currency;
+            }
+
+
+            $data['tax_data'] = $this->purchase_model->get_html_tax_pur_order($id);
+            $title = _l('pur_order_detail');
+
+            if (count($data['wo_order_detail']) > 0) { 
+                $index_order = 0;
+                foreach ($data['wo_order_detail'] as $order_detail) { 
+                    $index_order++;
+                    $unit_name = $order_detail['unit_id'];
+                    $taxname = $order_detail['tax_name'];
+                    $item_name = $order_detail['item_name'];
+
+                    if(strlen($item_name) == 0){
+                        $item_name = pur_get_item_variatiom($order_detail['item_code']);
+                    }
+
+                    $wo_order_row_template .= $this->purchase_model->create_work_order_row_template('items[' . $index_order . ']',  $item_name, $order_detail['description'], $order_detail['quantity'], $unit_name, $order_detail['unit_price'], $taxname, $order_detail['item_code'], $order_detail['unit_id'], $order_detail['tax_rate'],  $order_detail['total_money'], $order_detail['discount_%'], $order_detail['discount_money'], $order_detail['total'], $order_detail['into_money'], $order_detail['tax'], $order_detail['tax_value'], $order_detail['id'], true, $currency_rate, $to_currency, $order_detail['hsn_code']);
+                }
+            }
+        }
+        $data['wo_order_row_template'] = $wo_order_row_template;
+
+        
+        $data['currencies'] = $this->currencies_model->get();
+
+        $this->load->model('clients_model');
+        $data['clients'] = $this->clients_model->get();
+
+        $this->load->model('departments_model');
+        $data['departments'] = $this->departments_model->get();
+
+        $data['invoices'] = $this->purchase_model->get_invoice_for_pr();
+        $data['pur_request'] = $this->purchase_model->get_pur_request_by_status(2);
+        $data['projects'] = $this->projects_model->get_items();
+        $data['ven'] = $this->input->get('vendor');
+        $data['taxes'] = $this->purchase_model->get_taxes();
+        $data['staff']             = $this->staff_model->get('', ['active' => 1]);
+        $data['vendors'] = $this->purchase_model->get_vendor();
+        $data['estimates'] = $this->purchase_model->get_estimates_by_status(2);
+        $data['units'] = $this->purchase_model->get_units();
+        $data['get_hsn_sac_code'] = $this->purchase_model->get_hsn_sac_code();
+
+        $data['ajaxItems'] = false;
+        if (total_rows(db_prefix() . 'items') <= ajax_on_total_items()) {
+            $data['items'] = $this->purchase_model->pur_get_grouped('can_be_purchased');
+        } else {
+            $data['items']     = [];
+            $data['ajaxItems'] = true;
+        }
+
+        $data['convert_po'] = false;
+        $pr = $this->input->get('pr', TRUE);
+        if(!empty($pr)) {
+            $purchase_request = $this->purchase_model->get_purchase_request($pr);
+            if(!empty($purchase_request)) {
+                $data['convert_po'] = true;
+                $data['selected_pr'] = $purchase_request->id;
+                $data['selected_project'] = $purchase_request->project;
+            }
+        }
+
+        $data['title'] = $title;
+
+        $this->load->view('work_order/wo_order', $data);
+    }
+    public function coppy_pur_request_for_wo($pur_request, $vendor = ''){       
+        $this->load->model('currencies_model');
+
+        $pur_request_detail = $this->purchase_model->get_pur_request_detail_in_po($pur_request);
+        $purchase_request = $this->purchase_model->get_purchase_request($pur_request);
+        
+             
+        $base_currency = $this->currencies_model->get_base_currency();
+        $taxes = [];
+        $tax_val = [];
+        $tax_name = [];
+        $subtotal = 0;
+        $total = 0;
+        $data_rs = [];
+        $tax_html = '';
+        $estimate_html = '';
+
+        
+
+        $list_item = $this->purchase_model->create_work_order_row_template();
+
+        $currency_rate = 1;
+        $to_currency = $base_currency->id;
+        if($purchase_request->currency != 0 && $purchase_request->currency_rate != null){
+            $currency_rate = $purchase_request->currency_rate;
+            $to_currency = $purchase_request->currency;
+        }
+        
+        if(count($pur_request_detail) > 0){
+            $index_quote = 0;
+            foreach($pur_request_detail as $key => $item){
+                $index_quote++;
+                $unit_name = pur_get_unit_name($item['unit_id']);
+                $taxname = $item['tax_name'];
+                $item_name = $item['item_text'];
+
+                if(strlen($item_name) == 0){
+                    $item_name = pur_get_item_variatiom($item['item_code']);
+                }
+
+                $list_item .= $this->purchase_model->create_work_order_row_template('newitems[' . $index_quote . ']',  $item_name,'', $item['quantity'], $unit_name, $item['unit_price'], $taxname, $item['item_code'], $item['unit_id'], $item['tax_rate'],  $item['total'], '', '', $item['total'], $item['into_money'], $item['tax'], $item['tax_value'], $index_quote, true, $currency_rate, $to_currency);
+            }
+        }
+
+        $taxes_data = $this->purchase_model->get_html_tax_pur_request($pur_request);
+        $tax_html = $taxes_data['html'];
+
+       
+        echo json_encode([
+            'result' => $pur_request_detail,
+            'subtotal' => app_format_money(round($subtotal,2),''),
+            'total' => app_format_money(round($total, 2),''),
+            'tax_html' => $tax_html,
+            'taxes' => $taxes,
+            'list_item' => $list_item,
+            'currency' => $to_currency,
+            'currency_rate' => $currency_rate,
+            'estimate_html' => $estimate_html,
+        ]);
+    }
 }
