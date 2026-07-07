@@ -803,4 +803,4 @@
           <?php echo form_close(); ?>
       </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-    <?php require 'modules/purchase/assets/js/pur_order_preview_js.php';?>
+    <?php require 'modules/purchase/assets/js/wo_order_preview_js.php';?>

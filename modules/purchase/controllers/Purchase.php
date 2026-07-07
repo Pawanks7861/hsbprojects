@@ -2065,6 +2065,9 @@ class purchase extends AdminController
                             case 'pur_order':
                                 $path = PURCHASE_MODULE_UPLOAD_FOLDER .'/pur_order/signature/' .$data['rel_id'];
                                 break;
+                            case 'wo_order':
+                                $path = PURCHASE_MODULE_UPLOAD_FOLDER .'/pur_order/signature/' .$data['rel_id'];
+                                break;
                             case 'pur_request':
                                 $path = PURCHASE_MODULE_UPLOAD_FOLDER .'/pur_request/signature/' .$data['rel_id'];
                                 break;
@@ -9074,10 +9077,10 @@ class purchase extends AdminController
             $this->session->unset_userdata("send_mail_approve");
         }
         $data['invoices'] = $this->purchase_model->get_invoices_by_po($id);
-        $data['check_appr'] = $this->purchase_model->get_approve_setting('pur_order');
-        $data['get_staff_sign'] = $this->purchase_model->get_staff_sign($id,'pur_order');
-        $data['check_approve_status'] = $this->purchase_model->check_approval_details($id,'pur_order');
-        $data['list_approve_status'] = $this->purchase_model->get_list_approval_details($id,'pur_order');
+        $data['check_appr'] = $this->purchase_model->get_approve_setting('wo_order');
+        $data['get_staff_sign'] = $this->purchase_model->get_staff_sign($id,'wo_order');
+        $data['check_approve_status'] = $this->purchase_model->check_approval_details($id,'wo_order');
+        $data['list_approve_status'] = $this->purchase_model->get_list_approval_details($id,'wo_order');
         $data['tax_data'] = $this->purchase_model->get_html_tax_wo_order($id);
         $data['check_approval_setting'] = $this->purchase_model->check_approval_setting($estimate->project,'wo_order',0);
         $data['attachments'] = $this->purchase_model->get_purchase_attachments('wo_order', $id);
@@ -9169,5 +9172,114 @@ class purchase extends AdminController
             set_alert('warning', _l('problem_deleting', _l('work_order')));
         }
         redirect(admin_url('purchase/work_order'));
+    }
+
+     public function change_delivery_status_wo($status, $pur_order){
+        $success = $this->purchase_model->change_delivery_status_wo($status, $pur_order);
+        $message = '';
+        $html = '';
+        $status_str = '';
+        $class = '';
+        if($success == true){
+            $message = _l('change_delivery_status_successfully');
+        }else{
+            $message = _l('change_delivery_status_fail');
+        }
+
+        if(has_permission('purchase_orders', '', 'edit') || is_admin()){
+            $html .= '<div class="dropdown inline-block mleft5 table-export-exclude">';
+            $html .= '<a href="#" class="dropdown-toggle text-dark" id="tablePurOderStatus-' . $pur_order . '" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">';
+            $html .= '<span data-toggle="tooltip" title="' . _l('ticket_single_change_status') . '"><i class="fa fa-caret-down" aria-hidden="true"></i></span>';
+            $html .= '</a>';
+
+            $html .= '<ul class="dropdown-menu dropdown-menu-right" aria-labelledby="tablePurOderStatus-' . $pur_order . '">';
+
+            if($status == 0){
+                $html .= '<li>
+                          <a href="#" onclick="change_delivery_status_wo( 1 ,' . $pur_order . '); return false;">
+                             ' ._l('completely_delivered') . '
+                          </a>
+                       </li>';
+                $html .= '<li>
+                          <a href="#" onclick="change_delivery_status_wo( 2 ,' . $pur_order . '); return false;">
+                             ' ._l('pending_delivered') . '
+                          </a>
+                       </li>';
+                $html .= '<li>
+                          <a href="#" onclick="change_delivery_status_wo( 3 ,' . $pur_order . '); return false;">
+                             ' ._l('partially_delivered') . '
+                          </a>
+                       </li>';
+
+                $status_str = _l('undelivered');
+                $class = 'label-danger';
+            }else if($status == 1){
+                $html .= '<li>
+                          <a href="#" onclick="change_delivery_status_wo( 0 ,' . $pur_order . '); return false;">
+                             ' ._l('undelivered') . '
+                          </a>
+                       </li>';
+                $html .= '<li>
+                          <a href="#" onclick="change_delivery_status_wo( 2 ,' . $pur_order . '); return false;">
+                             ' ._l('pending_delivered') . '
+                          </a>
+                       </li>';
+                $html .= '<li>
+                          <a href="#" onclick="change_delivery_status_wo( 3 ,' . $pur_order . '); return false;">
+                             ' ._l('partially_delivered') . '
+                          </a>
+                       </li>';
+                $status_str = _l('completely_delivered');
+                $class = 'label-success';
+            }else if($status == 2){ 
+                $html .= '<li>
+                          <a href="#" onclick="change_delivery_status_wo( 0 ,' . $pur_order . '); return false;">
+                             ' ._l('undelivered') . '
+                          </a>
+                       </li>';
+                $html .= '<li>
+                          <a href="#" onclick="change_delivery_status_wo( 1 ,' . $pur_order . '); return false;">
+                             ' ._l('completely_delivered') . '
+                          </a>
+                       </li>';
+                $html .= '<li>
+                          <a href="#" onclick="change_delivery_status_wo( 3 ,' . $pur_order . '); return false;">
+                             ' ._l('partially_delivered') . '
+                          </a>
+                       </li>';
+                $status_str = _l('pending_delivered');
+                $class = 'label-info';
+            }else if($status == 3){ 
+                $html .= '<li>
+                          <a href="#" onclick="change_delivery_status_wo( 0 ,' . $pur_order . '); return false;">
+                             ' ._l('undelivered') . '
+                          </a>
+                       </li>';
+                $html .= '<li>
+                          <a href="#" onclick="change_delivery_status_wo( 1 ,' . $pur_order . '); return false;">
+                             ' ._l('completely_delivered') . '
+                          </a>
+                       </li>';
+                $html .= '<li>
+                          <a href="#" onclick="change_delivery_status_wo( 2 ,' . $pur_order . '); return false;">
+                             ' ._l('pending_delivered') . '
+                          </a>
+                       </li>';
+                $status_str = _l('partially_delivered');
+                $class = 'label-warning';
+            }
+               
+
+            $html .= '</ul>';
+            $html .= '</div>';
+        }
+
+        echo json_encode([
+            'success' => $success,
+            'status_str' => $status_str,
+            'class' => $class,
+            'mess' => $message,
+            'html' => $html,
+        ]);
     }
 }

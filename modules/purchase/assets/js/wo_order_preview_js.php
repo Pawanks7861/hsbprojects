@@ -181,7 +181,7 @@ function send_request_approve(id){
   "use strict";
     var data = {};
     data.rel_id = <?php echo pur_html_entity_decode($estimate->id); ?>;
-    data.rel_type = 'pur_order';
+    data.rel_type = 'wo_order';
     data.addedfrom = <?php echo pur_html_entity_decode($estimate->addedfrom); ?>;
   $("body").append('<div class="dt-loader"></div>');
     $.post(admin_url + 'purchase/send_request_approve', data).done(function(response){
@@ -307,7 +307,7 @@ function change_request_approval_status(id, status, sign_code){
   "use strict";
     var data = {};
     data.rel_id = id;
-    data.rel_type = 'pur_order';
+    data.rel_type = 'wo_order';
     data.approve = status;
     if(sign_code == true){
       data.signature = $('input[name="signature"]').val();

@@ -708,3 +708,4 @@ $lang['create_new_wo_order']  = 'Create new work order';
 $lang['wo_order_description']  = 'Work order description';
 $lang['wo_order_number']  = 'Work order number';
 $lang['change_status_wo_order']  = 'Change status work order';
+$lang['wo_order'] = 'Work Order';

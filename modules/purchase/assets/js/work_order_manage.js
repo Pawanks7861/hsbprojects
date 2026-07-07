@@ -155,10 +155,10 @@ function projectExpenseSubmitHandler(form) {
       return false;
 }
 
-function change_delivery_status(status, id){
+function change_delivery_status_wo(status, id){
   "use strict";
   if(id > 0){
-    $.post(admin_url + 'purchase/change_delivery_status/'+status+'/'+id).done(function(response){
+    $.post(admin_url + 'purchase/change_delivery_status_wo/'+status+'/'+id).done(function(response){
       response = JSON.parse(response);
       if(response.success == true){
         if($('#status_span_'+id).hasClass('label-danger')){

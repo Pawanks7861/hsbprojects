@@ -263,65 +263,65 @@ foreach ($rResult as $aRow) {
 
                 if ($aRow['delivery_status'] == 0) {
                     $delivery_status .= '<li>
-                              <a href="#" onclick="change_delivery_status( 1 ,' . $aRow['id'] . '); return false;">
+                              <a href="#" onclick="change_delivery_status_wo( 1 ,' . $aRow['id'] . '); return false;">
                                  ' . _l('completely_delivered') . '
                               </a>
                            </li>';
                     $delivery_status .= '<li>
-                              <a href="#" onclick="change_delivery_status( 2 ,' . $aRow['id'] . '); return false;">
+                              <a href="#" onclick="change_delivery_status_wo( 2 ,' . $aRow['id'] . '); return false;">
                                  ' . _l('pending_delivered') . '
                               </a>
                            </li>';
                     $delivery_status .= '<li>
-                              <a href="#" onclick="change_delivery_status( 3 ,' . $aRow['id'] . '); return false;">
+                              <a href="#" onclick="change_delivery_status_wo( 3 ,' . $aRow['id'] . '); return false;">
                                  ' . _l('partially_delivered') . '
                               </a>
                            </li>';
                 } else if ($aRow['delivery_status'] == 1) {
                     $delivery_status .= '<li>
-                              <a href="#" onclick="change_delivery_status( 0 ,' . $aRow['id'] . '); return false;">
+                              <a href="#" onclick="change_delivery_status_wo( 0 ,' . $aRow['id'] . '); return false;">
                                  ' . _l('undelivered') . '
                               </a>
                            </li>';
                     $delivery_status .= '<li>
-                              <a href="#" onclick="change_delivery_status( 2 ,' . $aRow['id'] . '); return false;">
+                              <a href="#" onclick="change_delivery_status_wo( 2 ,' . $aRow['id'] . '); return false;">
                                  ' . _l('pending_delivered') . '
                               </a>
                            </li>';
                     $delivery_status .= '<li>
-                              <a href="#" onclick="change_delivery_status( 3 ,' . $aRow['id'] . '); return false;">
+                              <a href="#" onclick="change_delivery_status_wo( 3 ,' . $aRow['id'] . '); return false;">
                                  ' . _l('partially_delivered') . '
                               </a>
                            </li>';
                 } else if ($aRow['delivery_status'] == 2) {
                     $delivery_status .= '<li>
-                              <a href="#" onclick="change_delivery_status( 0 ,' . $aRow['id'] . '); return false;">
+                              <a href="#" onclick="change_delivery_status_wo( 0 ,' . $aRow['id'] . '); return false;">
                                  ' . _l('undelivered') . '
                               </a>
                            </li>';
                     $delivery_status .= '<li>
-                              <a href="#" onclick="change_delivery_status( 1 ,' . $aRow['id'] . '); return false;">
+                              <a href="#" onclick="change_delivery_status_wo( 1 ,' . $aRow['id'] . '); return false;">
                                  ' . _l('completely_delivered') . '
                               </a>
                            </li>';
                     $delivery_status .= '<li>
-                              <a href="#" onclick="change_delivery_status( 3 ,' . $aRow['id'] . '); return false;">
+                              <a href="#" onclick="change_delivery_status_wo( 3 ,' . $aRow['id'] . '); return false;">
                                  ' . _l('partially_delivered') . '
                               </a>
                            </li>';
                 } else if ($aRow['delivery_status'] == 3) {
                     $delivery_status .= '<li>
-                              <a href="#" onclick="change_delivery_status( 0 ,' . $aRow['id'] . '); return false;">
+                              <a href="#" onclick="change_delivery_status_wo( 0 ,' . $aRow['id'] . '); return false;">
                                  ' . _l('undelivered') . '
                               </a>
                            </li>';
                     $delivery_status .= '<li>
-                              <a href="#" onclick="change_delivery_status( 1 ,' . $aRow['id'] . '); return false;">
+                              <a href="#" onclick="change_delivery_status_wo( 1 ,' . $aRow['id'] . '); return false;">
                                  ' . _l('completely_delivered') . '
                               </a>
                            </li>';
                     $delivery_status .= '<li>
-                              <a href="#" onclick="change_delivery_status( 2 ,' . $aRow['id'] . '); return false;">
+                              <a href="#" onclick="change_delivery_status_wo( 2 ,' . $aRow['id'] . '); return false;">
                                  ' . _l('pending_delivered') . '
                               </a>
                            </li>';

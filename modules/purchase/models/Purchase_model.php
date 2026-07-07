@@ -3122,6 +3122,12 @@ class Purchase_model extends App_Model
             $project = $module->project;
             $p_status = $module->approve_status;
         }
+        if ($data['rel_type'] == 'wo_order') {
+            $rel_name = 'work_order';
+            $module = $this->get_wo_order($data['rel_id']);
+            $project = $module->project;
+            $p_status = $module->approve_status;
+        }
         if ($data['rel_type'] == 'pur_quotation') {
             $rel_name = 'quotation';
             $module = $this->get_estimate($data['rel_id']);
@@ -3158,7 +3164,7 @@ class Purchase_model extends App_Model
         }
 
         // Send an email to approver
-        if ($data['rel_type'] == 'pur_request' || $data['rel_type'] == 'pur_order' || $data['rel_type'] == 'pur_quotation') {
+        if ($data['rel_type'] == 'pur_request' || $data['rel_type'] == 'pur_order' || $data['rel_type'] == 'pur_quotation' || $data['rel_type'] == 'wo_order') {
             $cron_email = array();
             $cron_email_options = array();
             $cron_email['type'] = "purchase";
@@ -3544,6 +3550,16 @@ class Purchase_model extends App_Model
 
                 // warehouse module hook after purchase order approve
                 hooks()->do_action('after_purchase_order_approve', $rel_id);
+
+                return true;
+                break;
+             case 'wo_order':
+                $data_update['approve_status'] = $status;
+                $this->db->where('id', $rel_id);
+                $this->db->update(db_prefix() . 'wo_orders', $data_update);
+
+                // warehouse module hook after work order approve
+                hooks()->do_action('after_work_order_approve', $rel_id);
 
                 return true;
                 break;
@@ -15398,5 +15414,23 @@ class Purchase_model extends App_Model
         $rs['taxes'] = $taxes;
         $rs['taxes_val'] = $tax_val_rs;
         return $rs;
+    }
+
+    public function change_delivery_status_wo($status, $id)
+    {
+        $this->db->where('id', $id);
+        $this->db->update(db_prefix() . 'wo_orders', ['delivery_status' => $status]);
+        if ($this->db->affected_rows() > 0) {
+            if ($status == 1) {
+                $this->db->where('id', $id);
+                $this->db->update(db_prefix() . 'wo_orders', ['order_status' => 'delivered', 'delivery_date' => date('Y-m-d')]);
+            } else {
+                $this->db->where('id', $id);
+                $this->db->update(db_prefix() . 'wo_orders', ['order_status' => 'confirmed']);
+            }
+
+            return true;
+        }
+        return false;
     }
 }
