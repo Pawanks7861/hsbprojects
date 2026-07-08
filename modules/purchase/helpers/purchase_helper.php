@@ -3243,3 +3243,17 @@ function get_last_vendor_code(){
     
     return $result ? $result->vendor_code : '';
 }
+
+function get_pur_order_for_db($id = false)
+{
+    $CI           = & get_instance();
+
+    if (is_numeric($id)) {
+        $CI->db->where('id', $id);
+        return $CI->db->get(db_prefix() . 'pur_orders')->row();
+    }
+    if ($id == false) {
+        return $CI->db->query('select * from tblpur_orders where approve_status = 2')->result_array();
+    }
+
+}

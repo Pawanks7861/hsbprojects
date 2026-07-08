@@ -6600,7 +6600,8 @@ class purchase extends AdminController
         $data['currencies'] = $this->currencies_model->get();
 
         $data['base_currency'] = $this->currencies_model->get_base_currency();
-
+        
+        $data['pur_orders'] = get_pur_order_for_db(); 
         $data['ajaxItems'] = false;
         if (total_rows(db_prefix() . 'items') <= ajax_on_total_items()) {
             $data['items'] = $this->purchase_model->pur_get_grouped('can_be_purchased');
@@ -9281,5 +9282,19 @@ class purchase extends AdminController
             'mess' => $message,
             'html' => $html,
         ]);
+    }
+
+    public function add_payment_on_wo($wo_order){
+         if ($this->input->post()) {
+            $data = $this->input->post();
+            $message = '';
+            $success = $this->purchase_model->add_payment_on_wo($data, $wo_order);
+            if ($success) {
+                $message = _l('added_successfully', _l('payment'));
+            }
+            set_alert('success', $message);
+            redirect(admin_url('purchase/work_order/'.$wo_order));
+            
+        }
     }
 }

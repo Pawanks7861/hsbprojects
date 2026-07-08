@@ -15433,4 +15433,90 @@ class Purchase_model extends App_Model
         }
         return false;
     }
+
+    public function add_payment_on_wo($data, $woorder)
+    {
+        $wo_order = $this->get_wo_order($woorder);
+
+        if (!$woorder) {
+            return false;
+        }
+
+        $inv_data = [];
+
+        $prefix = get_purchase_option('pur_inv_prefix');
+        $next_number = get_purchase_option('next_inv_number');
+
+        $inv_data['invoice_number'] = $prefix . str_pad($next_number, 5, '0', STR_PAD_LEFT);
+        $inv_data['number'] = $next_number;
+
+        $this->db->where('invoice_number', $inv_data['invoice_number']);
+        $check_exist_number = $this->db->get(db_prefix() . 'pur_invoices')->row();
+
+        while ($check_exist_number) {
+            $inv_data['number'] = $inv_data['number'] + 1;
+            $inv_data['invoice_number'] =  $prefix . str_pad($inv_data['number'], 5, '0', STR_PAD_LEFT);
+            $this->db->where('invoice_number', $inv_data['invoice_number']);
+            $check_exist_number = $this->db->get(db_prefix() . 'pur_invoices')->row();
+        }
+
+        $wo_order_detail = $this->get_wo_order_detail($woorder);
+
+        $inv_data['add_from'] = get_staff_user_id();
+        $inv_data['add_from_type'] = 'admin';
+        $inv_data['vendor'] = $wo_order->vendor;
+        $inv_data['subtotal'] = $wo_order->subtotal;
+        $inv_data['tax'] = $wo_order->total_tax;
+        $inv_data['total'] = $wo_order->total;
+        $inv_data['discount_percent'] = $wo_order->discount_percent;
+        $inv_data['discount_total'] = $wo_order->discount_total;
+        $inv_data['transaction_date'] = date('Y-m-d');
+        $inv_data['invoice_date'] = date('Y-m-d');
+        $inv_data['duedate'] = to_sql_date($data['date']);
+        $inv_data['payment_status'] = 'unpaid';
+        $inv_data['date_add'] = date('Y-m-d');
+        $inv_data['wo_order'] = $woorder;
+        $inv_data['discount_type'] = $wo_order->discount_type;
+        $inv_data['currency'] = isset($wo_order->currency) ? $wo_order->currency : get_vendor_currency($wo_order->vendor);
+
+        $this->db->insert(db_prefix() . 'pur_invoices', $inv_data);
+        $insert_id = $this->db->insert_id();
+        if ($insert_id) {
+            $next_number = $inv_data['number'] + 1;
+            $this->db->where('option_name', 'next_inv_number');
+            $this->db->update(db_prefix() . 'purchase_option', ['option_val' =>  $next_number,]);
+
+            if (count($wo_order_detail) > 0) {
+                foreach ($wo_order_detail as $order_detail) {
+                    $inv_detail_data = [];
+                    $inv_detail_data['pur_invoice'] = $insert_id;
+                    $inv_detail_data['item_code'] = $order_detail['item_code'];
+                    $inv_detail_data['description'] = $order_detail['description'];
+                    $inv_detail_data['unit_id'] = $order_detail['unit_id'];
+                    $inv_detail_data['unit_price'] = $order_detail['unit_price'];
+                    $inv_detail_data['quantity'] = $order_detail['quantity'];
+                    $inv_detail_data['into_money'] = $order_detail['into_money'];
+                    $inv_detail_data['tax'] = $order_detail['tax'];
+                    $inv_detail_data['total'] = $order_detail['total'];
+                    $inv_detail_data['discount_percent'] = $order_detail['discount_%'];
+                    $inv_detail_data['discount_money'] = $order_detail['discount_money'];
+                    $inv_detail_data['total_money'] = $order_detail['total_money'];
+                    $inv_detail_data['tax_value'] = $order_detail['tax_value'];
+                    $inv_detail_data['tax_rate'] = $order_detail['tax_rate'];
+                    $inv_detail_data['tax_name'] = $order_detail['tax_name'];
+                    $inv_detail_data['item_name'] = $order_detail['item_name'];
+
+                    $this->db->insert(db_prefix() . 'pur_invoice_details', $inv_detail_data);
+                }
+            }
+
+            $payment_id = $this->add_invoice_payment($data, $insert_id);
+            if ($payment_id) {
+                return $payment_id;
+            }
+            return false;
+        }
+
+        return false;
+    }
 }

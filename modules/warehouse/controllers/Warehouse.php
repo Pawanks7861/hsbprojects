@@ -754,7 +754,7 @@ class warehouse extends AdminController {
 			$this->load->model('staff_model');
 			$this->load->model('projects_model');
 
-			$data['pr_orders'] = get_pr_order();
+			$data['pr_orders'] = get_pr_order(); 
 			$data['pr_orders_status'] = true;
 
 			$data['vendors'] = $this->purchase_model->get_vendor();

@@ -663,7 +663,7 @@
 </div>
 <div class="modal fade" id="payment_record_pur" tabindex="-1" role="dialog">
     <div class="modal-dialog dialog_30" >
-        <?php echo form_open(admin_url('purchase/add_payment_on_po/'.$estimate->id),array('id'=>'purorder-add_payment-form')); ?>
+        <?php echo form_open(admin_url('purchase/add_payment_on_wo/'.$estimate->id),array('id'=>'purorder-add_payment-form')); ?>
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>

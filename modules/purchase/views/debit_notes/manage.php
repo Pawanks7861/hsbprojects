@@ -20,7 +20,7 @@
             <?php if(has_permission('purchase_debit_notes','','create')){ ?>
             <a href="<?php echo admin_url('purchase/debit_note'); ?>" class="btn btn-info pull-left display-block">
                <?php echo _l('new_debit_note'); ?>
-            </a>
+            </a> 
             <?php } ?>
             <div class="display-block text-right">
              <div class="btn-group pull-right mleft4 btn-with-tooltip-group _filter_data" data-toggle="tooltip" data-title="<?php echo _l('filter_by'); ?>">
