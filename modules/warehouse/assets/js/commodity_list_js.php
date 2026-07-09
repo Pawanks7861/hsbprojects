@@ -102,6 +102,7 @@
       });
     });
 
+    table_commodity_list.DataTable().page.len(-1).draw();
     $('#filter_all_simple_variation').on('change', function() {
          table_commodity_list.DataTable().ajax.reload();
     });
