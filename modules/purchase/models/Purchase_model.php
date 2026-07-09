@@ -6123,6 +6123,7 @@ class Purchase_model extends App_Model
         unset($data['total_money']);
         unset($data['additional_discount']);
         unset($data['tax_value']);
+        unset($data['hsn_code']);
 
         $order_detail = [];
         if (isset($data['newitems'])) {
@@ -6195,7 +6196,6 @@ class Purchase_model extends App_Model
             $custom_fields = $data['custom_fields'];
             unset($data['custom_fields']);
         }
-
         $this->db->insert(db_prefix() . 'pur_invoices', $data);
         $insert_id = $this->db->insert_id();
         if ($insert_id) {
