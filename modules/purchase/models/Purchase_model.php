@@ -4454,7 +4454,7 @@ class Purchase_model extends App_Model
             $delivery_date = '<span style="text-align: right;"><b>' . _l('delivery_date') . ':</b> ' . date('d-m-Y', strtotime($pur_order->delivery_date)) . '</span><br />';
         }
         if (!empty(get_project_name_by_id($pur_order->project))) {
-            $project_detail = '<br /><span><b>' . _l('project') . ':</b> ' . get_project_name_by_id($pur_order->project) . '<br />' . format_project_client_info($pur_order->project) . '</span><br />';
+            $project_detail = '<br /><span><b>' . _l('project') . ':</b> ' . get_project_name_by_id($pur_order->project) . '<br /></span>';
         }
 
 
