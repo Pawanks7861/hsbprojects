@@ -3553,7 +3553,7 @@ class Purchase_model extends App_Model
 
                 return true;
                 break;
-             case 'wo_order':
+            case 'wo_order':
                 $data_update['approve_status'] = $status;
                 $this->db->where('id', $rel_id);
                 $this->db->update(db_prefix() . 'wo_orders', $data_update);
@@ -12826,7 +12826,7 @@ class Purchase_model extends App_Model
      *
      * @return     string      
      */
-    public function create_purchase_invoice_row_template($name = '', $item_name = '', $item_description = '', $quantity = '', $unit_name = '', $unit_price = '', $taxname = '',  $item_code = '', $unit_id = '', $tax_rate = '', $total_money = '', $discount = '', $discount_money = '', $total = '', $into_money = '', $tax_id = '', $tax_value = '', $item_key = '', $is_edit = false, $currency_rate = 1, $to_currency = '')
+    public function create_purchase_invoice_row_template($name = '', $item_name = '', $item_description = '', $quantity = '', $unit_name = '', $unit_price = '', $taxname = '',  $item_code = '', $unit_id = '', $tax_rate = '', $total_money = '', $discount = '', $discount_money = '', $total = '', $into_money = '', $tax_id = '', $tax_value = '', $item_key = '', $is_edit = false, $currency_rate = 1, $to_currency = '', $hsn_code = '')
     {
 
         $this->load->model('invoice_items_model');
@@ -12851,6 +12851,7 @@ class Purchase_model extends App_Model
         $name_discount = 'discount';
         $name_discount_money = 'discount_money';
         $name_total_money = 'total_money';
+        $name_hsn_code = 'hsn_code';
 
         $array_available_quantity_attr = ['min' => '0.0', 'step' => 'any', 'readonly' => true];
         $array_qty_attr = ['min' => '0.0', 'step' => 'any'];
@@ -12892,6 +12893,7 @@ class Purchase_model extends App_Model
             $name_discount_money = $name . '[discount_money]';
             $name_total_money = $name . '[total_money]';
             $name_tax_value = $name . '[tax_value]';
+            $name_hsn_code = $name . '[hsn_code]';
 
 
             $array_qty_attr = ['onblur' => 'pur_calculate_total();', 'onchange' => 'pur_calculate_total();', 'min' => '0.0', 'step' => 'any',  'data-quantity' => (float)$quantity];
@@ -12937,7 +12939,8 @@ class Purchase_model extends App_Model
         $row .= '<td class="">' . render_textarea($name_item_name, '', $item_name, ['rows' => 2, 'placeholder' => _l('pur_item_name')]) . '</td>';
 
         $row .= '<td class="">' . render_textarea($name_item_description, '', $item_description, ['rows' => 2, 'placeholder' => _l('item_description')]) . '</td>';
-
+        $hsn_sac_codes = $this->get_hsn_sac_code();
+        $row .= '<td class="hsn_code">' . render_select($name_hsn_code, $hsn_sac_codes, ['id', 'name'], '', $hsn_code, ['id']) . '</td>';
         $row .= '<td class="rate">' . render_input($name_unit_price, '', $unit_price, 'number', $array_rate_attr, [], 'no-margin', $text_right_class);
         if ($unit_price != '') {
             $original_price = ($currency_rate > 0) ? round(($unit_price / $currency_rate), 2) : 0;
@@ -15036,7 +15039,7 @@ class Purchase_model extends App_Model
 
     public function delete_wo_order($id)
     {
-                
+
         hooks()->do_action('before_wo_order_deleted', $id);
 
         $affectedRows = 0;
@@ -15056,7 +15059,7 @@ class Purchase_model extends App_Model
         if (is_dir(PURCHASE_MODULE_UPLOAD_FOLDER . '/wo_order/' . $id)) {
             delete_dir(PURCHASE_MODULE_UPLOAD_FOLDER . '/wo_order/' . $id);
         }
-            
+
         $this->db->where('wo_order', $id);
         $this->db->delete(db_prefix() . 'wo_order_payment');
         if ($this->db->affected_rows() > 0) {
