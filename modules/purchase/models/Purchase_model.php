@@ -4622,13 +4622,7 @@ class Purchase_model extends App_Model
         $html .= ' </tbody></table>';
 
         $html .= '<div>&nbsp;</div>';
-        $html .= '<div class="col-md-12 mtop15">
-        Note:
-            <p class="bold">' . nl2br($pur_order->vendornote) . '</p>';
-
-        $html .= '
-        <p class="bold">' . nl2br($pur_order->terms) . '</p>
-            </div>';
+       
         $html .= '<br>
                 <br>
                 <br> 
