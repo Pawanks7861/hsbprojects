@@ -6302,6 +6302,7 @@ class Purchase_model extends App_Model
         unset($data['total_money']);
         unset($data['additional_discount']);
         unset($data['tax_value']);
+        unset($data['hsn_code']);
 
         unset($data['isedit']);
 
