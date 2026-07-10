@@ -697,7 +697,7 @@ class purchase extends AdminController
     {
         if ($this->input->post()) {
             $data = $this->input->post();
-            if ($data['approval_setting_id'] == '') {
+            if ($data['approval_setting_id'] == '') { 
                 $message = '';
                 $success = $this->purchase_model->add_approval_setting($data);
                 if ($success) {
@@ -4923,7 +4923,7 @@ class purchase extends AdminController
                     $item_name = pur_get_item_variatiom($item['item_code']);
                 }
 
-                $list_item .= $this->purchase_model->create_purchase_invoice_row_template('newitems[' . $index . ']',  $item_name, '', $item['quantity'], $unit_name, $item['unit_price'], $taxname, $item['item_code'], $item['unit_id'], $item['tax_rate'],  $item['total_money'], $item['discount_%'], $item['discount_money'], $item['total'], $item['into_money'], $item['tax'], $item['tax_value'], $index, true, $currency_rate, $to_currency);
+                $list_item .= $this->purchase_model->create_purchase_invoice_row_template('newitems[' . $index . ']',  $item_name, '', $item['quantity'], $unit_name, $item['unit_price'], $taxname, $item['item_code'], $item['unit_id'], $item['tax_rate'],  $item['total_money'], $item['discount_%'], $item['discount_money'], $item['total'], $item['into_money'], $item['tax'], $item['tax_value'], $index, true, $currency_rate, $to_currency,$item['hsn_code']);
             }
         }
 
