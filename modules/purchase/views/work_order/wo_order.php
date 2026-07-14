@@ -645,65 +645,7 @@
                 }
                 $formatted_date = getOrdinalSuffix($day) . " " . $month . " " . $year;
                 if (!isset($wo_order) && $wo_order->order_summary == '') {
-                  $value = '<strong>WORK ORDER</strong><br><br>
-
-                  <strong>M/S <span class="vendor_name"></span></strong><br>
-                  <span class="vendor_address"></span><br>
-                  <span class="vendor_city"></span><span class="vendor_state"></span><span class="vendor_pincode"></span></span><span class="vendor_country"></span><br><br>
-
-                  <strong>W.O. Number:</strong> HSB/26-27/' . str_pad($next_number, 5, '0', STR_PAD_LEFT) . '<br>
-                  <strong>W.O. Date:</strong> <span class="order_full_date">' . date("d-M-y") . '</span><br>
-                  <strong>Rev. No.:</strong><br>
-                  <strong>Rev. Date:</strong><br><br>
-
-                  <strong>PAN No.:</strong><span class="pan_number"></span><br>
-                  <strong>Beneficiary name:</strong> <br>
-                  <strong>GST No.:</strong> <span class="vendor_gst"></span><br>
-                  <strong>Bank Details:</strong> <span class="vendor_bank_details"></span>
-                  <br>
-                  <br>
-
-                  <strong>Contact Person:</strong> <span class="vendor_contact"></span><br>
-                  <strong>Telephone:</strong> <span class="vendor_contact_phone"></span><br>
-                  <strong>Email:</strong> <span class="vendor_contact_email"></span><br><br>
-
-                  <strong>Project:</strong> <span class="project_name"></span><br>
-                  <strong>Subject:</strong> <span class="pur_order_name"></span><br><br>
-
-                  Dear Sir/Madam,<br>
-                  This is with reference to your final offer dated <span class="order_date">' . $formatted_date . '</span> and further our subsequent discussions with regards to <span class="pur_order_name"></span> for our above-mentioned project. We are pleased to issue you the order of <strong><span class="order_summary_currency">INR</span> <span class="subtotal_in_value"></span>/-</strong> (<span class="subtotal_in_words"></span>) (Exclusive of GST) on the following terms and conditions and specifications for the same as annexed.<br><br>
-
-                  <strong>Currency:</strong> <span class="order_summary_currency">INR</span><br><br>
-
-                  <strong>Terms:</strong> F.O.R. at Site<br><br>
-
-                  <strong>Type of Order:</strong> Item Rate Order<br><br>
-
-                  <strong>Price Escalation:</strong> The agreed amount shall remain fixed for this project. No escalation shall be paid in contract duration and for this project for any reason whatsoever. Price shall be valid for 6 Months from the date of Sign of PO.<br><br>
-
-                  <strong>Destination:</strong> M/s <br><br>
-
-                  <strong>Delivery Schedule:</strong> Within 1 to 2 days from the date of receipt of confirm order.<br><br>
-
-                  <strong>Part Shipment:</strong> Allowed.<br><br>
-
-                  <strong>Trans-Shipment:</strong> Allowed<br><br>
-
-                  <strong>Shipping, Delivery & Acceptance:</strong><br>
-                  The supplier will export quality packaging and ship all goods in industry standards as may be applicable to ensure that the goods are received by the buyer in good condition. The applicable Purchase Order number must appear on all shipping containers, packing lists, delivery tickets, and Invoice.<br><br>
-
-                  <strong>Packing Charges:</strong> Inclusive. Material must be preserved, packaged, handled, and packed to permit efficient handling, provide protection from loss or damage, and comply with industry standards and carrier requirements. Supplier will be liable for any loss or damage due to its failure to properly preserve, package, handle, or pack any shipment. You shall provide the packing list along with Invoice and other documents.<br><br>
-
-                  <strong>Other Terms & Conditions:</strong><br>
-                  (a) All items should be as per approved specification, ratings, and protection level of by consultant / HSB Project team.<br>
-                  (b) All material & accessories should be delivered as per purchase order only and subject to MAS/ Consultant approval.<br>
-                  (c) Third party inspection can be organized from our side, pre dispatch inspection will be done, if required.<br>
-                  (d) Replacement/Rectification: Within 7-10 days if found any damage.<br>
-                  (e) All material should be strictly as per applicable standard.<br>
-                  (f) Goods shall be packaged properly to ensure safe arrival at the project site.<br>
-                  (g) Transportation to the site and transit insurance shall be in client scope.<br>
-                  (h) Service / complain response time: Within 48 hours from the time of complaint logged, if required.<br>
-                  Supplier shall provide all the documents incl. delivery challan, invoice, materials test certificate/ Declaration of Conformity, Serial no, technical details of the product being supplied being asked by HSB Projects etc.<br><br>';
+                  $value = get_by_deafult_order_summary();
                 }
 
                 ?>
