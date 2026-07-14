@@ -29,11 +29,11 @@
                      <?php echo _l('pur_order'); ?>
                      </a>
                   </li>
-                  <li role="presentation">
+                  <!-- <li role="presentation">
                      <a href="#payment_record" aria-controls="payment_record" role="tab" data-toggle="tab">
                      <?php echo _l('payment_record'); ?>
                      </a>
-                  </li>   
+                  </li>    -->
                   <!-- <li role="presentation">
                      <a href="#tab_reminders" onclick="initDataTable('.table-reminders', admin_url + 'misc/get_reminders/' + <?php echo pur_html_entity_decode($estimate->id) ;?> + '/' + 'purchase_order', undefined, undefined, undefined,[1,'asc']); return false;" aria-controls="tab_reminders" role="tab" data-toggle="tab">
                      <?php echo _l('estimate_reminders'); ?>
@@ -593,17 +593,17 @@
                </div>
             </div>
 
-            <div role="tabpanel" class="tab-pane" id="payment_record">
+            <!-- <div role="tabpanel" class="tab-pane" id="payment_record">
                <div class="col-md-6 pad_div_0" >
                <h4 class="font-medium mbot15 bold text-success"><?php echo _l('payment_for_pur_order').' '.$estimate->pur_order_number; ?></h4>
                </div>
-               <div class="col-md-6 padr_div_0">
+               <div class="col-md-6 padr_div_0"> -->
                 
                <!-- <?php if(purorder_left_to_pay($estimate->id) > 0){ ?>
                <a href="#" onclick="add_payment(<?php echo pur_html_entity_decode($estimate->id); ?>); return false;" class="btn btn-success pull-right"><i class="fa fa-plus"></i><?php echo ' '._l('payment'); ?></a>
                <?php } ?> -->
 
-               <?php if(purorder_left_to_pay($estimate->id) < $estimate->total){ ?>
+               <!-- <?php if(purorder_left_to_pay($estimate->id) < $estimate->total){ ?>
                <a href="#" onclick="convert_to_purchase_inv(<?php echo pur_html_entity_decode($estimate->id); ?> ); return false;" class="btn btn-info pull-right mright5" data-toggle="tooltip" data-placement="top" title="<?php echo _l('convert_to_payment_of_purchase_inv'); ?>" ><i class="fa fa-refresh"></i></a>
                 <?php } ?>
 
@@ -655,7 +655,7 @@
                      <?php } ?>
                   </tbody>
                </table>
-            </div>
+            </div> -->
 
          </div>
       </div>
