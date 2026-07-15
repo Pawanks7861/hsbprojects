@@ -4155,3 +4155,5 @@ $lang['access_forms_to_none_staff_members'] = 'Allow access to Form for non staf
 $lang['settings_group_forms'] = 'RFI';
 $lang['form_detail'] = 'Form detail';
 $lang['purchase_widget'] = 'Purchase Orders';
+$lang['expense_dt_table_heading_vendor'] = 'Vendor';
+$lang['reset_filter'] = 'Reset Filter';

@@ -10,6 +10,8 @@ class Expenses extends AdminController
     {
         parent::__construct();
         $this->load->model('expenses_model');
+        $this->load->model('projects_model');
+        $this->load->model('purchase/purchase_model');
     }
 
     public function index($id = '')
@@ -31,7 +33,8 @@ class Expenses extends AdminController
         $data['expenseid']     = $id;
         $data['categories']    = $this->expenses_model->get_category();
         $data['years']         = $this->expenses_model->get_expenses_years();
-        $data['table']         = App_table::find('expenses');
+        $data['vendors']       = $this->purchase_model->get_vendor();
+        $data['p_list']  = $this->projects_model->get_items();
         $data['title']         = _l('expenses');
         $expenses_model = $this->expenses_model->get('', [], 'category_name', true);
 
@@ -86,19 +89,11 @@ class Expenses extends AdminController
         echo json_encode($chart_data);
     }
 
-    public function table($clientid = '')
+    public function table()
     {
-        if (staff_cant('view', 'expenses') && staff_cant('view_own', 'expenses')) {
-            ajax_access_denied();
+        if ($this->input->is_ajax_request()) {
+            $this->app->get_table_data('expenses_new');
         }
-
-        $this->load->model('payment_modes_model');
-        $data['payment_modes'] = $this->payment_modes_model->get('', [], true);
-
-        App_table::find('expenses')->output([
-            'clientid' => $clientid,
-            'data'     => $data,
-        ]);
     }
 
     public function expense($id = '')
@@ -129,8 +124,8 @@ class Expenses extends AdminController
             if (staff_cant('edit', 'expenses')) {
                 set_alert('danger', _l('access_denied'));
                 echo json_encode([
-                        'url' => admin_url('expenses/expense/' . $id),
-                    ]);
+                    'url' => admin_url('expenses/expense/' . $id),
+                ]);
                 die;
             }
             $success = $this->expenses_model->update($this->input->post(), $id);
@@ -138,9 +133,9 @@ class Expenses extends AdminController
                 set_alert('success', _l('updated_successfully', _l('expense')));
             }
             echo json_encode([
-                    'url'       => admin_url('expenses/list_expenses/' . $id),
-                    'expenseid' => $id,
-                ]);
+                'url'       => admin_url('expenses/list_expenses/' . $id),
+                'expenseid' => $id,
+            ]);
             die;
         }
         if ($id == '') {
@@ -272,7 +267,7 @@ class Expenses extends AdminController
             if (count($data['expenses_years']) >= 1 && $data['expenses_years'][0]['year'] != date('Y')) {
                 array_unshift($data['expenses_years'], ['year' => date('Y')]);
             }
-            
+
             $data['expenses_years'] = Arr::uniqueByKey($data['expenses_years'], 'year');
 
             $data['_currency'] = $data['totals']['currencyid'];
@@ -386,6 +381,11 @@ class Expenses extends AdminController
 
         $data['child_expenses'] = $this->expenses_model->get_child_expenses($id);
         $data['members']        = $this->staff_model->get('', ['active' => 1]);
+        $data['check_appr'] = $this->purchase_model->get_approve_setting('expenses');
+        $data['get_staff_sign'] = $this->purchase_model->get_staff_sign($id, 'expenses');
+        $data['check_approve_status'] = $this->purchase_model->check_approval_details($id, 'expenses');
+        $data['list_approve_status'] = $this->purchase_model->get_list_approval_details($id, 'expenses');
+        $data['check_approval_setting'] = $this->purchase_model->check_approval_setting(2, 'expenses', 0);
         $this->load->view('admin/expenses/expense_preview_template', $data);
     }
 
