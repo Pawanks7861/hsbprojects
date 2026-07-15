@@ -11,10 +11,10 @@
                                 <i class="fa-regular fa-plus tw-mr-1"></i>
                                 <?php echo _l('new_expense'); ?>
                             </a>
-                            <a href="<?php echo admin_url('expenses/import'); ?>" class="btn btn-primary mleft5">
+                            <!-- <a href="<?php echo admin_url('expenses/import'); ?>" class="btn btn-primary mleft5">
                                 <i class="fa-solid fa-upload tw-mr-1"></i>
                                 <?php echo _l('import_expenses'); ?>
-                            </a>
+                            </a> -->
                         <?php } ?>
 
 
