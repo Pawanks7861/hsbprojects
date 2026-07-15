@@ -8,7 +8,6 @@ if ($withBulkActions === true && $hasPermission) { ?>
   </a>
 <?php } ?>
 <div class="row all_ot_filters">
-  <hr style="margin-top: 0px !important;">
   <?php
   $module_name = 'expenses';
   $expense_category_filter = get_module_filter($module_name, 'expense_category');
