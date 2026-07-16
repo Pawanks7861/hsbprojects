@@ -709,3 +709,7 @@ $lang['wo_order_description']  = 'Work order description';
 $lang['wo_order_number']  = 'Work order number';
 $lang['change_status_wo_order']  = 'Change status work order';
 $lang['wo_order'] = 'Work Order';
+$lang['record_payment'] = 'Record Payment';
+$lang['wo_description']  = 'Wo Description';
+$lang['wo_value']  = 'WO Value';
+$lang['wo_value_included_tax']  = 'WO Value Including Tax';
