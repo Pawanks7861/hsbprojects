@@ -8918,9 +8918,7 @@ class purchase extends AdminController
             $pur_order_data['vendornote'] = $this->input->post('vendornote', false);
             $pur_order_data['order_summary'] = $this->input->post('order_summary', false);
             if ($id == '') {
-                if (!has_permission('work_orders', '', 'create')) {
-                    access_denied('work_order');
-                }
+                
                 $id = $this->purchase_model->add_wo_order($pur_order_data);
                 if ($id) {
                     set_alert('success', _l('added_successfully', _l('wo_order')));
@@ -8928,9 +8926,7 @@ class purchase extends AdminController
                     redirect(admin_url('purchase/work_order/' . $id));
                 }
             } else {
-                if (!has_permission('work_orders', '', 'edit')) {
-                    access_denied('work_order');
-                }
+                
                 $success = $this->purchase_model->update_wo_order($pur_order_data, $id);
                 if ($success) {
                     set_alert('success', _l('updated_successfully', _l('wo_order')));
