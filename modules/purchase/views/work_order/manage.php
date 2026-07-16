@@ -7,11 +7,9 @@
 				<div class="panel-body">
 	              	<div class="row">    
 	                    <div class="_buttons col-md-3">
-	                    	<?php if (has_permission('work_order', '', 'create') || is_admin()) { ?>
 	                        <a href="<?php echo admin_url('purchase/wo_order'); ?>"class="btn btn-info pull-left mright10 display-block">
 	                            <?php echo _l('new_work_order'); ?>
 	                        </a>
-	                        <?php } ?>
                            <!-- <div class="btn-group pull-left">
                               <a href="#" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><?php echo _l('po_voucher'); ?>&nbsp;<span class="caret"></span></a>
                               <ul class="dropdown-menu dropdown-menu-right">
