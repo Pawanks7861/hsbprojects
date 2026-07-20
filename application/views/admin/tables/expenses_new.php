@@ -24,7 +24,7 @@ $aColumns = [
     'amount',
     'expense_name',
     'file_name',
-    db_prefix() . 'expenses.dateadded as datewithtime',
+    'date',
     db_prefix() . 'projects.name as project_name',
     get_sql_select_client_company(),
     'invoiceid',
@@ -204,7 +204,7 @@ foreach ($rResult as $aRow) {
     $row[] = $outputReceipt;
 
     // Date
-    $row[] = date('d M, Y', strtotime($aRow['datewithtime']));
+    $row[] = date('d M, Y', strtotime($aRow['date']));
 
     // Project
     $row[] = '<a href="' . admin_url('projects/view/' . $aRow['project_id']) . '">' . e($aRow['project_name']) . '</a>';
