@@ -205,7 +205,7 @@ foreach ($rResult as $aRow) {
     $row[] = $outputReceipt;
 
     // Date
-    $row[] = date('d M, Y', strtotime($aRow['datewithtime']));
+    $row[] = date('d M, Y', strtotime($aRow['datewithouttime']));
 
     // Project
     $row[] = '<a href="' . admin_url('projects/view/' . $aRow['project_id']) . '">' . e($aRow['project_name']) . '</a>';
