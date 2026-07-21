@@ -114,8 +114,8 @@ if ($withBulkActions === true && $hasPermission) { ?>
   </div>
 
 
-  <div class="col-md-1 form-group pull-right">
-    <a href="javascript:void(0)" class="btn btn-info btn-icon reset_all_ot_filters">
+  <div class="col-md-12 form-group ">
+    <a href="javascript:void(0)" class="btn btn-info btn-icon reset_all_ot_filters pull-right">
       <?php echo _l('reset_filter'); ?>
     </a>
   </div>
