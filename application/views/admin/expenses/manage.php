@@ -110,7 +110,7 @@
 </div>
 <!-- /.modal -->
 <script>
-    var hidden_columns = [4, 5, 6, 7, 8, 9];
+    var hidden_columns = [3,6,9,10,11];
 </script>
 <?php init_tail(); ?>
 <?php
