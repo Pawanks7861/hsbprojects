@@ -24,7 +24,7 @@ $aColumns = [
     'amount',
     'expense_name',
     'file_name',
-    'date',
+    db_prefix() . 'expenses.dateadded as datewithtime',
     db_prefix() . 'projects.name as project_name',
     get_sql_select_client_company(),
     'invoiceid',
@@ -82,7 +82,7 @@ if ($custom_date_select != '') {
     $custom_date_select = trim($custom_date_select);
     if (!startsWith($custom_date_select, 'AND')) {
         $custom_date_select = 'AND ' . $custom_date_select;
-    }
+    } 
     array_push($where, $custom_date_select);
 }
 // Staff permissions
@@ -120,6 +120,7 @@ $result = data_tables_init(
         'tax2',
         'project_id',
         'recurring',
+        db_prefix() . 'expenses.date as datewithouttime',
         db_prefix() . 'pur_vendor.company as vendor_name',
     ]
 );
@@ -204,7 +205,7 @@ foreach ($rResult as $aRow) {
     $row[] = $outputReceipt;
 
     // Date
-    $row[] = date('d M, Y', strtotime($aRow['date']));
+    $row[] = date('d M, Y', strtotime($aRow['datewithtime']));
 
     // Project
     $row[] = '<a href="' . admin_url('projects/view/' . $aRow['project_id']) . '">' . e($aRow['project_name']) . '</a>';
