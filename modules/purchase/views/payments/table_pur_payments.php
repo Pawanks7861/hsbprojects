@@ -27,7 +27,7 @@ $i = 0;
 
 $where = [];
 
-array_push($where, "AND approve_status = '2'");
+// array_push($where, "AND approve_status = '2'");
 
 $having = '';
 
