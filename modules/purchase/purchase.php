@@ -172,7 +172,7 @@ function purchase_module_init_menu_items()
 {
 
     $CI = &get_instance();
-    if (has_permission('purchase_items', '', 'view') || has_permission('purchase_vendors', '', 'view') || has_permission('purchase_vendor_items', '', 'view') || has_permission('purchase_request', '', 'view') || has_permission('purchase_quotations', '', 'view') || has_permission('purchase_orders', '', 'view') || has_permission('purchase_contracts', '', 'view') || has_permission('purchase_invoices', '', 'view') || has_permission('purchase_reports', '', 'view') || has_permission('work_orders', '', 'view') || has_permission('work_orders', '', 'view') || has_permission('purchase_debit_notes', '', 'view') || has_permission('purchase_settings', '', 'edit') || has_permission('purchase_vendors', '', 'view_own') || has_permission('purchase_vendor_items', '', 'view_own') || has_permission('purchase_request', '', 'view_own') || has_permission('purchase_quotations', '', 'view_own') || has_permission('purchase_orders', '', 'view_own') || has_permission('purchase_contracts', '', 'view_own') || has_permission('purchase_invoices', '', 'view_own') || has_permission('purchase_debit_notes', '', 'view_own') || has_permission('purchase_order_return', '', 'view_own') || has_permission('purchase_order_return', '', 'view')) {
+    if (has_permission('purchase_items', '', 'view') || has_permission('purchase_vendors', '', 'view') || has_permission('purchase_vendor_items', '', 'view') || has_permission('purchase_request', '', 'view') || has_permission('purchase_quotations', '', 'view') || has_permission('purchase_orders', '', 'view') || has_permission('purchase_contracts', '', 'view') || has_permission('purchase_invoices', '', 'view') || has_permission('purchase_reports', '', 'view') || has_permission('work_order', '', 'view') || has_permission('record_payment', '', 'view') || has_permission('purchase_debit_notes', '', 'view') || has_permission('purchase_settings', '', 'edit') || has_permission('purchase_vendors', '', 'view_own') || has_permission('purchase_vendor_items', '', 'view_own') || has_permission('purchase_request', '', 'view_own') || has_permission('purchase_quotations', '', 'view_own') || has_permission('purchase_orders', '', 'view_own') || has_permission('purchase_contracts', '', 'view_own') || has_permission('purchase_invoices', '', 'view_own') || has_permission('purchase_debit_notes', '', 'view_own') || has_permission('purchase_order_return', '', 'view_own') || has_permission('purchase_order_return', '', 'view')) {
         $CI->app_menu->add_sidebar_menu_item('purchase', [
             'name' => _l('purchase'),
             'icon' => 'fa fa-shopping-cart',
@@ -315,13 +315,24 @@ function purchase_module_init_menu_items()
         ]);
     }
 
-    if (has_permission('work_orders', '', 'view')) {
+    if (has_permission('work_order', '', 'view')) {
 
         $CI->app_menu->add_sidebar_children_item('purchase', [
             'slug' => 'work-order',
             'name' => _l('work_order'),
             'icon' => 'fa fa-check',
             'href' => admin_url('purchase/work_order'),
+            'position' => 20,
+        ]);
+    }
+
+    if (has_permission('record_payments', '', 'view')) {
+
+        $CI->app_menu->add_sidebar_children_item('purchase', [
+            'slug' => 'record-payment',
+            'name' => _l('record_payment'),
+            'icon' => 'fa fa-credit-card',
+            'href' => admin_url('purchase/record_payment'),
             'position' => 20,
         ]);
     }
@@ -403,7 +414,8 @@ function purchase_permissions()
     register_staff_capabilities('purchase_debit_notes', $capabilities_own, _l('purchase_debit_notes'));
     register_staff_capabilities('purchase_reports', $capabilities_rp, _l('purchase_reports'));
     register_staff_capabilities('purchase_settings', $capabilities_setting, _l('purchase_settings'));
-    register_staff_capabilities('work_orders', $capabilities_own, _l('work_order'));
+    register_staff_capabilities('work_order', $capabilities_own, _l('work_order'));
+    register_staff_capabilities('record_payment', $capabilities_own, _l('record_payment'));
 
     register_staff_capabilities('purchase_order_change_approve_status', $capabilities_setting, _l('purchase_order_change_approve_status'));
 
@@ -468,6 +480,10 @@ function purchase_add_footer_components()
     if (!(strpos($viewuri, '/admin/purchase/work_order') === false)) {
         echo '<script src="' . base_url('assets/plugins/signature-pad/signature_pad.min.js') . '"></script>';
         echo '<script src="' . module_dir_url(PURCHASE_MODULE_NAME, 'assets/js/work_order_manage.js') . '?v=' . PURCHASE_REVISION . '"></script>';
+    }
+    if (!(strpos($viewuri, '/admin/purchase/record_payment') === false)) {
+        echo '<script src="' . base_url('assets/plugins/signature-pad/signature_pad.min.js') . '"></script>';
+        echo '<script src="' . module_dir_url(PURCHASE_MODULE_NAME, 'assets/js/record_payment_manage.js') . '?v=' . PURCHASE_REVISION . '"></script>';
     }
     if (!(strpos($viewuri, '/admin/purchase/contracts') === false)) {
         echo '<script src="' . module_dir_url(PURCHASE_MODULE_NAME, 'assets/js/contract_manage.js') . '?v=' . PURCHASE_REVISION . '"></script>';

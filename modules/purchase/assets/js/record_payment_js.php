@@ -15,14 +15,11 @@ $(function(){
     validate_purorder_form();
     function validate_purorder_form(selector) {
 
-        selector = typeof(selector) == 'undefined' ? '#wo_order-form' : selector;
+        selector = typeof(selector) == 'undefined' ? '#add_record_payment-form' : selector;
 
         appValidateForm($(selector), {
-            wo_order_name: 'required',
-            wo_order_number: 'required',
-            order_date: 'required',
-            project: 'required',
-            wo_type: 'required'
+            amount: 'required',
+            
         });
     }
 
@@ -657,17 +654,17 @@ function pur_add_item_to_table(data, itemid) {
 
   data = typeof (data) == 'undefined' || data == 'undefined' ? pur_get_item_preview_values() : data;
 
-  // if (data.quantity == "" || data.item_code == "" ) {
+  if (data.quantity == "" || data.item_code == "" ) {
     
-  //   return;
-  // }
+    return;
+  }
   var currency_rate = $('input[name="currency_rate"]').val();
   var to_currency = $('select[name="currency"]').val();
   var table_row = '';
   var item_key = lastAddedItemKey ? lastAddedItemKey += 1 : $("body").find('.invoice-items-table tbody .item').length + 1;
   lastAddedItemKey = item_key;
   $("body").append('<div class="dt-loader"></div>');
-  pur_get_item_row_template('newitems[' + item_key + ']',data.item_name, data.description, data.quantity, data.unit_name, data.unit_price, data.taxname, data.item_code, data.unit_id, data.tax_rate, data.discount, itemid, currency_rate, to_currency,data.hsn_code, data.make_list, data.free_issue).done(function(output){
+  pur_get_item_row_template('newitems[' + item_key + ']',data.item_name, data.description, data.quantity, data.unit_name, data.unit_price, data.taxname, data.item_code, data.unit_id, data.tax_rate, data.discount, itemid, currency_rate, to_currency,data.hsn_code).done(function(output){
     table_row += output;
 
     $('.invoice-item table.invoice-items-table.items tbody').append(table_row);
@@ -702,8 +699,6 @@ function pur_get_item_preview_values() {
   response.tax_rate = $('.invoice-item .main input[name="tax_rate"]').val();
   response.discount = $('.invoice-item .main input[name="discount"]').val();
   response.hsn_code = $('.invoice-item .main select[name="hsn_code"]').val();
-  response.make_list = $('.invoice-item .main textarea[name="make_list"]').val();
-  response.free_issue = $('.invoice-item .main textarea[name="free_issue"]').val();
 
   return response;
 }
@@ -743,14 +738,14 @@ function pur_delete_item(row, itemid,parent) {
   }
 }
 
-function pur_get_item_row_template(name, item_name, description, quantity, unit_name, unit_price, taxname,  item_code, unit_id, tax_rate, discount, item_key, currency_rate, to_currency,hsn_code, make_list, free_issue)  {
+function pur_get_item_row_template(name, item_name, description, quantity, unit_name, unit_price, taxname,  item_code, unit_id, tax_rate, discount, item_key, currency_rate, to_currency,hsn_code)  {
   "use strict";
 
   jQuery.ajaxSetup({
     async: false
   });
 
-  var d = $.post(admin_url + 'purchase/get_work_order_row_template', {
+  var d = $.post(admin_url + 'purchase/get_purchase_order_row_template', {
     name: name,
     item_name : item_name,
     item_description : description,
@@ -765,9 +760,7 @@ function pur_get_item_row_template(name, item_name, description, quantity, unit_
     item_key : item_key,
     currency_rate: currency_rate,
     to_currency: to_currency,
-    hsn_code: hsn_code,
-    make_list: make_list,
-    free_issue: free_issue
+    hsn_code: hsn_code
   });
   jQuery.ajaxSetup({
     async: true

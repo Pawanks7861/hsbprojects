@@ -4622,7 +4622,7 @@ class Purchase_model extends App_Model
         $html .= ' </tbody></table>';
 
         $html .= '<div>&nbsp;</div>';
-       
+
         $html .= '<br>
                 <br>
                 <br> 
@@ -14349,7 +14349,7 @@ class Purchase_model extends App_Model
         return false;
     }
 
-    public function create_work_order_row_template($name = '', $item_name = '', $item_description = '', $quantity = '', $unit_name = '', $unit_price = '', $taxname = '',  $item_code = '', $unit_id = '', $tax_rate = '', $total_money = '', $discount = '', $discount_money = '', $total = '', $into_money = '', $tax_id = '', $tax_value = '', $item_key = '', $is_edit = false, $currency_rate = 1, $to_currency = '', $hsn_code = '')
+    public function create_work_order_row_template($name = '', $item_name = '', $item_description = '', $quantity = '', $unit_name = '', $unit_price = '', $taxname = '',  $item_code = '', $unit_id = '', $tax_rate = '', $total_money = '', $discount = '', $discount_money = '', $total = '', $into_money = '', $tax_id = '', $tax_value = '', $item_key = '', $is_edit = false, $currency_rate = 1, $to_currency = '', $hsn_code = '', $make_list = '', $free_issue = '')
     {
 
         $this->load->model('invoice_items_model');
@@ -14375,6 +14375,8 @@ class Purchase_model extends App_Model
         $name_discount_money = 'discount_money';
         $name_total_money = 'total_money';
         $name_hsn_code = 'hsn_code';
+        $name_make_list = 'make_list';
+        $name_free_issue = 'free_issue';
 
         $array_available_quantity_attr = ['min' => '0.0', 'step' => 'any', 'readonly' => true];
         $array_qty_attr = ['min' => '0.0', 'step' => 'any'];
@@ -14417,6 +14419,8 @@ class Purchase_model extends App_Model
             $name_total_money = $name . '[total_money]';
             $name_tax_value = $name . '[tax_value]';
             $name_hsn_code = $name . '[hsn_code]';
+            $name_make_list = $name . '[make_list]';
+            $name_free_issue = $name . '[free_issue]';
 
 
             $array_qty_attr = ['onblur' => 'pur_calculate_total();', 'onchange' => 'pur_calculate_total();', 'min' => '0.0', 'step' => 'any',  'data-quantity' => (float)$quantity];
@@ -14459,9 +14463,13 @@ class Purchase_model extends App_Model
         }
 
 
-        $row .= '<td class="">' . render_textarea($name_item_name, '', $item_name, ['rows' => 2, 'placeholder' => _l('pur_item_name'), 'readonly' => true]) . '</td>';
+        $row .= '<td class="">' . render_textarea($name_item_name, '', $item_name, ['rows' => 2, 'placeholder' => _l('pur_item_name')]) . '</td>';
 
         $row .= '<td class="">' . render_textarea($name_item_description, '', $item_description, ['rows' => 2, 'placeholder' => _l('item_description')]) . '</td>';
+
+        $row .= '<td class="">' . render_textarea($name_make_list, '', $make_list, ['rows' => 2, 'placeholder' => _l('Make List')]) . '</td>';
+
+        $row .= '<td class="">' . render_textarea($name_free_issue, '', $free_issue, ['rows' => 2, 'placeholder' => _l('Free Issue')]) . '</td>';
 
         $hsn_sac_codes = $this->get_hsn_sac_code();
         $row .= '<td class="hsn_code">' . render_select($name_hsn_code, $hsn_sac_codes, ['id', 'name'], '', $hsn_code, ['id']) . '</td>';
@@ -14493,8 +14501,8 @@ class Purchase_model extends App_Model
             $discount = '';
         }
 
-        $row .= '<td class="discount">' . render_input($name_discount, '', $discount, 'number', $array_discount_attr, [], '', $text_right_class) . '</td>';
-        $row .= '<td class="discount_money" align="right">' . render_input($name_discount_money, '', $discount_money, 'number', $array_discount_money_attr, [], '', $text_right_class . ' item_discount_money') . '</td>';
+        // $row .= '<td class="discount">' . render_input($name_discount, '', $discount, 'number', $array_discount_attr, [], '', $text_right_class) . '</td>';
+        // $row .= '<td class="discount_money" align="right">' . render_input($name_discount_money, '', $discount_money, 'number', $array_discount_money_attr, [], '', $text_right_class . ' item_discount_money') . '</td>';
         $row .= '<td class="label_total_after_discount" align="right">' . app_format_number($total_money) . '</td>';
 
         $row .= '<td class="hide commodity_code">' . render_input($name_item_code, '', $item_code, 'text', ['placeholder' => _l('commodity_code')]) . '</td>';
@@ -14503,8 +14511,8 @@ class Purchase_model extends App_Model
         $row .= '<td class="hide _total_after_tax">' . render_input($name_total, '', $total, 'number', []) . '</td>';
 
         //$row .= '<td class="hide discount_money">' . render_input($name_discount_money, '', $discount_money, 'number', []) . '</td>';
-        $row .= '<td class="hide total_after_discount">' . render_input($name_total_money, '', $total_money, 'number', []) . '</td>';
-        $row .= '<td class="hide _into_money">' . render_input($name_into_money, '', $into_money, 'number', []) . '</td>';
+        // $row .= '<td class="hide total_after_discount">' . render_input($name_total_money, '', $total_money, 'number', []) . '</td>';
+        // $row .= '<td class="hide _into_money">' . render_input($name_into_money, '', $into_money, 'number', []) . '</td>';
 
         if ($name == '') {
             $row .= '<td><button type="button" onclick="pur_add_item_to_table(\'undefined\',\'undefined\'); return false;" class="btn pull-right btn-info"><i class="fa fa-check"></i></button></td>';
@@ -14560,6 +14568,8 @@ class Purchase_model extends App_Model
         unset($data['additional_discount']);
         unset($data['tax_value']);
         unset($data['hsn_code']);
+        unset($data['make_list']);
+        unset($data['free_issue']);
         if (isset($data['tax_select'])) {
             unset($data['tax_select']);
         }
@@ -14697,6 +14707,8 @@ class Purchase_model extends App_Model
                     $dt_data['discount_money'] = $rqd['discount_money'];
                     $dt_data['discount_%'] = $rqd['discount'];
                     $dt_data['hsn_code'] = $rqd['hsn_code'];
+                    $dt_data['make_list'] = $rqd['make_list'];
+                    $dt_data['free_issue'] = $rqd['free_issue'];
 
                     $tax_money = 0;
                     $tax_rate_value = 0;
@@ -15116,6 +15128,8 @@ class Purchase_model extends App_Model
         unset($data['tax_value']);
         unset($data['isedit']);
         unset($data['hsn_code']);
+        unset($data['make_list']);
+        unset($data['free_issue']);
         if (isset($data['tax_select'])) {
             unset($data['tax_select']);
         }
@@ -15221,6 +15235,8 @@ class Purchase_model extends App_Model
                 $dt_data['discount_%'] = $rqd['discount'];
                 $dt_data['description'] = nl2br($rqd['item_description']);
                 $dt_data['hsn_code'] = $rqd['hsn_code'];
+                $dt_data['make_list'] = $rqd['make_list'];
+                $dt_data['free_issue'] = $rqd['free_issue'];
                 $tax_money = 0;
                 $tax_rate_value = 0;
                 $tax_rate = null;
@@ -15265,6 +15281,8 @@ class Purchase_model extends App_Model
                 $dt_data['discount_%'] = $rqd['discount'];
                 $dt_data['description'] = nl2br($rqd['item_description']);
                 $dt_data['hsn_code'] = $rqd['hsn_code'];
+                $dt_data['make_list'] = $rqd['make_list'];
+                $dt_data['free_issue'] = $rqd['free_issue'];
                 $tax_money = 0;
                 $tax_rate_value = 0;
                 $tax_rate = null;
@@ -15539,14 +15557,14 @@ class Purchase_model extends App_Model
                 $custom_date_select = 'AND (' . $field . ' BETWEEN "' . date('Y-m-01') . '" AND "' . date('Y-m-t') . '")';
             } elseif ($months_report == 'this_year') {
                 $custom_date_select = 'AND (' . $field . ' BETWEEN "' .
-                date('Y-m-d', strtotime(date('Y-01-01'))) .
-                '" AND "' .
-                date('Y-m-d', strtotime(date('Y-12-31'))) . '")';
+                    date('Y-m-d', strtotime(date('Y-01-01'))) .
+                    '" AND "' .
+                    date('Y-m-d', strtotime(date('Y-12-31'))) . '")';
             } elseif ($months_report == 'last_year') {
                 $custom_date_select = 'AND (' . $field . ' BETWEEN "' .
-                date('Y-m-d', strtotime(date(date('Y', strtotime('last year')) . '-01-01'))) .
-                '" AND "' .
-                date('Y-m-d', strtotime(date(date('Y', strtotime('last year')) . '-12-31'))) . '")';
+                    date('Y-m-d', strtotime(date(date('Y', strtotime('last year')) . '-01-01'))) .
+                    '" AND "' .
+                    date('Y-m-d', strtotime(date(date('Y', strtotime('last year')) . '-12-31'))) . '")';
             } elseif ($months_report == 'custom') {
                 $from_date = to_sql_date($this->input->post('report_from'));
                 $to_date   = to_sql_date($this->input->post('report_to'));
@@ -15559,5 +15577,34 @@ class Purchase_model extends App_Model
         }
 
         return $custom_date_select;
+    }
+
+    public function add_record_payment($data)
+    {
+
+
+        $this->db->insert(db_prefix() . 'record_payment', $data);
+        $insert_id = $this->db->insert_id();
+
+        if ($insert_id) {
+
+            return $insert_id;
+        }
+
+        return false;
+    }
+
+    public function get_wo_order_item_list()
+    {
+        $this->db->select('wod.*');
+        $this->db->from(db_prefix() . 'wo_order_detail AS wod');
+        $this->db->join(
+            db_prefix() . 'wo_orders AS wo',
+            'wo.id = wod.wo_order',
+            'inner'
+        );
+        $this->db->where('wo.wo_type', 1);
+
+        return $this->db->get()->result_array();
     }
 }

@@ -98,66 +98,12 @@
                         $wo_order = (object) $wo_order;
                       }
                       ?>
-                      <div class="col-md-6 form-group">
-                        <label for="pur_request"><?php echo _l('pur_request'); ?></label>
-                        <select name="pur_request" id="pur_request" class="selectpicker" onchange="coppy_pur_request(); return false;" data-live-search="true" data-width="100%" data-none-selected-text="<?php echo _l('ticket_settings_none_assigned'); ?>">
-                          <option value=""></option>
-                          <?php foreach ($pur_request as $s) { ?>
-                            <option value="<?php echo pur_html_entity_decode($s['id']); ?>" <?php if (isset($wo_order) && $wo_order->pur_request != '' && $wo_order->pur_request == $s['id']) {
-                                                                                              echo 'selected';
-                                                                                            } ?>><?php echo pur_html_entity_decode($s['pur_rq_code'] . ' - ' . $s['pur_rq_name']); ?></option>
-                          <?php } ?>
-                        </select>
-                      </div>
-
-
-                    </div>
-
-                    <div class="row">
-                      <?php if (get_purchase_option('purchase_order_setting') == 0) { ?>
-                        <div class="col-md-6 form-group">
-                          <label for="estimate"><?php echo _l('estimates'); ?></label>
-                          <select name="estimate" id="estimate" class="selectpicker  <?php if (isset($wo_order)) {
-                                                                                        echo 'disabled';
-                                                                                      } ?>" onchange="coppy_pur_estimate(); return false;" data-live-search="true" data-width="100%" data-none-selected-text="<?php echo _l('ticket_settings_none_assigned'); ?>">
-                            <?php if (isset($wo_order)) { ?>
-                              <option value=""></option>
-                              <?php foreach ($estimates as $s) { ?>
-                                <option value="<?php echo pur_html_entity_decode($s['id']); ?>" <?php if (isset($wo_order) && $wo_order->estimate != '' && $wo_order->estimate == $s['id']) {
-                                                                                                  echo 'selected';
-                                                                                                } ?>><?php echo format_pur_estimate_number($s['id']); ?></option>
-                              <?php } ?>
-                            <?php } ?>
-                          </select>
-
-                        </div>
-                      <?php } ?>
-                      <div class="col-md-<?php if (get_purchase_option('purchase_order_setting') == 1) {
-                                            echo '12';
-                                          } else {
-                                            echo '6';
-                                          }; ?> form-group">
-                        <label for="department"><?php echo _l('department'); ?></label>
-                        <select name="department" id="department" class="selectpicker" <?php if (isset($wo_order)) {
-                                                                                          echo 'disabled';
-                                                                                        } ?> data-live-search="true" data-width="100%" data-none-selected-text="<?php echo _l('ticket_settings_none_assigned'); ?>">
-                          <option value=""></option>
-                          <?php foreach ($departments as $s) { ?>
-                            <option value="<?php echo pur_html_entity_decode($s['departmentid']); ?>" <?php if (isset($wo_order) && $s['departmentid'] == $wo_order->department) {
-                                                                                                        echo 'selected';
-                                                                                                      } ?>><?php echo pur_html_entity_decode($s['name']); ?></option>
-                          <?php } ?>
-                        </select>
-                      </div>
-                    </div>
-
-                    <?php
-                    $project_id = '';
-                    if ($this->input->get('project')) {
-                      $project_id = $this->input->get('project');
-                    }
-                    ?>
-                    <div class="row">
+                      <?php
+                      $project_id = '';
+                      if ($this->input->get('project')) {
+                        $project_id = $this->input->get('project');
+                      }
+                      ?>
                       <div class="col-md-6 form-group">
                         <input type="hidden" name="project" id="project_val" value="">
                         <label for="project"><?php echo _l('project'); ?></label>
@@ -172,6 +118,13 @@
                           <?php } ?>
                         </select>
                       </div>
+
+                    </div>
+
+
+
+                    <div class="row">
+
 
                       <div class="col-md-6 form-group">
                         <label for="type"><?php echo _l('type'); ?></label>
@@ -255,51 +208,6 @@
                         ?>
                         <?php echo render_select('currency', $currencies, array('id', 'name', 'symbol'), 'invoice_add_edit_currency', $selected, $currency_attr); ?>
                       </div>
-
-                      <div class="col-md-6 mbot10 form-group">
-                        <?php
-                        $selected = '';
-                        foreach ($staff as $member) {
-                          if (isset($wo_order)) {
-                            if ($wo_order->delivery_person == $member['staffid']) {
-                              $selected = $member['staffid'];
-                            }
-                          } else {
-                            if ($member['staffid'] == get_staff_user_id()) {
-                              $selected = $member['staffid'];
-                            }
-                          }
-                        }
-                        echo render_select('delivery_person', $staff, array('staffid', array('firstname', 'lastname')), 'delivery_person', $selected);
-                        ?>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-md-6">
-                        <?php $order_date = (isset($wo_order) ? _d($wo_order->order_date) : _d(date('Y-m-d')));
-                        echo render_date_input('order_date', 'order_date', $order_date); ?>
-                      </div>
-
-                      <div class="col-md-6 ">
-                        <?php
-                        $selected = '';
-                        foreach ($staff as $member) {
-                          if (isset($wo_order)) {
-                            if ($wo_order->buyer == $member['staffid']) {
-                              $selected = $member['staffid'];
-                            }
-                          } else {
-                            if ($member['staffid'] == get_staff_user_id()) {
-                              $selected = $member['staffid'];
-                            }
-                          }
-                        }
-                        echo render_select('buyer', $staff, array('staffid', array('firstname', 'lastname')), 'buyer', $selected);
-                        ?>
-                      </div>
-                    </div>
-
-                    <div class="row">
                       <?php $clients_ed = (isset($wo_order) ? explode(',', $wo_order->clients ?? '') : []); ?>
                       <div class="col-md-6 form-group select-placeholder">
                         <label for="clients" class="control-label"><?php echo _l('clients'); ?></label>
@@ -317,34 +225,33 @@
                         </select>
                       </div>
 
-                      <div class="col-md-6 ">
-                        <?php $delivery_date = (isset($wo_order) ? _d($wo_order->delivery_date) : '');
-                        echo render_date_input('delivery_date', 'delivery_date', $delivery_date); ?>
+
+                    </div>
+                    <div class="row">
+                      <div class="col-md-6">
+                        <?php $order_date = (isset($wo_order) ? _d($wo_order->order_date) : _d(date('Y-m-d')));
+                        echo render_date_input('order_date', 'order_date', $order_date); ?>
                       </div>
-                    </div>
-
-                    <div class="row">
-                      <!-- <div class="col-md-6 form-group ">
-                        <label for="sale_invoice"><?php echo _l('sale_invoice'); ?></label>
-                        <select name="sale_invoice" id="sale_invoice" class="selectpicker" onchange="coppy_sale_invoice(); return false;" data-live-search="true" data-width="100%" data-none-selected-text="<?php echo _l('ticket_settings_none_assigned'); ?>">
-                          <option value=""></option>
-                          <?php foreach ($invoices as $inv) { ?>
-                            <option value="<?php echo pur_html_entity_decode($inv['id']); ?>" <?php if (isset($wo_order) && $inv['id'] == $wo_order->sale_invoice) {
-                                                                                                echo 'selected';
-                                                                                              } ?>><?php echo format_invoice_number($inv['id']); ?></option>
-                          <?php } ?>
-                        </select>
-                      </div> -->
-                      <!-- <div class="col-md-6 ">
-                        <?php $days_owed = (isset($wo_order) ? $wo_order->days_owed : '');
-                        echo render_input('days_owed', 'days_owed', $days_owed, 'number'); ?>
-                      </div> -->
+                      <div class="col-md-6">
+                        <?php
+                        $selected = (isset($wo_order) ? $wo_order->wo_type : '');
+                        $wo_type = [
+                          ['id' => '1', 'name' => 'From Client'],
+                          ['id' => '2', 'name' => 'For Vendor'],
+                        ];
+                        echo render_select('wo_type', $wo_type, ['id', 'name'], 'Wo Order Type', $selected); ?>
+                      </div>
 
 
                     </div>
 
+
+
+
                     <div class="row">
-                      <div class="col-md-12 ">
+
+
+                      <!-- <div class="col-md-12 ">
                         <div class="form-group select-placeholder">
                           <label for="discount_type"
                             class="control-label"><?php echo _l('discount_type'); ?></label>
@@ -366,7 +273,7 @@
                                                       } ?>><?php echo _l('discount_type_after_tax'); ?></option>
                           </select>
                         </div>
-                      </div>
+                      </div> -->
                     </div>
                   </div>
                 </div>
@@ -526,14 +433,14 @@
                         <th></th>
                         <th width="12%" align="left"><i class="fa fa-exclamation-circle" aria-hidden="true" data-toggle="tooltip" data-title="<?php echo _l('item_description_new_lines_notice'); ?>"></i> <?php echo _l('invoice_table_item_heading'); ?></th>
                         <th width="15%" align="left"><?php echo _l('item_description'); ?></th>
+                        <th width="7%" align="right"><?php echo _l('Make List'); ?></th>
+                        <th width="10%" align="right"><?php echo _l('Free Issue'); ?></th>
                         <th width="15%" align="left"><?php echo _l('hsn_sac'); ?></th>
                         <th width="10%" align="right"><?php echo _l('unit_price'); ?><span class="th_currency"><?php echo '(' . $po_currency->name . ')'; ?></span></th>
                         <th width="10%" align="right" class="qty"><?php echo _l('quantity'); ?></th>
                         <th width="12%" align="right"><?php echo _l('invoice_table_tax_heading'); ?></th>
                         <th width="10%" align="right"><?php echo _l('tax_value'); ?><span class="th_currency"><?php echo '(' . $po_currency->name . ')'; ?></span></th>
                         <th width="10%" align="right"><?php echo _l('pur_subtotal_after_tax'); ?><span class="th_currency"><?php echo '(' . $po_currency->name . ')'; ?></span></th>
-                        <th width="7%" align="right"><?php echo _l('discount') . '(%)'; ?></th>
-                        <th width="10%" align="right"><?php echo _l('discount'); ?><span class="th_currency"><?php echo '(' . $po_currency->name . ')'; ?></span></th>
                         <th width="10%" align="right"><?php echo _l('total'); ?><span class="th_currency"><?php echo '(' . $po_currency->name . ')'; ?></span></th>
                         <th align="center"><i class="fa fa-cog"></i></th>
                       </tr>

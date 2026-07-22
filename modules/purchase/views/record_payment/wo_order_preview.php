@@ -423,9 +423,7 @@
                                  <tr>
                                     <th align="center">#</th>
                                     <th class="description" width="50%" align="left"><?php echo _l('items'); ?></th>
-                                    <th ><?php echo _l('decription'); ?></th>
-                                    <th align="right"><?php echo _l('Make List'); ?></th>
-                                    <th align="right"><?php echo _l('Free Issue'); ?></th>
+                                    <th align="right"><?php echo _l('decription'); ?></th>
                                     <th align="right"><?php echo _l('hsn_sac'); ?></th>
                                     <th align="right"><?php echo _l('purchase_quantity'); ?></th>
                                     <th align="right"><?php echo _l('purchase_unit_price'); ?></th>
@@ -434,6 +432,8 @@
                                     <th align="right"><?php echo _l('tax'); ?></th>
                                     <?php } ?>
                                     <th align="right"><?php echo _l('sub_total'); ?></th>
+                                    <th align="right"><?php echo _l('discount(%)'); ?></th>
+                                    <th align="right"><?php echo _l('discount(money)'); ?></th>
                                     <th align="right"><?php echo _l('total'); ?></th>
                                  </tr>
                               </thead>
@@ -449,14 +449,12 @@
                                     <td class="description" align="left;"><span><strong><?php 
                                     $item = get_item_hp($es['item_code']); 
                                     if(isset($item) && isset($item->commodity_code) && isset($item->description)){
-                                       echo pur_html_entity_decode($item->commodity_code);
+                                       echo pur_html_entity_decode($item->commodity_code.' - '.$item->description);
                                     }else{
                                        echo pur_html_entity_decode($es['item_name']);
                                     }
-                                    ?></strong></td>
+                                    ?></strong><?php if($es['description'] != ''){ ?><br><span><?php echo pur_html_entity_decode($es['description']); ?></span><?php } ?></td>
                                     <td align="left"><?php echo $es['description']; ?></td>
-                                    <td class="make_list" width="12%" ><?php echo ($es['make_list']); ?></td>
-                                    <td class="free_list"><?php echo ($es['free_issue']); ?></td>
                                     <td align="left"><?php echo get_hsn_sac_code_by_id($es['hsn_code']); ?></td>
                                     <td align="right"  width="12%"><?php echo pur_html_entity_decode($es['quantity']); ?></td>
                                     <td align="right"><?php echo app_format_money($es['unit_price'],$base_currency->symbol); ?></td>
@@ -465,7 +463,8 @@
                                     <td align="right"><?php echo app_format_money(($es['total'] - $es['into_money']),$base_currency->symbol); ?></td>
                                     <?php } ?>
                                     <td class="amount" align="right"><?php echo app_format_money($es['total'],$base_currency->symbol); ?></td>
-                                    
+                                    <td class="amount" width="12%" align="right"><?php echo ($es['discount_%'].'%'); ?></td>
+                                    <td class="amount" align="right"><?php echo app_format_money($es['discount_money'],$base_currency->symbol); ?></td>
                                     <td class="amount" align="right"><?php echo app_format_money($es['total_money'],$base_currency->symbol); ?></td>
                                  </tr>
                               <?php 

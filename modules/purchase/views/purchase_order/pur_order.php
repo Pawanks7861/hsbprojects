@@ -192,7 +192,7 @@
                           <option value="8" <?php if (isset($pur_order) && $pur_order->payment_days == 8) {
                                               echo 'selected';
                                             } ?>>Advance Payment</option>
-                            <option value="8" <?php if (isset($pur_order) && $pur_order->payment_days == 9) {
+                          <option value="8" <?php if (isset($pur_order) && $pur_order->payment_days == 9) {
                                               echo 'selected';
                                             } ?>>Immediate after delievery</option>
                           <option value="1" <?php if (isset($pur_order) && $pur_order->payment_days == 1) {
@@ -219,7 +219,14 @@
                         </select>
                       </div>
 
-                     
+                      <div class="col-md-6 form-group">
+                        <label for="wo_item">Work Order Items</label>
+                        <select name="wo_item" id="wo_item" class="form-control selectpicker" data-live-search="true">
+                          <option value=""></option>
+                        </select>
+                      </div>
+
+
 
                     </div>
 
@@ -776,6 +783,34 @@
       }
     });
   }
+  $(document).on('changed.bs.select', '#project', function() {
+
+    var project_id = $(this).val();
+
+    $('#wo_item').html('<option value="">Loading...</option>').selectpicker('refresh');
+
+    if (project_id == '') {
+      $('#wo_item').html('<option value=""></option>').selectpicker('refresh');
+      return;
+    }
+
+    $.ajax({
+      url: admin_url + 'purchase/get_wo_items_by_project/' + project_id,
+      type: 'GET',
+      dataType: 'json',
+      success: function(response) {
+
+        var options = '<option value=""></option>';
+
+        $.each(response, function(i, item) {
+          options += '<option value="' + item.id + '">' + item.item_name + '</option>';
+        });
+
+        $('#wo_item').html(options).selectpicker('refresh');
+      }
+    });
+
+  });
 </script>
 
 <?php require 'modules/purchase/assets/js/pur_order_js.php'; ?>

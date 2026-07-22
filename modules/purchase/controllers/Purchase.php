@@ -1604,6 +1604,7 @@ class purchase extends AdminController
         $data['estimates'] = $this->purchase_model->get_estimates_by_status(2);
         $data['units'] = $this->purchase_model->get_units();
         $data['get_hsn_sac_code'] = $this->purchase_model->get_hsn_sac_code();
+        $data['wo_order_item_list'] = $this->purchase_model->get_wo_order_item_list();
 
         $data['ajaxItems'] = false;
         if (total_rows(db_prefix() . 'items') <= ajax_on_total_items()) {
@@ -8885,7 +8886,7 @@ class purchase extends AdminController
         $this->load->model('clients_model');
 
         $data['work_orderid']            = $id;
-        $data['title'] = _l('purchase_order');
+        $data['title'] = _l('work_order');
 
         $data['departments'] = $this->departments_model->get();
         $data['projects'] = $this->projects_model->get();
@@ -8918,7 +8919,7 @@ class purchase extends AdminController
             $pur_order_data['vendornote'] = $this->input->post('vendornote', false);
             $pur_order_data['order_summary'] = $this->input->post('order_summary', false);
             if ($id == '') {
-                
+
                 $id = $this->purchase_model->add_wo_order($pur_order_data);
                 if ($id) {
                     set_alert('success', _l('added_successfully', _l('wo_order')));
@@ -8926,7 +8927,7 @@ class purchase extends AdminController
                     redirect(admin_url('purchase/work_order/' . $id));
                 }
             } else {
-                
+
                 $success = $this->purchase_model->update_wo_order($pur_order_data, $id);
                 if ($success) {
                     set_alert('success', _l('updated_successfully', _l('wo_order')));
@@ -9392,7 +9393,10 @@ class purchase extends AdminController
                 if (!has_permission('record_payment', '', 'create')) {
                     access_denied('record_payment');
                 }
-                $id = $this->purchase_model->add_wo_order($pur_order_data);
+                echo '<pre>';
+                print_r($pur_order_data);
+                exit;
+                $id = $this->purchase_model->add_record_payment($pur_order_data);
                 if ($id) {
                     set_alert('success', _l('added_successfully', _l('wo_order')));
 
@@ -9416,10 +9420,9 @@ class purchase extends AdminController
             $data['wo_order_detail'] = $this->purchase_model->get_wo_order_detail($id);
             $data['wo_order'] = $this->purchase_model->get_wo_order($id);
             $title = _l('pur_order_detail');
-            
         }
 
-       
+
 
         $this->load->model('clients_model');
         $data['clients'] = $this->clients_model->get();
@@ -9432,9 +9435,46 @@ class purchase extends AdminController
         $data['ven'] = $this->input->get('vendor');
         $data['staff'] = $this->staff_model->get('', ['active' => 1]);
         $data['vendors'] = $this->purchase_model->get_vendor();
+        $data['pur_inv'] = $this->purchase_model->get_pur_invoice();
 
         $data['title'] = $title;
 
         $this->load->view('record_payment/add_record_payment', $data);
+    }
+
+    public function get_work_order_row_template()
+    {
+        $name = $this->input->post('name');
+        $item_name = $this->input->post('item_name');
+        $item_description = $this->input->post('item_description');
+        $quantity = $this->input->post('quantity');
+        $unit_name = $this->input->post('unit_name');
+        $unit_price = $this->input->post('unit_price');
+        $taxname = $this->input->post('taxname');
+        $item_code = $this->input->post('item_code');
+        $unit_id = $this->input->post('unit_id');
+        $tax_rate = $this->input->post('tax_rate');
+        $discount = $this->input->post('discount');
+        $item_key = $this->input->post('item_key');
+        $currency_rate = $this->input->post('currency_rate');
+        $to_currency = $this->input->post('to_currency');
+        $hsn_code  = $this->input->post('hsn_code');
+        $make_list  = $this->input->post('make_list');
+        $free_issue = $this->input->post('free_issue');
+
+        echo $this->purchase_model->create_work_order_row_template($name, $item_name, $item_description, $quantity, $unit_name, $unit_price, $taxname, $item_code, $unit_id, $tax_rate, '', $discount, '', '', '', '', '', $item_key, false, $currency_rate, $to_currency, $hsn_code, $make_list, $free_issue);
+    }
+
+    public function get_wo_items_by_project($project_id)
+    {
+        $this->db->select('wod.id, wod.item_name');
+        $this->db->from(db_prefix() . 'wo_order_detail AS wod');
+        $this->db->join(db_prefix() . 'wo_orders AS wo', 'wo.id = wod.wo_order', 'inner');
+        $this->db->where('wo.project', $project_id);
+        $this->db->where('wo.wo_type', 1);
+
+        $items = $this->db->get()->result_array();
+
+        echo json_encode($items);
     }
 }
