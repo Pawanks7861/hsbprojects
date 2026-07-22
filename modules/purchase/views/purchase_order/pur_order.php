@@ -220,13 +220,24 @@
                       </div>
 
                       <div class="col-md-6 form-group">
+
+
                         <label for="wo_item">Work Order Items</label>
-                        <select name="wo_item" id="wo_item" class="form-control selectpicker" data-live-search="true">
+
+                        <?php
+                        $wo_item_selected = (
+                          isset($pur_order) &&
+                          !empty($pur_order->wo_item)
+                        ) ? $pur_order->wo_item : '';
+                        ?>
+
+                        <select name="wo_item"
+                          id="wo_item"
+                          class="form-control selectpicker"
+                          data-live-search="true">
                           <option value=""></option>
                         </select>
                       </div>
-
-
 
                     </div>
 
@@ -783,31 +794,80 @@
       }
     });
   }
-  $(document).on('changed.bs.select', '#project', function() {
+  var selectedWoItem = <?php echo json_encode($wo_item_selected); ?>;
 
-    var project_id = $(this).val();
+  function loadWoItems(projectId, selectedItem = '') {
 
-    $('#wo_item').html('<option value="">Loading...</option>').selectpicker('refresh');
+    var $woItem = $('#wo_item');
 
-    if (project_id == '') {
-      $('#wo_item').html('<option value=""></option>').selectpicker('refresh');
+    // Reset dropdown
+    $woItem.html('<option value="">Loading...</option>');
+    $woItem.selectpicker('refresh');
+
+    if (!projectId) {
+      $woItem.html('<option value=""></option>');
+      $woItem.selectpicker('refresh');
       return;
     }
 
     $.ajax({
-      url: admin_url + 'purchase/get_wo_items_by_project/' + project_id,
+      url: admin_url + 'purchase/get_wo_items_by_project/' + projectId,
       type: 'GET',
       dataType: 'json',
+
       success: function(response) {
 
         var options = '<option value=""></option>';
 
         $.each(response, function(i, item) {
-          options += '<option value="' + item.id + '">' + item.item_name + '</option>';
+
+          var selected = '';
+
+          if (
+            selectedItem !== '' &&
+            String(item.id) === String(selectedItem)
+          ) {
+            selected = ' selected';
+          }
+
+          options +=
+            '<option value="' + item.id + '"' + selected + '>' +
+            item.item_name +
+            '</option>';
         });
 
-        $('#wo_item').html(options).selectpicker('refresh');
+        $woItem.html(options);
+        $woItem.selectpicker('refresh');
+      },
+
+      error: function() {
+        $woItem.html('<option value=""></option>');
+        $woItem.selectpicker('refresh');
       }
+    });
+  }
+  $(function() {
+
+    // ==========================================
+    // EDIT MODE
+    // ==========================================
+    var projectId = $('#project').val();
+
+    if (projectId) {
+      loadWoItems(projectId, selectedWoItem);
+    }
+
+
+    // ==========================================
+    // USER CHANGES PROJECT
+    // ==========================================
+    $(document).on('changed.bs.select', '#project', function() {
+
+      var projectId = $(this).val();
+
+      // Project changed manually,
+      // so don't keep old WO item selected.
+      loadWoItems(projectId, '');
     });
 
   });

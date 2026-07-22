@@ -9467,11 +9467,22 @@ class purchase extends AdminController
 
     public function get_wo_items_by_project($project_id)
     {
+        if (empty($project_id)) {
+            echo json_encode([]);
+            return;
+        }
+
         $this->db->select('wod.id, wod.item_name');
         $this->db->from(db_prefix() . 'wo_order_detail AS wod');
-        $this->db->join(db_prefix() . 'wo_orders AS wo', 'wo.id = wod.wo_order', 'inner');
+        $this->db->join(
+            db_prefix() . 'wo_orders AS wo',
+            'wo.id = wod.wo_order',
+            'inner'
+        );
+
         $this->db->where('wo.project', $project_id);
         $this->db->where('wo.wo_type', 1);
+        $this->db->order_by('wod.item_name', 'ASC');
 
         $items = $this->db->get()->result_array();
 
