@@ -120,7 +120,7 @@ if (
     array_push($where, 'AND pur_request IN (' . implode(',', $this->ci->input->post('purchase_request')) . ')');
 }
 
-if (!has_permission('work_orders', '', 'view')) {
+if (!has_permission('work_order', '', 'view')) {
     array_push($where, 'AND (' . db_prefix() . 'wo_orders.addedfrom = ' . get_staff_user_id() . ' OR ' . db_prefix() . 'wo_orders.buyer = ' . get_staff_user_id() . ' OR ' . db_prefix() . 'wo_orders.vendor IN (SELECT vendor_id FROM ' . db_prefix() . 'pur_vendor_admin WHERE staff_id=' . get_staff_user_id() . ') OR ' . get_staff_user_id() . ' IN (SELECT staffid FROM ' . db_prefix() . 'pur_approval_details WHERE ' . db_prefix() . 'pur_approval_details.rel_type = "wo_order" AND ' . db_prefix() . 'pur_approval_details.rel_id = ' . db_prefix() . 'wo_orders.id))');
 }
 
