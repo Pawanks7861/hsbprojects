@@ -14471,8 +14471,7 @@ class Purchase_model extends App_Model
 
         $row .= '<td class="">' . render_textarea($name_free_issue, '', $free_issue, ['rows' => 2, 'placeholder' => _l('Free Issue')]) . '</td>';
 
-        $hsn_sac_codes = $this->get_hsn_sac_code();
-        $row .= '<td class="hsn_code">' . render_select($name_hsn_code, $hsn_sac_codes, ['id', 'name'], '', $hsn_code, ['id']) . '</td>';
+        $row .= '<td class="hsn_code">' . render_input($name_hsn_code,'', $hsn_code, 'number') . '</td>';
 
         $row .= '<td class="rate">' . render_input($name_unit_price, '', $unit_price, 'number', $array_rate_attr, [], 'no-margin', $text_right_class);
 
@@ -14914,7 +14913,7 @@ class Purchase_model extends App_Model
           <tr>
             <th class="thead-dark" style="width: 15%">' . _l('items') . '</th>
             <th class="thead-dark" align="left" style="width: 25%">' . _l('item_description') . '</th>
-            <th class="thead-dark" align="left" style="width: 10%">' . _l('hsn_sac') . '</th>
+            <th class="thead-dark" align="left" style="width: 10%">' . _l('Budgeted Amount') . '</th>
             <th class="thead-dark" align="right" style="width: 10%">' . _l('quantity') . '</th>
             <th class="thead-dark" align="right" style="width: 10%">' . _l('unit_price') . '</th>
             <th class="thead-dark" align="right" style="width: 10%">' . _l('tax_percentage') . '</th>
@@ -14932,9 +14931,9 @@ class Purchase_model extends App_Model
             $units = $this->get_units_by_id($row['unit_id']);
             $unit_name = pur_get_unit_name($row['unit_id']);
             $html .= '<tr nobr="true" class="sortable">
-            <td style="width: 15%">' . $items->commodity_code . ' - ' . $items->description . '</td>
+            <td style="width: 15%">' . $row['item_name']. '</td>
             <td align="left" style="width: 25%">' . str_replace("<br />", " ", $row['description']) . '</td>
-            <td align="right" style="width: 10%">' . get_hsn_sac_code_by_id($row['hsn_code']) . '</td>
+            <td align="right" style="width: 10%">' . $row['hsn_code'] . '</td>
             <td align="right" style="width: 10%">' . $row['quantity']  . ' ' . $unit_name . '</td>
             <td align="right" style="width: 10%">' . '₹ ' . app_format_money($row['unit_price'], '') . '</td>
             
@@ -15606,5 +15605,10 @@ class Purchase_model extends App_Model
         $this->db->where('wo.wo_type', 1);
 
         return $this->db->get()->result_array();
+    }
+
+    public function get_wo_order_detail_with_id($wo_detail_id){
+        $this->db->where('id', $wo_detail_id);
+        return $this->db->get(db_prefix() . 'wo_order_detail')->row();
     }
 }

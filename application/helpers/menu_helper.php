@@ -13,7 +13,13 @@ function app_init_admin_sidebar_menu_items()
         'icon'     => 'fa fa-home',
         'badge'    => [],
     ]);
-
+    $CI->app_menu->add_sidebar_menu_item('module_activity_log', [
+        'name'     => _l('BOQ'),
+        'href'     => admin_url('purchase/boq'),
+        'icon'     => 'fa-solid fa-wave-square',
+        'position' => 31,
+        'badge'    => [],
+    ]);
     if (
         staff_can('view',  'customers')
         || (have_assigned_customers()

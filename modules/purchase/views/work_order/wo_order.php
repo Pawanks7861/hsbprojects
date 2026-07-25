@@ -435,7 +435,7 @@
                         <th width="15%" align="left"><?php echo _l('item_description'); ?></th>
                         <th width="7%" align="right"><?php echo _l('Make List'); ?></th>
                         <th width="10%" align="right"><?php echo _l('Free Issue'); ?></th>
-                        <th width="15%" align="left"><?php echo _l('hsn_sac'); ?></th>
+                        <th width="15%" align="left"><?php echo _l('Budgeted Amount'); ?></th>
                         <th width="10%" align="right"><?php echo _l('unit_price'); ?><span class="th_currency"><?php echo '(' . $po_currency->name . ')'; ?></span></th>
                         <th width="10%" align="right" class="qty"><?php echo _l('quantity'); ?></th>
                         <th width="12%" align="right"><?php echo _l('invoice_table_tax_heading'); ?></th>

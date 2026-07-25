@@ -701,7 +701,7 @@ function pur_get_item_preview_values() {
   response.unit_id = $('.invoice-item .main input[name="unit_id"]').val();
   response.tax_rate = $('.invoice-item .main input[name="tax_rate"]').val();
   response.discount = $('.invoice-item .main input[name="discount"]').val();
-  response.hsn_code = $('.invoice-item .main select[name="hsn_code"]').val();
+  response.hsn_code = $('.invoice-item .main input[name="hsn_code"]').val();
   response.make_list = $('.invoice-item .main textarea[name="make_list"]').val();
   response.free_issue = $('.invoice-item .main textarea[name="free_issue"]').val();
 

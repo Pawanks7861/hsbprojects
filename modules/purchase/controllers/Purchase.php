@@ -9488,4 +9488,20 @@ class purchase extends AdminController
 
         echo json_encode($items);
     }
+
+    public function boq()
+    {
+        $this->load->view('boq/manage', $data);
+    }
+
+    public function table_boq_items()
+    {
+        $this->app->get_table_data(module_views_path('purchase', 'boq/table_boq_items'));
+    }
+
+    public function boq_view($id){
+        $data['wo_order_details'] = $this->purchase_model->get_wo_order_detail_with_id($id);
+        $this->load->view('boq/view_boq', $data);
+    }
+
 }

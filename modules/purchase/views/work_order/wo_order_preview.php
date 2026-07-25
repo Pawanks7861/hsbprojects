@@ -426,7 +426,7 @@
                                     <th ><?php echo _l('decription'); ?></th>
                                     <th align="right"><?php echo _l('Make List'); ?></th>
                                     <th align="right"><?php echo _l('Free Issue'); ?></th>
-                                    <th align="right"><?php echo _l('hsn_sac'); ?></th>
+                                    <th align="right"><?php echo _l('Budgeted Amount'); ?></th>
                                     <th align="right"><?php echo _l('purchase_quantity'); ?></th>
                                     <th align="right"><?php echo _l('purchase_unit_price'); ?></th>
                                     <th align="right"><?php echo _l('into_money'); ?></th>
@@ -457,7 +457,7 @@
                                     <td align="left"><?php echo $es['description']; ?></td>
                                     <td class="make_list" width="12%" ><?php echo ($es['make_list']); ?></td>
                                     <td class="free_list"><?php echo ($es['free_issue']); ?></td>
-                                    <td align="left"><?php echo get_hsn_sac_code_by_id($es['hsn_code']); ?></td>
+                                    <td align="left"><?php echo $es['hsn_code']; ?></td>
                                     <td align="right"  width="12%"><?php echo pur_html_entity_decode($es['quantity']); ?></td>
                                     <td align="right"><?php echo app_format_money($es['unit_price'],$base_currency->symbol); ?></td>
                                     <td align="right"><?php echo app_format_money($es['into_money'],$base_currency->symbol); ?></td>
