@@ -9491,6 +9491,7 @@ class purchase extends AdminController
 
     public function boq()
     {
+        $data['projects'] = $this->projects_model->get_items();
         $this->load->view('boq/manage', $data);
     }
 

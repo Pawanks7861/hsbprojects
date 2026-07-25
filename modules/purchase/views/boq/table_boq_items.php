@@ -24,6 +24,10 @@ $where = [];
 
 array_push($where, 'AND ' . db_prefix() . 'wo_orders.wo_type = 1');
 
+if ($this->ci->input->post('project') && count($this->ci->input->post('project')) > 0) {
+    array_push($where, 'AND ' . db_prefix() . 'wo_orders.project IN (' . implode(',', $this->ci->input->post('project')) . ')');
+}
+
 
 $result = data_tables_init(
     $aColumns,
@@ -32,15 +36,15 @@ $result = data_tables_init(
     $join,
     $where,
     [
-        db_prefix().'wo_order_detail.id',
-        db_prefix().'wo_order_detail.item_name',
+        db_prefix() . 'wo_order_detail.id',
+        db_prefix() . 'wo_order_detail.item_name',
 
-        db_prefix().'wo_orders.wo_order_number',
-        db_prefix().'wo_orders.wo_order_name',
-        db_prefix().'wo_orders.project',
-        db_prefix().'wo_orders.order_date',
+        db_prefix() . 'wo_orders.wo_order_number',
+        db_prefix() . 'wo_orders.wo_order_name',
+        db_prefix() . 'wo_orders.project',
+        db_prefix() . 'wo_orders.order_date',
 
-        db_prefix().'projects.name as project_name'
+        db_prefix() . 'projects.name as project_name'
     ]
 );
 
@@ -53,10 +57,10 @@ foreach ($rResult as $aRow) {
 
     // Work Order
     $row[] = '<strong>'
-            .$aRow['wo_order_number']
-            .' - '
-            .$aRow['wo_order_name']
-            .'</strong>';
+        . $aRow['wo_order_number']
+        . ' - '
+        . $aRow['wo_order_name']
+        . '</strong>';
 
     // Item
     $row[] = $aRow['item_name'];
@@ -70,7 +74,7 @@ foreach ($rResult as $aRow) {
     // Option
     $options = '';
 
-    $options .= '<a href="' . admin_url('purchase/boq_view/'.$aRow['id']) . '" class="btn btn-default btn-icon" title="'._l('view').'">
+    $options .= '<a href="' . admin_url('purchase/boq_view/' . $aRow['id']) . '" class="btn btn-default btn-icon" title="' . _l('view') . '">
                     <i class="fa fa-eye"></i>
                  </a>';
 
