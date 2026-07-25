@@ -601,7 +601,7 @@
                                 </svg>
                             </div>
                         </div>
-                        <div class="k-kpi">
+                        <!-- <div class="k-kpi">
                             <div class="k-kpi-label">Goods Received</div>
                             <div class="k-kpi-value" style="color:#d97706">₹7,80,000</div>
                             <div class="k-kpi-sub">78.00% of BOQ</div>
@@ -612,7 +612,7 @@
                                     <line x1="12" y1="22.08" x2="12" y2="12" />
                                 </svg>
                             </div>
-                        </div>
+                        </div> -->
                         <div class="k-kpi">
                             <div class="k-kpi-label">Expenses</div>
                             <div class="k-kpi-value" style="color:#ea580c">₹55,000</div>
@@ -792,7 +792,7 @@
                                         <td>1,00,000</td>
                                         <td><span class="k-status k-status-green">Paid</span></td>
                                     </tr>
-                                    <tr>
+                                    <!-- <tr>
                                         <td>15-Jul-2026</td>
                                         <td><span class="k-badge k-badge-green">Goods Receipt</span></td>
                                         <td>GRN-0007</td>
@@ -800,7 +800,7 @@
                                         <td>Received 18 Cum</td>
                                         <td>2,20,000</td>
                                         <td><span class="k-status k-status-blue">Received</span></td>
-                                    </tr>
+                                    </tr> -->
                                     <tr>
                                         <td>18-Jul-2026</td>
                                         <td><span class="k-badge k-badge-orange">Expense</span></td>
@@ -1018,7 +1018,7 @@
                                 </table>
                             </div>
                         </div>
-                        <div class="k-card">
+                        <!-- <div class="k-card">
                             <h3 class="k-card-title">Goods Receipt Details</h3>
                             <div class="k-table-wrap">
                                 <table class="k-table k-table-sm">
@@ -1065,11 +1065,12 @@
                                     </tbody>
                                 </table>
                             </div>
-                        </div>
+                        </div> -->
+
                     </div>
 
                     <!-- Bottom Charts -->
-                    <div class="k-row-3">
+                    <div class="k-row-6">
                         <div class="k-card">
                             <h3 class="k-card-title">Budget vs Actual (Amount)</h3>
                             <div class="k-chart-wrap"><canvas id="budgetVsActualChart"></canvas></div>
@@ -1111,7 +1112,7 @@
 <script src="<?php echo module_dir_url(PURCHASE_MODULE_NAME, 'assets/plugins/charts/chart.js'); ?>?v=<?php echo PURCHASE_REVISION; ?>"></script>
 <script>
     (function() {
-        
+
 
         // Budget Utilization Doughnut
         const budgetCtx = document.getElementById('budgetChart').getContext('2d');
