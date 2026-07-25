@@ -17,6 +17,9 @@ class Wo_order_pdf extends App_pdf
 
         $this->wo_order = $wo_order;
 
+        // Set landscape orientation
+        $this->SetPageOrientation('L'); // 'L' for Landscape, 'P' for Portrait
+
         $this->SetTitle(_l('work_order'));
         # Don't remove these lines - important for the PDF layout
         $this->wo_order = $this->fix_editor_html($this->wo_order);
