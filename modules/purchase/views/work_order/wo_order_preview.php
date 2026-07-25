@@ -212,7 +212,7 @@
 
                <?php if($estimate->approve_status != 2){ ?>
                   <div class="pull-right _buttons mright10">
-                     <?php if(has_permission('work_orders','','edit')){ ?>
+                     <?php if(has_permission('work_order','','edit')){ ?>
                      <a href="<?php echo admin_url('purchase/wo_order/'.$estimate->id); ?>" class="btn btn-default btn-with-tooltip" data-toggle="tooltip" title="<?php echo _l('edit'); ?>" data-placement="bottom"><i class="fa fa-pencil-square"></i></a>
                      <?php } ?>
 

@@ -9087,7 +9087,7 @@ class purchase extends AdminController
 
     public function get_wo_order_data_ajax($id, $to_return = false)
     {
-        if (!has_permission('work_orders', '', 'view') && !has_permission('work_orders', '', 'view_own')) {
+        if (!has_permission('work_order', '', 'view') && !has_permission('work_order', '', 'view_own')) {
             echo _l('access_denied');
             die;
         }
@@ -9098,7 +9098,7 @@ class purchase extends AdminController
 
         $estimate = $this->purchase_model->get_wo_order($id);
 
-        if (has_permission('work_orders', '', 'view_own') && !is_admin()) {
+        if (has_permission('work_order', '', 'view_own') && !is_admin()) {
             $staffid = get_staff_user_id();
 
             $approve_access = total_rows(db_prefix() . 'pur_approval_details', ['staffid' => $staffid, 'rel_type' => 'pur_order', 'rel_id' => $id]);
@@ -9209,7 +9209,7 @@ class purchase extends AdminController
 
     public function delete_wo_order($id)
     {
-        if (!has_permission('work_orders', '', 'delete')) {
+        if (!has_permission('work_order', '', 'delete')) {
             access_denied('work_order');
         }
         if (!$id) {
@@ -9403,7 +9403,7 @@ class purchase extends AdminController
                     redirect(admin_url('purchase/work_order/' . $id));
                 }
             } else {
-                if (!has_permission('work_orders', '', 'edit')) {
+                if (!has_permission('work_order', '', 'edit')) {
                     access_denied('work_order');
                 }
                 $success = $this->purchase_model->update_wo_order($pur_order_data, $id);
