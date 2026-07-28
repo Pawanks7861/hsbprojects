@@ -568,7 +568,7 @@
                             </div>
                             <div>
                                 <div class="k-meta-label">Date</div>
-                                <div class="k-meta-value">20-Jul-2026</div>
+                                <div class="k-meta-value"><?php echo date('d M, Y', strtotime($wo_order->order_date));  ?></div>
                             </div>
                         </div>
                     </div>
@@ -1123,7 +1123,7 @@
             data: {
                 labels: ['Total Cost (PO + Exp)', 'Remaining Budget'],
                 datasets: [{
-                    data: [87.5, 12.5],
+                    data: [<?php echo $total_cost; ?>, <?php echo $rem_percentage; ?>],
                     backgroundColor: ['#059669', '#e2e8f0'],
                     borderWidth: 0,
                     cutout: '75%'
@@ -1165,9 +1165,9 @@
             }]
         });
         document.getElementById('budgetLegend').innerHTML = `
-    <div class="k-legend-item"><span class="k-legend-dot" style="background:#059669"></span><div><div class="k-legend-label">Total Cost (PO + Exp)</div><div class="k-legend-val">₹8,75,000 (87.50%)</div></div></div>
-    <div class="k-legend-item"><span class="k-legend-dot" style="background:#e2e8f0"></span><div><div class="k-legend-label">Remaining Budget</div><div class="k-legend-val">₹1,25,000 (12.50%)</div></div></div>
-    <div class="k-legend-total">BOQ Amount: <strong>₹10,00,000</strong></div>`;
+    <div class="k-legend-item"><span class="k-legend-dot" style="background:#059669"></span><div><div class="k-legend-label">Total Cost (PO + Exp)</div><div class="k-legend-val"><?php echo app_format_money($total_cost, '₹'); ?>  (<?php echo number_format($cost_percentage, 2); ?>%)</div></div></div>
+    <div class="k-legend-item"><span class="k-legend-dot" style="background:#e2e8f0"></span><div><div class="k-legend-label">Remaining Budget</div><div class="k-legend-val"><?php echo app_format_money($rem_percentage, '₹'); ?> (<?php echo number_format($rem_percentage, 2); ?>%)</div></div></div>
+    <div class="k-legend-total">BOQ Amount: <strong><?php echo app_format_money($wo_order_details->total, '₹'); ?></strong></div>`;
 
         // Cost Distribution Doughnut
         const costCtx = document.getElementById('costDistChart').getContext('2d');
@@ -1176,7 +1176,7 @@
             data: {
                 labels: ['Purchase Orders', 'Expenses'],
                 datasets: [{
-                    data: [820000, 55000],
+                    data: [<?php echo $get_total_pur_value; ?>, <?php echo $get_total_expense_value; ?>],
                     backgroundColor: ['#3b82f6', '#60a5fa'],
                     borderWidth: 0,
                     cutout: '70%'
@@ -1218,8 +1218,8 @@
             }]
         });
         document.getElementById('costDistLegend').innerHTML = `
-                        <div class="k-legend-item"><span class="k-legend-dot" style="background:#3b82f6"></span><div><div class="k-legend-label">Purchase Orders</div><div class="k-legend-val">₹8,20,000 (93.71%)</div></div></div>
-                        <div class="k-legend-item"><span class="k-legend-dot" style="background:#60a5fa"></span><div><div class="k-legend-label">Expenses</div><div class="k-legend-val">₹55,000 (6.29%)</div></div></div>`;
+                        <div class="k-legend-item"><span class="k-legend-dot" style="background:#3b82f6"></span><div><div class="k-legend-label">Purchase Orders</div><div class="k-legend-val"><?php echo app_format_money($get_total_pur_value, '₹'); ?> (<?php echo number_format($po_percentage, 2); ?>%)</div></div></div>
+                        <div class="k-legend-item"><span class="k-legend-dot" style="background:#60a5fa"></span><div><div class="k-legend-label">Expenses</div><div class="k-legend-val"><?php echo app_format_money($get_total_expense_value, '₹'); ?> (<?php echo number_format($exp_percentage, 2); ?>%)</div></div></div>`;
 
         // Budget vs Actual Bar
         const bvaCtx = document.getElementById('budgetVsActualChart').getContext('2d');
