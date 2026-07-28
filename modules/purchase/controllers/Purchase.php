@@ -9393,24 +9393,21 @@ class purchase extends AdminController
                 if (!has_permission('record_payment', '', 'create')) {
                     access_denied('record_payment');
                 }
-                echo '<pre>';
-                print_r($pur_order_data);
-                exit;
                 $id = $this->purchase_model->add_record_payment($pur_order_data);
                 if ($id) {
-                    set_alert('success', _l('added_successfully', _l('wo_order')));
+                    set_alert('success', _l('added_successfully', _l('Payment')));
 
-                    redirect(admin_url('purchase/work_order/' . $id));
+                    redirect(admin_url('purchase/record_payment/' . $id));
                 }
             } else {
-                if (!has_permission('work_order', '', 'edit')) {
-                    access_denied('work_order');
+                if (!has_permission('record_payment', '', 'edit')) {
+                    access_denied('record_payment');
                 }
                 $success = $this->purchase_model->update_wo_order($pur_order_data, $id);
                 if ($success) {
-                    set_alert('success', _l('updated_successfully', _l('wo_order')));
+                    set_alert('success', _l('updated_successfully', _l('Payment')));
                 }
-                redirect(admin_url('purchase/work_order/' . $id));
+                redirect(admin_url('purchase/record_payment/' . $id));
             }
         }
 
@@ -9502,6 +9499,8 @@ class purchase extends AdminController
 
     public function boq_view($id){
         $data['wo_order_details'] = $this->purchase_model->get_wo_order_detail_with_id($id);
+        $data['wo_order'] = $this->purchase_model->get_wo_order_for_boq($id);
+        $data['get_vendor_list_by_name'] = $this->purchase_model->get_vendor_list_by_name($id);
         $this->load->view('boq/view_boq', $data);
     }
 

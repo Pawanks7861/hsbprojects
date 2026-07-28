@@ -505,7 +505,7 @@
                             </div>
                             <div>
                                 <div class="k-meta-label">Project</div>
-                                <div class="k-meta-value">ABC Tower</div>
+                                <div class="k-meta-value"><?php echo get_project_name_by_id($wo_order->project); ?></div>
                             </div>
                         </div>
                         <div class="k-meta-card">
@@ -517,7 +517,7 @@
                             </div>
                             <div>
                                 <div class="k-meta-label">BOQ Item</div>
-                                <div class="k-meta-value">RCC M25 Concrete</div>
+                                <div class="k-meta-value"><?php echo $wo_order_details->item_name; ?></div>
                             </div>
                         </div>
                         <div class="k-meta-card">
@@ -540,7 +540,7 @@
                             </div>
                             <div>
                                 <div class="k-meta-label">Work Order</div>
-                                <div class="k-meta-value">WO-00012</div>
+                                <div class="k-meta-value"><?php echo $wo_order->wo_order_number; ?></div>
                             </div>
                         </div>
                         <div class="k-meta-card">
@@ -553,8 +553,8 @@
                                 </svg>
                             </div>
                             <div>
-                                <div class="k-meta-label">Vendor (Primary)</div>
-                                <div class="k-meta-value">ABC Constructions Pvt. Ltd.</div>
+                                <div class="k-meta-label">Vendor's</div>
+                                <div class="k-meta-value"><?php $get_vendor_list_by_name; ?></div>
                             </div>
                         </div>
                         <div class="k-meta-card">

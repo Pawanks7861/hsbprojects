@@ -14471,7 +14471,7 @@ class Purchase_model extends App_Model
 
         $row .= '<td class="">' . render_textarea($name_free_issue, '', $free_issue, ['rows' => 2, 'placeholder' => _l('Free Issue')]) . '</td>';
 
-        $row .= '<td class="hsn_code">' . render_input($name_hsn_code,'', $hsn_code, 'number') . '</td>';
+        $row .= '<td class="hsn_code">' . render_input($name_hsn_code, '', $hsn_code, 'number') . '</td>';
 
         $row .= '<td class="rate">' . render_input($name_unit_price, '', $unit_price, 'number', $array_rate_attr, [], 'no-margin', $text_right_class);
 
@@ -14931,7 +14931,7 @@ class Purchase_model extends App_Model
             $units = $this->get_units_by_id($row['unit_id']);
             $unit_name = pur_get_unit_name($row['unit_id']);
             $html .= '<tr nobr="true" class="sortable">
-            <td style="width: 15%">' . $row['item_name']. '</td>
+            <td style="width: 15%">' . $row['item_name'] . '</td>
             <td align="left" style="width: 25%">' . str_replace("<br />", " ", $row['description']) . '</td>
             <td align="right" style="width: 10%">' . $row['hsn_code'] . '</td>
             <td align="right" style="width: 10%">' . $row['quantity']  . ' ' . $unit_name . '</td>
@@ -15607,8 +15607,52 @@ class Purchase_model extends App_Model
         return $this->db->get()->result_array();
     }
 
-    public function get_wo_order_detail_with_id($wo_detail_id){
+    public function get_wo_order_detail_with_id($wo_detail_id)
+    {
         $this->db->where('id', $wo_detail_id);
         return $this->db->get(db_prefix() . 'wo_order_detail')->row();
+    }
+
+    public function get_wo_order_for_boq($wo_detail_id)
+    {
+        $this->db->select(
+            db_prefix() . 'wo_orders.*'
+        );
+
+        $this->db->from(db_prefix() . 'wo_order_detail');
+
+        $this->db->join(
+            db_prefix() . 'wo_orders',
+            db_prefix() . 'wo_orders.id = ' . db_prefix() . 'wo_order_detail.wo_order',
+            'left'
+        );
+
+        $this->db->where(db_prefix() . 'wo_order_detail.id', $wo_detail_id);
+
+        return $this->db->get()->row();
+    }
+
+    public function get_vendor_list_by_name($wo_item_id)
+    {
+        // Get unique vendor IDs from purchase orders
+        $this->db->select('DISTINCT(vendor)');
+        $this->db->from(db_prefix() . 'pur_orders');
+        $this->db->where('wo_item', $wo_item_id);
+
+        $vendor_ids = array_column($this->db->get()->result_array(), 'vendor');
+
+        if (empty($vendor_ids)) {
+            return '';
+        }
+
+        // Get company names from vendor table
+        $this->db->select('company');
+        $this->db->from(db_prefix() . 'pur_vendor');
+        $this->db->where_in('userid', $vendor_ids);
+        $this->db->order_by('company', 'ASC');
+
+        $companies = array_column($this->db->get()->result_array(), 'company');
+
+        return implode(', ', $companies);
     }
 }
