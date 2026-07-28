@@ -554,7 +554,7 @@
                             </div>
                             <div>
                                 <div class="k-meta-label">Vendor's</div>
-                                <div class="k-meta-value"><?php $get_vendor_list_by_name; ?></div>
+                                <div class="k-meta-value"><?php echo $get_vendor_list_by_name; ?></div>
                             </div>
                         </div>
                         <div class="k-meta-card">
