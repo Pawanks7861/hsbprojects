@@ -9501,6 +9501,8 @@ class purchase extends AdminController
         $data['wo_order_details'] = $this->purchase_model->get_wo_order_detail_with_id($id);
         $data['wo_order'] = $this->purchase_model->get_wo_order_for_boq($id);
         $data['get_vendor_list_by_name'] = $this->purchase_model->get_vendor_list_by_name($id);
+        $data['get_total_pur_value'] = $this->purchase_model->get_total_pur_value($id);
+        $data['get_total_expense_value'] = $this->purchase_model->get_total_expense_value($id);
         $this->load->view('boq/view_boq', $data);
     }
 

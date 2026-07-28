@@ -15655,4 +15655,26 @@ class Purchase_model extends App_Model
 
         return implode(', ', $companies);
     }
+
+    public function get_total_pur_value($wo_item_id)
+    {
+        $this->db->select_sum('total');
+        $this->db->from(db_prefix() . 'pur_orders');
+        $this->db->where('wo_item', $wo_item_id);
+
+        $result = $this->db->get()->row();
+
+        return !empty($result->total) ? $result->total : 0;
+    }
+
+    public function get_total_expense_value($wo_item_id)
+    {
+        $this->db->select('SUM(amount) AS total_value');
+        $this->db->from(db_prefix() . 'expenses');
+        $this->db->where('wo_item', $wo_item_id);
+
+        $result = $this->db->get()->row();
+
+        return $result ? (float) $result->total_value : 0;
+    }
 }

@@ -577,7 +577,7 @@
                     <div class="k-kpi-grid">
                         <div class="k-kpi">
                             <div class="k-kpi-label">BOQ Amount</div>
-                            <div class="k-kpi-value" style="color:#1e3a8a">₹10,00,000</div>
+                            <div class="k-kpi-value" style="color:#1e3a8a"><?php echo app_format_money($wo_order_details->total, '₹'); ?> </div>
                             <div class="k-kpi-sub"></div>
                             <div class="k-kpi-icon">
                                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#1e3a8a" stroke-width="1.5">
@@ -591,8 +591,8 @@
                         </div>
                         <div class="k-kpi">
                             <div class="k-kpi-label">Purchase Ordered</div>
-                            <div class="k-kpi-value" style="color:#059669">₹8,20,000</div>
-                            <div class="k-kpi-sub">82.00% of BOQ</div>
+                            <div class="k-kpi-value" style="color:#059669"> <?php echo app_format_money($get_total_pur_value, '₹'); ?></div>
+                            <div class="k-kpi-sub"><?php $po_percentage = ($get_total_pur_value / $wo_order_details->total) * 100; echo number_format($po_percentage, 2); ?>% of BOQ</div>
                             <div class="k-kpi-icon">
                                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="1.5">
                                     <circle cx="9" cy="21" r="1" />
@@ -615,8 +615,8 @@
                         </div> -->
                         <div class="k-kpi">
                             <div class="k-kpi-label">Expenses</div>
-                            <div class="k-kpi-value" style="color:#ea580c">₹55,000</div>
-                            <div class="k-kpi-sub">5.50% of BOQ</div>
+                            <div class="k-kpi-value" style="color:#ea580c"> <?php echo app_format_money($get_total_expense_value, '₹'); ?></div>
+                            <div class="k-kpi-sub"><?php $exp_percentage = ($get_total_expense_value / $wo_order_details->total) * 100; echo number_format($exp_percentage, 2); ?>% of BOQ </div>
                             <div class="k-kpi-icon">
                                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ea580c" stroke-width="1.5">
                                     <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
@@ -626,8 +626,8 @@
                         </div>
                         <div class="k-kpi">
                             <div class="k-kpi-label">Vendor Payments</div>
-                            <div class="k-kpi-value" style="color:#7c3aed">₹5,40,000</div>
-                            <div class="k-kpi-sub">54.00% of BOQ</div>
+                            <div class="k-kpi-value" style="color:#7c3aed">₹0</div>
+                            <div class="k-kpi-sub">00.00% of BOQ</div>
                             <div class="k-kpi-icon">
                                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="1.5">
                                     <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
@@ -637,8 +637,10 @@
                         </div>
                         <div class="k-kpi">
                             <div class="k-kpi-label">Total Cost (PO + Exp)</div>
-                            <div class="k-kpi-value" style="color:#059669">₹8,75,000</div>
-                            <div class="k-kpi-sub">87.50% of BOQ</div>
+                            <div class="k-kpi-value" style="color:#059669"><?php 
+                            $total_cost = $get_total_pur_value + $get_total_expense_value;
+                            echo app_format_money($total_cost, '₹'); ?></div>
+                            <div class="k-kpi-sub"><?php $cost_percentage = ($total_cost / $wo_order_details->total) * 100; echo number_format($cost_percentage, 2); ?>% of BOQ </div>
                             <div class="k-kpi-icon">
                                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="1.5">
                                     <line x1="12" y1="1" x2="12" y2="23" />
@@ -648,8 +650,8 @@
                         </div>
                         <div class="k-kpi">
                             <div class="k-kpi-label">Remaining Budget</div>
-                            <div class="k-kpi-value" style="color:#dc2626">₹1,25,000</div>
-                            <div class="k-kpi-sub">12.50% of BOQ</div>
+                            <div class="k-kpi-value" style="color:#059669"><?php echo app_format_money($wo_order_details->total - $total_cost, '₹'); ?></div>
+                            <div class="k-kpi-sub"><?php $rem_percentage = (($wo_order_details->total - $total_cost) / $wo_order_details->total) * 100; echo number_format($rem_percentage, 2); ?>% of BOQ </div>
                             <div class="k-kpi-icon">
                                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="1.5">
                                     <path d="M21.21 15.89A10 10 0 1 1 8 2.83" />
@@ -659,8 +661,8 @@
                         </div>
                         <div class="k-kpi">
                             <div class="k-kpi-label">Cost Variance</div>
-                            <div class="k-kpi-value" style="color:#dc2626">-₹75,000</div>
-                            <div class="k-kpi-sub">Over Budget</div>
+                            <div class="k-kpi-value" style="color:#26dc2f"><?php echo app_format_money($wo_order_details->total - $total_cost, '₹'); ?></div>
+                            <div class="k-kpi-sub">Under Budget</div>
                             <div class="k-kpi-icon">
                                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="1.5">
                                     <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
