@@ -122,6 +122,7 @@ $result = data_tables_init(
         'recurring',
         db_prefix() . 'expenses.date as datewithouttime',
         db_prefix() . 'pur_vendor.company as vendor_name',
+        db_prefix() . 'expenses.expense_code as expense_code',
     ]
 );
 
@@ -143,7 +144,7 @@ foreach ($rResult as $aRow) {
     if (is_numeric($CI->input->post('clientid'))) {
         $categoryOutput = '<a href="' . admin_url('expenses/list_expenses/' . $aRow['id']) . '">' . e($aRow['category_name']) . '</a>';
     } else {
-        $categoryOutput = '<a href="' . admin_url('expenses/list_expenses/' . $aRow['id']) . '" onclick="init_expense(' . $aRow['id'] . ');return false;">' . e($aRow['category_name']) . '</a>';
+        $categoryOutput = '<a href="' . admin_url('expenses/list_expenses/' . $aRow['id']) . '" onclick="init_expense(' . $aRow['id'] . ');return false;">' . e($aRow['expense_code'] .'-'. $aRow['category_name']) . '</a>';
     }
 
     if ($aRow['billable'] == 1) {
