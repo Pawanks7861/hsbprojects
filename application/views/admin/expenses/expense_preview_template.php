@@ -59,7 +59,7 @@
             <div class="row mtop20">
                 <div class="col-md-6" id="expenseHeadings">
                     <h3 class="tw-font-semibold tw-text-lg tw-text-neutral-700 tw-mt-0 tw-mb-1" id="expenseCategory">
-                        <?php echo e($expense->category_name); ?>
+                        <?php echo e($expense->expense_code .'-'.$expense->category_name); ?>
                     </h3>
                     <?php if (!empty($expense->expense_name)) { ?>
                     <h4 class="tw-text-sm tw-m-0 tw-text-neutral-500" id="expenseName">
