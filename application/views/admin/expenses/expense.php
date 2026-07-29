@@ -45,7 +45,22 @@
                         <hr class="hr-panel-separator" />
 
                         <?php hooks()->do_action('before_expense_form_name', isset($expense) ? $expense : null); ?>
+                        <?php
+                        $last_expense_code = get_last_expense_code();
 
+                        // Extract numeric part (e.g. EXP-0009 -> 9)
+                        $last_number = 0;
+
+                        if (!empty($last_expense_code)) {
+                            $last_number = (int) str_replace('EXP-', '', $last_expense_code);
+                        }
+
+                        $next_expense_code = 'EXP-' . str_pad($last_number + 1, 4, '0', STR_PAD_LEFT);
+
+                        $expense_code = isset($expense) ? $expense->expense_code : $next_expense_code;
+
+                        echo render_input('expense_code', 'Expense Code', $expense_code, 'text', ['readonly' => true]);
+                        ?>
                         <i class="fa-regular fa-circle-question pull-left tw-mt-0.5 tw-mr-1" data-toggle="tooltip"
                             data-title="<?php echo _l('expense_name_help'); ?> - <?php echo e(_l('expense_field_billable_help', _l('expense_name'))); ?>"></i>
                         <?php $value = (isset($expense) ? $expense->expense_name : ''); ?>

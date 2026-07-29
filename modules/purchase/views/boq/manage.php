@@ -51,23 +51,6 @@
 
 
 	<?php init_tail(); ?>
-	<!-- <script>
-		$(document).ready(function() {
-
-			var table_boq_items = $('.table-table_boq_items');
-			var Params = {
-				"project": "[name='project[]']",
-			};
-			initDataTable(table_boq_items, admin_url + 'purchase/table_boq_items', [], [], Params, [3, 'desc']);
-			$.each(Params, function(i, obj) {
-				$('select' + obj).on('change', function() {
-					table_boq_items.DataTable().ajax.reload()
-						.columns.adjust()
-						.responsive.recalc();
-				});
-			});
-		});
-	</script> -->
 
 	<script>
 		$(function() {

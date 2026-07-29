@@ -1037,21 +1037,21 @@ function check_emp_leave_balance($staff_id)
 
 function get_staff_department_name($department)
 {
-    if(!empty($department)) {
+    if (!empty($department)) {
         $CI = &get_instance();
         $CI->db->select('name');
         $CI->db->from('tbldepartments');
         $CI->db->where('departmentid', $department);
         $query = $CI->db->get();
         $result = $query->row();
-        if(!empty($result)) {
+        if (!empty($result)) {
             return $result->name;
         }
-    } 
+    }
     return '';
 }
 
-function get_module_filter($module_name, $filter_name) 
+function get_module_filter($module_name, $filter_name)
 {
     $CI = &get_instance();
     $CI->db->select('*');
@@ -1072,7 +1072,7 @@ function update_module_filter($module_name, $filter_name, $filter_value)
     $CI->db->where('filter_name', $filter_name);
     $CI->db->where('staff_id', get_staff_user_id());
     $row = $CI->db->get()->row();
-    if(!empty($row)) {
+    if (!empty($row)) {
         $CI->db->where('module_name', $module_name);
         $CI->db->where('filter_name', $filter_name);
         $CI->db->where('staff_id', get_staff_user_id());
@@ -1090,4 +1090,14 @@ function update_module_filter($module_name, $filter_name, $filter_value)
         $CI->db->insert(db_prefix() . 'module_filter', $data);
     }
     return true;
+}
+function get_last_expense_code()
+{
+    $CI = &get_instance();
+    $CI->db->select('expense_code');
+    $CI->db->order_by('id', 'DESC');
+    $CI->db->limit(1);
+    $result = $CI->db->get(db_prefix() . 'expenses')->row();
+
+    return $result ? $result->expense_code : '';
 }
