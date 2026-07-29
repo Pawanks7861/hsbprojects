@@ -9365,7 +9365,7 @@ class purchase extends AdminController
         $this->load->model('projects_model');
         $this->load->model('clients_model');
 
-        $data['work_orderid']            = $id;
+        $data['payment_id']            = $id;
         $data['title'] = _l('record_payment');
 
         $data['departments'] = $this->departments_model->get();
@@ -9403,7 +9403,7 @@ class purchase extends AdminController
                 if (!has_permission('record_payment', '', 'edit')) {
                     access_denied('record_payment');
                 }
-                $success = $this->purchase_model->update_wo_order($pur_order_data, $id);
+                $success = $this->purchase_model->update_record_payment($pur_order_data, $id);
                 if ($success) {
                     set_alert('success', _l('updated_successfully', _l('Payment')));
                 }
@@ -9414,9 +9414,8 @@ class purchase extends AdminController
         if ($id == '') {
             $title = _l('Create New Record Payment');
         } else {
-            $data['wo_order_detail'] = $this->purchase_model->get_wo_order_detail($id);
-            $data['wo_order'] = $this->purchase_model->get_wo_order($id);
-            $title = _l('pur_order_detail');
+            $data['payment'] = $this->purchase_model->get_payment($id);
+            $title = _l('Edit New Record Payment');
         }
 
 
@@ -9504,6 +9503,86 @@ class purchase extends AdminController
         $data['get_total_pur_value'] = $this->purchase_model->get_total_pur_value($id);
         $data['get_total_expense_value'] = $this->purchase_model->get_total_expense_value($id);
         $this->load->view('boq/view_boq', $data);
+    }
+
+    public function table_payment_record()
+    {
+        $this->app->get_table_data(module_views_path('purchase', 'record_payment/table_payment_record'));
+    }
+
+    public function delete_record_payment($id)
+    {
+        if (!has_permission('record_payment', '', 'delete')) {
+            access_denied('record_payment');
+        }
+        if (!$id) {
+            redirect(admin_url('purchase/record_payment'));
+        }
+        $success = $this->purchase_model->delete_record_payment($id);
+        if (is_array($success)) {
+            set_alert('warning', _l('record_payment'));
+        } elseif ($success == true) {
+            set_alert('success', _l('deleted', _l('record_payment')));
+        } else {
+            set_alert('warning', _l('problem_deleting', _l('record_payment')));
+        }
+        redirect(admin_url('purchase/record_payment'));
+    }
+
+    public function get_record_payment_data_ajax($id, $to_return = false)
+    {
+        if (!has_permission('work_order', '', 'view') && !has_permission('work_order', '', 'view_own')) {
+            echo _l('access_denied');
+            die;
+        }
+
+        if (!$id) {
+            die('No purchase order found');
+        }
+
+        $estimate = $this->purchase_model->get_wo_order($id);
+
+        if (has_permission('work_order', '', 'view_own') && !is_admin()) {
+            $staffid = get_staff_user_id();
+
+            $approve_access = total_rows(db_prefix() . 'pur_approval_details', ['staffid' => $staffid, 'rel_type' => 'pur_order', 'rel_id' => $id]);
+
+            if ($estimate->buyer != $staffid && $estimate->addedfrom != $staffid && !is_vendor_admin($estimate->vendor) && $approve_access == 0) {
+                echo _l('access_denied');
+                die;
+            }
+        }
+
+        $this->load->model('payment_modes_model');
+        $data['payment_modes'] = $this->payment_modes_model->get('', [
+            'expenses_only !=' => 1,
+        ]);
+
+        $data['payment'] = $this->purchase_model->get_inv_payment_work_order($id);
+        $data['pur_order_attachments'] = $this->purchase_model->get_work_order_attachments($id);
+        $data['estimate_detail'] = $this->purchase_model->get_wo_order_detail($id);
+        $data['estimate']          = $estimate;
+        $data['members']           = $this->staff_model->get('', ['active' => 1]);
+        $data['vendor_contacts'] = $this->purchase_model->get_contacts($estimate->vendor);
+        $send_mail_approve = $this->session->userdata("send_mail_approve");
+        if ((isset($send_mail_approve)) && $send_mail_approve != '') {
+            $data['send_mail_approve'] = $send_mail_approve;
+            $this->session->unset_userdata("send_mail_approve");
+        }
+        $data['invoices'] = $this->purchase_model->get_invoices_by_po($id);
+        $data['check_appr'] = $this->purchase_model->get_approve_setting('wo_order');
+        $data['get_staff_sign'] = $this->purchase_model->get_staff_sign($id, 'wo_order');
+        $data['check_approve_status'] = $this->purchase_model->check_approval_details($id, 'wo_order');
+        $data['list_approve_status'] = $this->purchase_model->get_list_approval_details($id, 'wo_order');
+        $data['tax_data'] = $this->purchase_model->get_html_tax_wo_order($id);
+        $data['check_approval_setting'] = $this->purchase_model->check_approval_setting($estimate->project, 'wo_order', 0);
+        $data['attachments'] = $this->purchase_model->get_purchase_attachments('wo_order', $id);
+
+        if ($to_return == false) {
+            $this->load->view('work_order/wo_order_preview', $data);
+        } else {
+            return $this->load->view('work_order/wo_order_preview', $data, true);
+        }
     }
 
 }

@@ -35,37 +35,49 @@
 
                     <div class="row">
                       <div class="form-group col-md-6">
+                        <?php
+                        $last_payment_code = get_last_payment_code();
+
+                        // Extract numeric part (e.g. EXP-0009 -> 9)
+                        $last_number = 0;
+
+                        if (!empty($last_payment_code)) {
+                          $last_number = (int) str_replace('PAY-', '', $last_payment_code);
+                        }
+
+                        $next_expense_code = 'PAY-' . str_pad($last_number + 1, 4, '0', STR_PAD_LEFT);
+
+                        $payment_code = isset($payment) ? $payment->payment_code : $next_expense_code;
+
+                        echo render_input('payment_code', 'Payment Code', $payment_code, 'text', ['readonly' => true]);
+                        ?>
+                      </div>
+                      <div class="form-group col-md-6">
 
                         <label for="vendor"><?php echo _l('vendor'); ?></label>
-                        <select name="vendor" id="vendor" class="selectpicker" <?php if (isset($wo_order)) {
-                                                                                  echo 'disabled';
-                                                                                } ?> onchange="estimate_by_vendor(this); return false;" data-live-search="true" data-width="100%" data-none-selected-text="<?php echo _l('ticket_settings_none_assigned'); ?>">
+                        <select name="vendor" id="vendor" class="selectpicker"   data-live-search="true" data-width="100%" data-none-selected-text="<?php echo _l('ticket_settings_none_assigned'); ?>">
                           <option value=""></option>
                           <?php foreach ($vendors as $s) { ?>
-                            <option value="<?php echo pur_html_entity_decode($s['userid']); ?>" <?php if (isset($wo_order) && $wo_order->vendor == $s['userid']) {
+                            <option value="<?php echo pur_html_entity_decode($s['userid']); ?>" <?php if (isset($payment) && $payment->vendor == $s['userid']) {
                                                                                                   echo 'selected';
-                                                                                                } else {
-                                                                                                  if (isset($ven) && $ven == $s['userid']) {
-                                                                                                    echo 'selected';
-                                                                                                  }
-                                                                                                } ?>><?php echo pur_html_entity_decode($s['company']); ?></option>
+                                                                                                }  ?>><?php echo pur_html_entity_decode($s['company']); ?></option>
                           <?php } ?>
                         </select>
 
                       </div>
 
-                      <div class="col-md-6 mbot10 form-group">
+                      <div class="col-md-6 mbot10 form-group" style="clear: both;">
                         <?php
-                        $selected = '';
+                        $selected = isset($payment) ? $payment->staff_id : '';
 
-                        echo render_select('staff_id', $staff, array('staffid', array('firstname', 'lastname')), 'Satff');
+                        echo render_select('staff_id', $staff, array('staffid', array('firstname', 'lastname')), 'Satff',$selected);
                         ?>
                       </div>
 
 
                       <div class="col-md-6 form-group">
                         <?php
-                        $selected = '';
+                        $selected = isset($payment) ? $payment->payment_category : '';
                         $payment_category = [
                           ['id' => '1', 'name' => 'Vendor'],
                           ['id' => '2', 'name' => 'Staff'],
@@ -76,13 +88,16 @@
                           'payment_category',
                           $payment_category,
                           ['id', 'name'],
-                          'Payment Category'
+                          'Payment Category',
+                          $selected
                         );
                         ?>
                       </div>
 
                       <div class="col-md-6 form-group">
-                        <?php echo render_textarea('remarks', 'Remarks'); ?>
+                        <?php
+                        $re_value = isset($payment) ? $payment->remarks : '';
+                        echo render_textarea('remarks', 'Remarks',$re_value); ?>
                       </div>
 
                     </div>
@@ -95,7 +110,7 @@
                     <div class="row">
                       <div class="col-md-6 form-group">
                         <?php
-                        $selected = '';
+                        $selected = isset($payment) ? $payment->payment_mode : '';
                         $payment_mode = [
                           ['id' => '1', 'name' => 'AU Bank OD 490'],
                           ['id' => '2', 'name' => 'AU Bank Current AC'],
@@ -109,14 +124,15 @@
                           'payment_mode',
                           $payment_mode,
                           ['id', 'name'],
-                          'Payment Mode'
+                          'Payment Mode',
+                          $selected
                         );
                         ?>
                       </div>
 
                       <div class="col-md-6 form-group">
                         <?php
-                        $selected = '';
+                        $selected = isset($payment) ? $payment->payment_type : '';
                         $payment_type = [
                           ['id' => '1', 'name' => 'NEFT'],
                           ['id' => '2', 'name' => 'RTGS'],
@@ -130,13 +146,14 @@
                           'payment_type',
                           $payment_type,
                           ['id', 'name'],
-                          'Payment Type'
+                          'Payment Type',
+                          $selected
                         );
                         ?>
                       </div>
                       <div class="col-md-6 form-group">
                         <?php
-                        $selected = '';
+                        $selected = isset($payment) ? $payment->type_of_payment : '';
                         $type_of_payment = [
                           ['id' => '1', 'name' => 'Advance'],
                           ['id' => '2', 'name' => 'On Account'],
@@ -148,16 +165,19 @@
                           'type_of_payment',
                           $type_of_payment,
                           ['id', 'name'],
-                          'Type Of Payment'
+                          'Type Of Payment',
+                          $selected
                         );
                         ?>
                       </div>
                       <div class="col-md-6 form-group">
-                        <?php echo render_input('amount', 'Amount', '', 'number'); ?>
+                        <?php
+                        $amount_value = isset($payment) ? $payment->amount : '';
+                        echo render_input('amount', 'Amount', $amount_value, 'number'); ?>
                       </div>
                       <div class="col-md-6 form-group">
                         <?php
-
+                        $selected = isset($payment) ? $payment->inv_no : '';
 
                         foreach ($pur_inv as &$invoice) {
                           $invoice['invoice_display'] =
@@ -170,6 +190,7 @@
                           $pur_inv,
                           array('id', 'invoice_display'),
                           'Invoice Number',
+                          $selected
                         );
                         ?>
                       </div>

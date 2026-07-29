@@ -15580,8 +15580,7 @@ class Purchase_model extends App_Model
 
     public function add_record_payment($data)
     {
-
-
+        $data['created_on'] = date('Y-m-d H:i:s');
         $this->db->insert(db_prefix() . 'record_payment', $data);
         $insert_id = $this->db->insert_id();
 
@@ -15591,6 +15590,18 @@ class Purchase_model extends App_Model
         }
 
         return false;
+    }
+
+    public function update_record_payment($data, $id)
+    {
+        $data['updated_on'] = date('Y-m-d H:i:s');
+        $this->db->where('id', $id);
+        $this->db->update(db_prefix() . 'record_payment', $data);
+
+        if ($this->db->affected_rows() > 0) {
+            return true;
+        }
+
     }
 
     public function get_wo_order_item_list()
@@ -15676,5 +15687,29 @@ class Purchase_model extends App_Model
         $result = $this->db->get()->row();
 
         return $result ? (float) $result->total_value : 0;
+    }
+    public function get_payment($id){
+        $this->db->where('id', $id);
+        return $this->db->get(db_prefix() . 'record_payment')->row();
+    }
+
+    public function delete_record_payment($id)
+    {
+
+
+        $affectedRows = 0;
+        
+        $this->db->where('id', $id);
+        $this->db->delete(db_prefix() . 'record_payment');
+
+
+        if ($this->db->affected_rows() > 0) {
+            $affectedRows++;
+        }
+
+        if ($affectedRows > 0) {
+            return true;
+        }
+        return false;
     }
 }

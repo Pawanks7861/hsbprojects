@@ -3423,3 +3423,13 @@ function get_by_deafult_order_summary()
 
     return $val;
 }
+
+function get_last_payment_code(){
+    $CI = &get_instance();
+    $CI->db->select('payment_code');
+    $CI->db->order_by('id', 'DESC');
+    $CI->db->limit(1);
+    $result = $CI->db->get(db_prefix() . 'record_payment')->row();
+    
+    return $result ? $result->payment_code : '';
+}

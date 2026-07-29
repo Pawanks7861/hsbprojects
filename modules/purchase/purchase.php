@@ -481,10 +481,7 @@ function purchase_add_footer_components()
         echo '<script src="' . base_url('assets/plugins/signature-pad/signature_pad.min.js') . '"></script>';
         echo '<script src="' . module_dir_url(PURCHASE_MODULE_NAME, 'assets/js/work_order_manage.js') . '?v=' . PURCHASE_REVISION . '"></script>';
     }
-    if (!(strpos($viewuri, '/admin/purchase/record_payment') === false)) {
-        echo '<script src="' . base_url('assets/plugins/signature-pad/signature_pad.min.js') . '"></script>';
-        echo '<script src="' . module_dir_url(PURCHASE_MODULE_NAME, 'assets/js/record_payment_manage.js') . '?v=' . PURCHASE_REVISION . '"></script>';
-    }
+    
     if (!(strpos($viewuri, '/admin/purchase/contracts') === false)) {
         echo '<script src="' . module_dir_url(PURCHASE_MODULE_NAME, 'assets/js/contract_manage.js') . '?v=' . PURCHASE_REVISION . '"></script>';
     }
