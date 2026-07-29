@@ -31,6 +31,7 @@
                         _l('Payment Code'),
                         _l('vendor'),
                         _l('Staff'),
+                        _l('Payment Date'),
                         _l('Amount'),
                         _l('Payment Category'),
                         _l('payment_mode'),

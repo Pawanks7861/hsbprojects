@@ -55,7 +55,7 @@
                       <div class="form-group col-md-6">
 
                         <label for="vendor"><?php echo _l('vendor'); ?></label>
-                        <select name="vendor" id="vendor" class="selectpicker"   data-live-search="true" data-width="100%" data-none-selected-text="<?php echo _l('ticket_settings_none_assigned'); ?>">
+                        <select name="vendor" id="vendor" class="selectpicker" data-live-search="true" data-width="100%" data-none-selected-text="<?php echo _l('ticket_settings_none_assigned'); ?>">
                           <option value=""></option>
                           <?php foreach ($vendors as $s) { ?>
                             <option value="<?php echo pur_html_entity_decode($s['userid']); ?>" <?php if (isset($payment) && $payment->vendor == $s['userid']) {
@@ -70,7 +70,7 @@
                         <?php
                         $selected = isset($payment) ? $payment->staff_id : '';
 
-                        echo render_select('staff_id', $staff, array('staffid', array('firstname', 'lastname')), 'Satff',$selected);
+                        echo render_select('staff_id', $staff, array('staffid', array('firstname', 'lastname')), 'Satff', $selected);
                         ?>
                       </div>
 
@@ -97,7 +97,12 @@
                       <div class="col-md-6 form-group">
                         <?php
                         $re_value = isset($payment) ? $payment->remarks : '';
-                        echo render_textarea('remarks', 'Remarks',$re_value); ?>
+                        echo render_textarea('remarks', 'Remarks', $re_value); ?>
+                      </div>
+                      <div class="col-md-6 form-group">
+                        <?php
+                        $date_value = isset($payment) ? $payment->payment_date : '';
+                        echo render_input('payment_date', 'Payemnt Date', $date_value,'date'); ?>
                       </div>
 
                     </div>

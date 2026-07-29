@@ -6,6 +6,7 @@ $aColumns = [
     'payment_code',
     'vendor',
     'staff_id',
+    'payment_date',
     'amount',
     'payment_category',
     'payment_mode',
@@ -114,6 +115,10 @@ foreach ($rResult as $aRow) {
         } elseif ($aColumns[$i] == 'staff_id') {
 
             $_data = $aRow['staff_id'] ? get_staff_full_name($aRow['staff_id']) : '-';
+
+        }elseif ($aColumns[$i] == 'payment_date') {
+
+            $_data = date('d M, Y', strtotime($aRow['payment_date']));
 
         } elseif ($aColumns[$i] == 'amount') {
 

@@ -19,7 +19,8 @@ $(function(){
 
         appValidateForm($(selector), {
             amount: 'required',
-            
+            payment_date: 'required',
+            inv_no : 'required'
         });
     }
 
