@@ -4565,6 +4565,7 @@ class Purchase_model extends App_Model
             $t_mn += $row['total_money'];
             $tax_total += $row['total'] - $row['into_money'];
             $sub_total_amn += $row['total_money'] - $tax_total;
+            $item_discount += $row['discount_money'];
         }
         $html .=  '</tbody>
       </table><br><br>';
@@ -4588,19 +4589,21 @@ class Purchase_model extends App_Model
             </td>
             </tr>';
         }
-        if ($pur_order->discount_total > 0) {
-            $html .= '<tr id="subtotal">
+        if (($pur_order->discount_total + $item_discount) > 0) {
+            if ($pur_order->discount_percent > 0) {
+                $html .= '<tr id="subtotal">
                   <td width="33%"></td>
                      <td>' . _l('discount(%)') . '(%)' . '</td>
                      <td class="subtotal">
                         ' . app_format_money($pur_order->discount_percent, '') . ' %' . '
                      </td>
-                  </tr>
-                  <tr id="subtotal">
-                  <td width="33%"></td>
+                  </tr>';
+            }
+            $html .= '<tr id="subtotal">
+                        <td width="33%"></td>
                      <td>' . _l('discount(money)') . '</td>
                      <td class="subtotal">
-                        ' . '₹ ' . app_format_money($pur_order->discount_total, '') . '
+                        ' . '₹ ' . app_format_money(($pur_order->discount_total + $item_discount), '') . '
                      </td>
                   </tr>';
         }
@@ -10879,7 +10882,7 @@ class Purchase_model extends App_Model
 
         $row .= '<td class="hide _total_after_tax">' . render_input($name_total, '', $total, 'number', []) . '</td>';
 
-        //$row .= '<td class="hide discount_money">' . render_input($name_discount_money, '', $discount_money, 'number', []) . '</td>';
+        $row .= '<td class="hide discount_money">' . render_input($name_discount_money, '', $discount_money, 'number', []) . '</td>';
         $row .= '<td class="hide total_after_discount">' . render_input($name_total_money, '', $total_money, 'number', []) . '</td>';
         $row .= '<td class="hide _into_money">' . render_input($name_into_money, '', $into_money, 'number', []) . '</td>';
 
@@ -15601,7 +15604,6 @@ class Purchase_model extends App_Model
         if ($this->db->affected_rows() > 0) {
             return true;
         }
-
     }
 
     public function get_wo_order_item_list()
@@ -15688,7 +15690,8 @@ class Purchase_model extends App_Model
 
         return $result ? (float) $result->total_value : 0;
     }
-    public function get_payment($id){
+    public function get_payment($id)
+    {
         $this->db->where('id', $id);
         return $this->db->get(db_prefix() . 'record_payment')->row();
     }
@@ -15698,7 +15701,7 @@ class Purchase_model extends App_Model
 
 
         $affectedRows = 0;
-        
+
         $this->db->where('id', $id);
         $this->db->delete(db_prefix() . 'record_payment');
 
@@ -15712,5 +15715,4 @@ class Purchase_model extends App_Model
         }
         return false;
     }
-
 }
