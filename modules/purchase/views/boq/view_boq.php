@@ -592,7 +592,8 @@
                         <div class="k-kpi">
                             <div class="k-kpi-label">Purchase Ordered</div>
                             <div class="k-kpi-value" style="color:#059669"> <?php echo app_format_money($get_total_pur_value, '₹'); ?></div>
-                            <div class="k-kpi-sub"><?php $po_percentage = ($get_total_pur_value / $wo_order_details->total) * 100; echo number_format($po_percentage, 2); ?>% of BOQ</div>
+                            <div class="k-kpi-sub"><?php $po_percentage = ($get_total_pur_value / $wo_order_details->total) * 100;
+                                                    echo number_format($po_percentage, 2); ?>% of BOQ</div>
                             <div class="k-kpi-icon">
                                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="1.5">
                                     <circle cx="9" cy="21" r="1" />
@@ -616,7 +617,8 @@
                         <div class="k-kpi">
                             <div class="k-kpi-label">Expenses</div>
                             <div class="k-kpi-value" style="color:#ea580c"> <?php echo app_format_money($get_total_expense_value, '₹'); ?></div>
-                            <div class="k-kpi-sub"><?php $exp_percentage = ($get_total_expense_value / $wo_order_details->total) * 100; echo number_format($exp_percentage, 2); ?>% of BOQ </div>
+                            <div class="k-kpi-sub"><?php $exp_percentage = ($get_total_expense_value / $wo_order_details->total) * 100;
+                                                    echo number_format($exp_percentage, 2); ?>% of BOQ </div>
                             <div class="k-kpi-icon">
                                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ea580c" stroke-width="1.5">
                                     <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
@@ -637,10 +639,11 @@
                         </div>
                         <div class="k-kpi">
                             <div class="k-kpi-label">Total Cost (PO + Exp)</div>
-                            <div class="k-kpi-value" style="color:#059669"><?php 
-                            $total_cost = $get_total_pur_value + $get_total_expense_value;
-                            echo app_format_money($total_cost, '₹'); ?></div>
-                            <div class="k-kpi-sub"><?php $cost_percentage = ($total_cost / $wo_order_details->total) * 100; echo number_format($cost_percentage, 2); ?>% of BOQ </div>
+                            <div class="k-kpi-value" style="color:#059669"><?php
+                                                                            $total_cost = $get_total_pur_value + $get_total_expense_value;
+                                                                            echo app_format_money($total_cost, '₹'); ?></div>
+                            <div class="k-kpi-sub"><?php $cost_percentage = ($total_cost / $wo_order_details->total) * 100;
+                                                    echo number_format($cost_percentage, 2); ?>% of BOQ </div>
                             <div class="k-kpi-icon">
                                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="1.5">
                                     <line x1="12" y1="1" x2="12" y2="23" />
@@ -651,7 +654,8 @@
                         <div class="k-kpi">
                             <div class="k-kpi-label">Remaining Budget</div>
                             <div class="k-kpi-value" style="color:#059669"><?php echo app_format_money($wo_order_details->total - $total_cost, '₹'); ?></div>
-                            <div class="k-kpi-sub"><?php $rem_percentage = (($wo_order_details->total - $total_cost) / $wo_order_details->total) * 100; echo number_format($rem_percentage, 2); ?>% of BOQ </div>
+                            <div class="k-kpi-sub"><?php $rem_percentage = (($wo_order_details->total - $total_cost) / $wo_order_details->total) * 100;
+                                                    echo number_format($rem_percentage, 2); ?>% of BOQ </div>
                             <div class="k-kpi-icon">
                                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="1.5">
                                     <path d="M21.21 15.89A10 10 0 1 1 8 2.83" />
@@ -751,7 +755,7 @@
                     </div>
 
                     <!-- Activity Timeline -->
-                    <div class="k-card" style="margin-bottom:16px;">
+                    <!-- <div class="k-card" style="margin-bottom:16px;">
                         <h3 class="k-card-title">Activity Timeline (All Transactions)</h3>
                         <div class="k-table-wrap">
                             <table class="k-table">
@@ -794,7 +798,7 @@
                                         <td>1,00,000</td>
                                         <td><span class="k-status k-status-green">Paid</span></td>
                                     </tr>
-                                    <!-- <tr>
+                                    <tr>
                                         <td>15-Jul-2026</td>
                                         <td><span class="k-badge k-badge-green">Goods Receipt</span></td>
                                         <td>GRN-0007</td>
@@ -802,7 +806,7 @@
                                         <td>Received 18 Cum</td>
                                         <td>2,20,000</td>
                                         <td><span class="k-status k-status-blue">Received</span></td>
-                                    </tr> -->
+                                    </tr>
                                     <tr>
                                         <td>18-Jul-2026</td>
                                         <td><span class="k-badge k-badge-orange">Expense</span></td>
@@ -824,7 +828,7 @@
                                 </tbody>
                             </table>
                         </div>
-                    </div>
+                    </div> -->
 
                     <!-- Tables Row -->
                     <div class="k-row-2">
@@ -1073,31 +1077,31 @@
 
                     <!-- Bottom Charts -->
                     <div class="k-row-6">
-                        <div class="k-card">
+                        <div class="k-card" style="margin-bottom:16px;">
                             <h3 class="k-card-title">Budget vs Actual (Amount)</h3>
                             <div class="k-chart-wrap"><canvas id="budgetVsActualChart"></canvas></div>
                         </div>
-                        <div class="k-card">
+                        <div class="k-card" style="margin-bottom:16px;">
                             <h3 class="k-card-title">Monthly Cost Trend (Cumulative)</h3>
                             <div class="k-chart-wrap"><canvas id="trendChart"></canvas></div>
                         </div>
                         <div class="k-card">
                             <h3 class="k-card-title">Budget Analysis Summary</h3>
                             <div class="k-summary">
-                                <div class="k-summary-row"><span>BOQ Budget</span><span>₹10,00,000</span></div>
-                                <div class="k-summary-row"><span>Purchase Orders</span><span>₹8,20,000</span></div>
-                                <div class="k-summary-row"><span>Expenses</span><span>₹55,000</span></div>
-                                <div class="k-summary-row"><span>Total Cost (PO + Exp)</span><span>₹8,75,000</span></div>
-                                <div class="k-summary-row k-summary-green"><span>Remaining Budget</span><span>₹1,25,000</span></div>
+                                <div class="k-summary-row"><span>BOQ Budget</span><span><?php echo app_format_money($wo_order_details->total, '₹'); ?></span></div>
+                                <div class="k-summary-row"><span>Purchase Orders</span><span><?php echo app_format_money($get_total_pur_value, '₹'); ?></span></div>
+                                <div class="k-summary-row"><span>Expenses</span><span><?php echo app_format_money($get_total_expense_value, '₹'); ?></span></div>
+                                <div class="k-summary-row"><span>Total Cost (PO + Exp)</span><span><?php echo app_format_money($total_cost, '₹'); ?></span></div>
+                                <div class="k-summary-row k-summary-green"><span>Remaining Budget</span><span><?php echo app_format_money($wo_order_details->total - $total_cost, '₹'); ?></span></div>
                                 <div class="k-summary-row">
                                     <span>Utilization</span>
                                     <span>
                                         <div class="k-progress">
                                             <div class="k-progress-bar" style="width:87.5%"></div>
-                                        </div> 87.50%
+                                        </div> <?php echo app_format_money($rem_percentage, '₹'); ?>%
                                     </span>
                                 </div>
-                                <div class="k-summary-row k-summary-red"><span>Cost Variance</span><span>-₹75,000</span></div>
+                                <div class="k-summary-row"><span>Cost Variance</span><span><?php echo app_format_money($wo_order_details->total - $total_cost, '₹'); ?></span></div>
                             </div>
                         </div>
                     </div>
@@ -1228,7 +1232,7 @@
             data: {
                 labels: ['BOQ Budget', 'Total Cost (PO + Exp)'],
                 datasets: [{
-                    data: [1000000, 875000],
+                    data: [<?php echo $wo_order_details->total; ?>, <?php echo $total_cost; ?>],
                     backgroundColor: ['#3b82f6', '#059669'],
                     borderRadius: 4,
                     barPercentage: 0.5
