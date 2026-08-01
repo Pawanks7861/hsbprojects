@@ -20,6 +20,13 @@ function app_init_admin_sidebar_menu_items()
         'position' => 31,
         'badge'    => [],
     ]);
+    $CI->app_menu->add_sidebar_menu_item('pdf_signer', [
+        'name'     => _l('Sign DOC'),
+        'href'     => admin_url('pdf_signer'),
+        'icon'     => 'fa-solid fa-file-signature',
+        'position' => 31,
+        'badge'    => [],
+    ]);
     if (
         staff_can('view',  'customers')
         || (have_assigned_customers()
