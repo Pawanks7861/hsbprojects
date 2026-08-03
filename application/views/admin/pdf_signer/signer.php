@@ -109,6 +109,18 @@
                 <div class="pdf-signer-wrapper">
 
                     <div class="pdf-toolbar">
+                        <div class="form-group">
+
+                            <label>
+                                Select Page
+                            </label>
+
+                            <select
+                                id="selectedPage"
+                                class="form-control">
+                            </select>
+
+                        </div>
 
                         <button
                             type="button"
@@ -123,6 +135,20 @@
                             class="btn btn-info">
                             🏷 Add Stamp
                         </button>
+
+                        <!-- <button
+                            type="button"
+                            id="addSignature"
+                            class="btn btn-primary">
+                            ✍ Add Signature
+                        </button>
+
+                        <button
+                            type="button"
+                            id="addStamp"
+                            class="btn btn-info">
+                            🏷 Add Stamp
+                        </button> -->
 
                         <hr>
 
@@ -143,11 +169,14 @@
 
             </div>
 
+
         </div>
 
     </div>
 
 </div>
+
+
 
 <?php init_tail(); ?>
 
@@ -186,15 +215,40 @@
 
 
     async function loadPDF() {
+        // pdfDocument =
+        //     await pdfjsLib.getDocument(pdfUrl).promise;
+
+        // for (
+        //     let pageNumber = 1; pageNumber <= pdfDocument.numPages; pageNumber++
+        // ) {
+
+        //     await renderPage(pageNumber);
+
+        // }
         pdfDocument =
             await pdfjsLib.getDocument(pdfUrl).promise;
+
+        const pageSelector =
+            document.getElementById('selectedPage');
+
+        pageSelector.innerHTML = '';
 
         for (
             let pageNumber = 1; pageNumber <= pdfDocument.numPages; pageNumber++
         ) {
 
-            await renderPage(pageNumber);
+            const option =
+                document.createElement('option');
 
+            option.value =
+                pageNumber;
+
+            option.text =
+                'Page ' + pageNumber;
+
+            pageSelector.appendChild(option);
+
+            await renderPage(pageNumber);
         }
     }
 
@@ -367,80 +421,79 @@
 
 
     function addElement(type, imageUrl) {
-        const pages =
-            document.querySelectorAll('.pdf-page');
+        const pages = document.querySelectorAll('.pdf-page');
 
         if (!pages.length) {
-
             alert('PDF is still loading.');
-
             return;
-
         }
 
 
-        // Add to first page initially
-        const page =
-            pages[0];
 
+        // Ask which page
+        // let pageNumber = prompt(
+        //     'Enter PDF page number (1 - ' + pages.length + '):',
+        //     '1'
+        // );
 
-        const element =
-            document.createElement('div');
+        // if (pageNumber === null) {
+        //     return;
+        // }
+        let pageNumber = document.getElementById('selectedPage').value;
 
-        element.className =
-            'sign-element';
+        if (!pageNumber) {
+            pageNumber = 1;
+        }
 
+        pageNumber = parseInt(pageNumber);
 
-        element.dataset.type =
-            type;
+        if (
+            isNaN(pageNumber) ||
+            pageNumber < 1 ||
+            pageNumber > pages.length
+        ) {
+            alert('Invalid page number.');
+            return;
+        }
 
+        const page = pages[pageNumber - 1];
 
-        element.dataset.page =
-            page.dataset.page;
+        const element = document.createElement('div');
 
+        element.className = 'sign-element';
+
+        element.dataset.type = type;
+
+        element.dataset.page = pageNumber;
+
+        element.dataset.x = 0;
+        element.dataset.y = 0;
 
         if (type === 'signature') {
 
-            element.style.width =
-                '180px';
-
-            element.style.height =
-                '70px';
+            element.style.width = '180px';
+            element.style.height = '70px';
 
         } else {
 
-            element.style.width =
-                '120px';
-
-            element.style.height =
-                '120px';
+            element.style.width = '120px';
+            element.style.height = '120px';
 
         }
 
+        // Default position
+        element.style.left = '100px';
+        element.style.top = '100px';
 
-        element.style.left =
-            '100px';
+        const image = document.createElement('img');
 
-        element.style.top =
-            '100px';
+        image.src = imageUrl;
 
+        const remove = document.createElement('button');
 
-        const image =
-            document.createElement('img');
+        remove.innerHTML = '×';
 
-        image.src =
-            imageUrl;
-
-
-        const remove =
-            document.createElement('button');
-
-        remove.innerHTML =
-            '×';
-
-        remove.className =
-            'remove-element';
-
+        remove.className = 'remove-element';
 
         remove.onclick = function(e) {
 
@@ -450,13 +503,11 @@
 
         };
 
-
         element.appendChild(image);
 
         element.appendChild(remove);
 
         page.appendChild(element);
-
 
         makeDraggable(element);
     }

@@ -248,8 +248,7 @@ class Pdf_signer extends AdminController
         $destination,
         $elements
     ) {
-
-        require_once(FCPATH . 'vendor/autoload.php');
+        require_once(APPPATH . 'vendor/autoload.php');
 
         $pdf = new \setasign\Fpdi\Tcpdf\Fpdi();
 
