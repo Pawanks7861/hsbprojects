@@ -23,6 +23,7 @@ $(function(){
             order_date: 'required',
             vendor: 'required',
             project: 'required',
+            pur_request: 'required',
         });
     }
 
