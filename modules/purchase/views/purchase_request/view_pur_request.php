@@ -114,10 +114,10 @@
                           <td class="bold" width="30%"><?php echo _l('pur_rq_code'); ?></td>
                           <td><?php echo pur_html_entity_decode($pur_request->pur_rq_code); ?></td>
                        </tr>
-                       <tr class="project-overview">
+                       <!-- <tr class="project-overview">
                           <td class="bold"><?php echo _l('pur_rq_name'); ?></td>
                           <td><?php echo _l($pur_request->pur_rq_name); ?></td>
-                       </tr>
+                       </tr> -->
                        <tr class="project-overview">
                           <td class="bold"><?php echo _l('purchase_requestor'); ?></td>
                           <td><?php $_data = '<a href="' . admin_url('staff/profile/' . $pur_request->requester) . '">' . staff_profile_image($pur_request->requester, [
@@ -150,7 +150,7 @@
                               
                         </td>
                       </tr>
-                      <tr class="project-overview">
+                      <!-- <tr class="project-overview">
                           <td class="bold"><?php echo _l('public_link'); ?></td>
                           <td>
                             <div class="pull-right _buttons mright5">
@@ -164,7 +164,7 @@
                               } ?>
                            </div>
                            </td>
-                       </tr>
+                       </tr> -->
                        <tr class="project-overview">
                           <td class="bold"><?php echo _l('rq_description'); ?></td>
                           <td><?php echo pur_html_entity_decode($pur_request->rq_description); ?></td>
@@ -188,14 +188,14 @@
                                  <tr>
                                
                                   <th width="20%" align="left"><?php echo _l('debit_note_table_item_heading'); ?></th>
-                                  <th width="15%" align="right" class="qty"><?php echo _l('decription'); ?></th>
+                                  <th width="15%" align="left" class="qty"><?php echo _l('decription'); ?></th>
                                   <th width="10%" align="right" class="qty"><?php echo _l('purchase_quantity'); ?></th>
-                                  <th width="10%" align="right"><?php echo _l('unit_price'); ?></th>
+                                  <!-- <th width="10%" align="right"><?php echo _l('unit_price'); ?></th>
                                   
                                   <th width="10%" align="right"><?php echo _l('subtotal_before_tax'); ?></th>
                                   <th width="15%" align="right"><?php echo _l('debit_note_table_tax_heading'); ?></th>
                                   <th width="10%" align="right"><?php echo _l('tax_value'); ?></th>
-                                  <th width="10%" align="right"><?php echo _l('debit_note_total'); ?></th>
+                                  <th width="10%" align="right"><?php echo _l('debit_note_total'); ?></th> -->
                                  </tr>
                               </thead>
                               <tbody class="ui-sortable">
@@ -222,9 +222,9 @@
                                     <?php
                                        $unit_name = pur_get_unit_name($es['unit_id']); 
                                     ?>
-                                    <td align="right"><?php echo nl2br($es['description']); ?></td>
+                                    <td align="left"><?php echo nl2br($es['description']); ?></td>
                                     <td align="right"  width="12%"><?php echo pur_html_entity_decode($es['quantity']). ' '.$unit_name; ?></td>
-                                    <td align="right"><?php echo app_format_money($es['unit_price'],$base_currency->symbol); ?></td>
+                                    <!-- <td align="right"><?php echo app_format_money($es['unit_price'],$base_currency->symbol); ?></td>
                                     <td align="right"><?php echo app_format_money($es['into_money'],$base_currency->symbol); ?></td>
                                     <td align="right"><?php 
                                     if($es['tax_name'] != ''){
@@ -250,7 +250,7 @@
                                     ?></td>
                                     <td align="right"><?php echo app_format_money($es['tax_value'], $base_currency->symbol); ?></td>
                                 
-                                    <td class="amount" align="right"><?php echo app_format_money($es['total'],$base_currency->symbol); ?></td>
+                                    <td class="amount" align="right"><?php echo app_format_money($es['total'],$base_currency->symbol); ?></td> -->
                                  </tr>
                               <?php 
                               
@@ -259,42 +259,6 @@
                            </table>
                         </div>
 
-
-                  </div>
-                   <div class="col-md-6 col-md-offset-6">
-                     <table class="table text-right mbot0">
-                       <tbody>
-                          <tr id="subtotal">
-                             <td class="td_style"><span class="bold"><?php echo _l('subtotal'); ?></span>
-                             </td>
-                             <td width="65%" id="total_td">
-                              
-                               <?php echo app_format_money($_subtotal, $base_currency->symbol); ?>
-                             </td>
-                          </tr>
-                        </tbody>
-                      </table>
-
-                      <table class="table text-right">
-                       <tbody id="tax_area_body">
-                          <?php if(isset($pur_request)){ 
-                            echo $taxes_data['html'];
-                            ?>
-                          <?php } ?>
-                       </tbody>
-                      </table>
-
-                      <table class="table text-right">
-                       <tbody id="tax_area_body">
-                          <tr id="total">
-                             <td class="td_style"><span class="bold"><?php echo _l('total'); ?></span>
-                             </td>
-                             <td width="65%" id="total_td">
-                               <?php echo app_format_money($_total, $base_currency->symbol); ?>
-                             </td>
-                          </tr>
-                       </tbody>
-                      </table>
 
                   </div>
                   <?php echo form_hidden('request_detail'); ?>

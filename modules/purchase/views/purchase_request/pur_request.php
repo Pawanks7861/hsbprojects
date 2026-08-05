@@ -30,10 +30,10 @@
                       <?php $pur_rq_code = ( isset($pur_request) ? $pur_request->pur_rq_code : $prefix.'-'.str_pad($next_number,5,'0',STR_PAD_LEFT).'-'.date('Y'));
                       echo render_input('pur_rq_code','pur_rq_code',$pur_rq_code ,'text',array('readonly' => '')); ?>
                     </div>
-                    <div class="col-md-6">
+                    <!-- <div class="col-md-6">
                       <?php $pur_rq_name = ( isset($pur_request) ? $pur_request->pur_rq_name : '');
                       echo render_input('pur_rq_name','pur_rq_name', $pur_rq_name); ?>
-                    </div>
+                    </div> -->
 
                     <?php 
                       $project_id = '';
@@ -54,16 +54,7 @@
                             <br><br>
                         </div>
 
-                        <div class="col-md-3 form-group">
-                          <label for="sale_estimate"><?php echo _l('sale_estimate'); ?></label>
-                            <select name="sale_estimate" id="sale_estimate" onchange="coppy_sale_estimate(); return false;" class="selectpicker" data-live-search="true" data-width="100%" data-none-selected-text="<?php echo _l('ticket_settings_none_assigned'); ?>">
-                              <option value=""></option>
-                              <?php foreach($salse_estimates as $s) { ?>
-                                <option value="<?php echo pur_html_entity_decode($s['id']); ?>" <?php if(isset($pur_request) && $s['id'] == $pur_request->sale_estimate){ echo 'selected'; } ?>><?php echo format_estimate_number($s['id']); ?></option>
-                                <?php } ?>
-                            </select>
-                            <br><br>
-                        </div>
+                        
 
                           <div class="col-md-3 form-group">
                             <label for="type"><?php echo _l('type'); ?></label>
@@ -95,7 +86,7 @@
                       </div>
                   </div>
 
-                    <div class="col-md-3 form-group">
+                    <!-- <div class="col-md-3 form-group">
                       <label for="department"><?php echo _l('department'); ?></label>
                         <select name="department" id="department" class="selectpicker" onchange="department_change(this); return false;" data-live-search="true" data-width="100%" data-none-selected-text="<?php echo _l('ticket_settings_none_assigned'); ?>">
                           <option value=""></option>
@@ -104,7 +95,7 @@
                             <?php } ?>
                         </select>
                         <br><br>
-                    </div>
+                    </div> -->
 
                     <!--<div class="col-md-3 form-group ">-->
                     <!--  <label for="sale_invoice"><?php echo _l('sale_invoice'); ?></label>-->
@@ -129,20 +120,7 @@
                         <br><br>
                     </div>
                     
-                    <!--<div class="col-md-3 form-group">-->
-                    <!--  <label for="send_to_vendors"><?php echo _l('pur_send_to_vendors'); ?></label>-->
-                    <!--  <select name="send_to_vendors[]" id="send_to_vendors" class="selectpicker" multiple="true" data-live-search="true" data-width="100%" data-none-selected-text="<?php echo _l('ticket_settings_none_assigned'); ?>" >-->
-                           <?php
-                        //     if(isset($pur_request)) {
-                        //       $vendors_arr = explode(',', $pur_request->send_to_vendors ?? '');
-                        //     }
-                        //   ?>
-
-                    <!--      <?php foreach($vendors as $s) { ?>-->
-                    <!--      <option value="<?php echo pur_html_entity_decode($s['userid']); ?>" <?php if(isset($pur_request) && in_array($s['userid'], $vendors_arr)){ echo 'selected';  } ?> ><?php echo pur_html_entity_decode($s['company']); ?></option>-->
-                    <!--        <?php } ?>-->
-                    <!--  </select>  -->
-                    <!--</div>-->
+                    
 
                     <div class="col-md-12">
                       <?php $rq_description = ( isset($pur_request) ? $pur_request->rq_description : '');
@@ -239,14 +217,14 @@
                           <thead>
                             <tr>
                               <th></th>
-                              <th width="15%" align="left"><i class="fa fa-exclamation-circle" aria-hidden="true" data-toggle="tooltip" data-title="<?php echo _l('item_description_new_lines_notice'); ?>"></i> <?php echo _l('debit_note_table_item_heading'); ?></th>
-                              <th width="15%" align="right"><?php echo _l('description'); ?></th>
-                              <th width="10%" align="right"><?php echo _l('unit_price'); ?><span class="th_currency"><?php echo '('.$pur_request_currency->name.')'; ?></span></th>
-                              <th width="10%" align="right" class="qty"><?php echo _l('purchase_quantity'); ?></th>
-                              <th width="10%" align="right"><?php echo _l('subtotal'); ?><span class="th_currency"><?php echo '('.$pur_request_currency->name.')'; ?></span></th>
-                              <th width="10%" align="right"><?php echo _l('debit_note_table_tax_heading'); ?></th>
-                              <th width="10%" align="right"><?php echo _l('tax_value'); ?><span class="th_currency"><?php echo '('.$pur_request_currency->name.')'; ?></span></th>
-                              <th width="10%" align="right"><?php echo _l('debit_note_total'); ?><span class="th_currency"><?php echo '('.$pur_request_currency->name.')'; ?></span></th>
+                              <th width="25%" align="left"><i class="fa fa-exclamation-circle" aria-hidden="true" data-toggle="tooltip" data-title="<?php echo _l('item_description_new_lines_notice'); ?>"></i> <?php echo _l('debit_note_table_item_heading'); ?></th>
+                              <th width="25%" align="right"><?php echo _l('description'); ?></th>
+                              <!-- <th width="10%" align="right"><?php echo _l('unit_price'); ?><span class="th_currency"><?php echo '('.$pur_request_currency->name.')'; ?></span></th> -->
+                              <th width="25%" align="right" class="qty"><?php echo _l('purchase_quantity'); ?></th>
+                              <!-- <th width="10%" align="right"><?php echo _l('subtotal'); ?><span class="th_currency"><?php echo '('.$pur_request_currency->name.')'; ?></span></th> -->
+                              <!-- <th width="10%" align="right"><?php echo _l('debit_note_table_tax_heading'); ?></th> -->
+                              <!-- <th width="10%" align="right"><?php echo _l('tax_value'); ?><span class="th_currency"><?php echo '('.$pur_request_currency->name.')'; ?></span></th> -->
+                              <!-- <th width="10%" align="right"><?php echo _l('debit_note_total'); ?><span class="th_currency"><?php echo '('.$pur_request_currency->name.')'; ?></span></th> -->
                               <th align="right"><i class="fa fa-cog"></i></th>
                             </tr>
                           </thead>
@@ -261,75 +239,7 @@
 
                   <div class="col-md-6 pright0 col-md-offset-6">
                      <table class="table text-right mbot0">
-                       <tbody>
-                          <tr id="subtotal">
-                             <td class="td_style"><span class="bold"><?php echo _l('subtotal'); ?></span>
-                             </td>
-                             <td width="65%" id="total_td">
-                              
-                               <div class="input-group" id="discount-total">
-
-                                      <input type="text" readonly="true"  class="form-control text-right" name="subtotal" value="<?php if(isset($pur_request)){ echo app_format_money($pur_request->subtotal,''); } ?>">
-
-                                     <div class="input-group-addon">
-                                        <div class="dropdown">
-                                           
-                                           <span class="discount-type-selected currency_span" id="subtotal_currency">
-                                            <?php 
-                                              if(!isset($pur_request)){
-                                                echo pur_html_entity_decode($base_currency->symbol); 
-                                              }else{
-                                                if($pur_request->currency != 0){
-                                                  $_currency_symbol = pur_get_currency_name_symbol($pur_request->currency, 'symbol');
-                                                  echo pur_html_entity_decode($_currency_symbol); 
-
-                                                }else{
-                                                  echo pur_html_entity_decode($base_currency->symbol); 
-                                                }
-                                              }
-                                            ?>
-                                           </span>
-                                           
-                                           
-                                        </div>
-                                     </div>
-
-                                  </div>
-                             </td>
-                          </tr>
-
-                          <tr id="total">
-                             <td class="td_style"><span class="bold"><?php echo _l('total'); ?></span>
-                             </td>
-                             <td width="65%" id="total_td">
-                               <div class="input-group" id="total">
-                                     <input type="text" readonly="true" class="form-control text-right" name="total_mn" value="<?php if(isset($pur_request)){ echo app_format_money($pur_request->total,''); } ?>">
-                                     <div class="input-group-addon">
-                                        <div class="dropdown">
-                                           
-                                           <span class="discount-type-selected currency_span">
-                                            <?php 
-                                              if(!isset($pur_request)){
-                                                echo pur_html_entity_decode($base_currency->symbol); 
-                                              }else{
-                                                if($pur_request->currency != 0){
-                                                  $_currency_symbol = pur_get_currency_name_symbol($pur_request->currency, 'symbol');
-                                                  echo pur_html_entity_decode($_currency_symbol); 
-
-                                                }else{
-                                                  echo pur_html_entity_decode($base_currency->symbol); 
-                                                }
-                                              }
-                                            ?>
-                                           </span>
-                                        </div>
-                                     </div>
-
-                                  </div>
-                             </td>
-                          </tr>
-                        </tbody>
-                      </table>
+                     
 
 
                   </div>

@@ -594,7 +594,7 @@ class purchase extends AdminController
                         $item_text = pur_get_item_variatiom($request_detail['item_code']);
                     }
 
-                    $purchase_request_row_template .= $this->purchase_model->create_purchase_request_row_template('items[' . $index_request . ']', $request_detail['item_code'], $item_text, $request_detail['description'], $request_detail['unit_price'], $request_detail['quantity'], $unit_name, $request_detail['unit_id'], $request_detail['into_money'], $request_detail['prd_id'], $request_detail['tax_value'], $request_detail['total'], $request_detail['tax_name'], $request_detail['tax_rate'], $request_detail['tax'], true, $currency_rate, $to_currency);
+                    $purchase_request_row_template .= $this->purchase_model->create_purchase_request_row_template('items[' . $index_request . ']', $request_detail['item_code'], $item_text, $request_detail['description'], $request_detail['quantity'], $unit_name, $request_detail['unit_id'], $request_detail['prd_id'], true, $currency_rate, $to_currency);
                 }
             }
         }
@@ -7426,20 +7426,15 @@ class purchase extends AdminController
         $name = $this->input->post('name');
         $item_text = $this->input->post('item_text');
         $item_description = $this->input->post('item_description');
-        $unit_price = $this->input->post('unit_price');
         $quantity = $this->input->post('quantity');
         $unit_name = $this->input->post('unit_name');
         $unit_id = $this->input->post('unit_id');
-        $into_money = $this->input->post('into_money');
-        $item_key = $this->input->post('item_key');
-        $tax_value = $this->input->post('tax_value');
-        $tax_name = $this->input->post('taxname');
-        $total = $this->input->post('total');
         $item_code = $this->input->post('item_code');
         $currency_rate = $this->input->post('currency_rate');
         $to_currency = $this->input->post('to_currency');
+        $item_key = $this->input->post('item_key');
 
-        echo $this->purchase_model->create_purchase_request_row_template($name, $item_code, $item_text, $item_description, $unit_price, $quantity, $unit_name, $unit_id, $into_money, $item_key, $tax_value, $total, $tax_name, '', '', false, $currency_rate, $to_currency);
+        echo $this->purchase_model->create_purchase_request_row_template($name, $item_code, $item_text, $item_description, $quantity, $unit_name, $unit_id,$item_key, false, $currency_rate, $to_currency);
     }
 
     /**

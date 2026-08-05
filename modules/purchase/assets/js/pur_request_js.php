@@ -14,7 +14,7 @@ function validate_purrequest_form(selector) {
     selector = typeof(selector) == 'undefined' ? '#add_edit_pur_request-form' : selector;
 
     appValidateForm($(selector), {
-        pur_rq_code:'required', pur_rq_name:'required', currency:'required', project:'required'
+        pur_rq_code:'required', currency:'required', project:'required'
     });
 }
 
@@ -257,7 +257,7 @@ function tax_rate_by_id(tax_id){
   return tax_rate;
 }
 
-function pur_get_item_row_template(name, item_code, item_text, description, unit_price, quantity, unit_name, unit_id, into_money, item_key, tax_value, total, taxname, currency_rate, to_currency)  {
+function pur_get_item_row_template(name, item_code, item_text, description, quantity, unit_name, unit_id,item_key, currency_rate, to_currency)  {
   "use strict";
 
   jQuery.ajaxSetup({
@@ -268,16 +268,11 @@ function pur_get_item_row_template(name, item_code, item_text, description, unit
     name: name,
     item_text : item_text,
     item_description : description,
-    unit_price : unit_price,
     quantity : quantity,
     unit_name : unit_name,
     unit_id : unit_id,
-    into_money : into_money,
-    item_key : item_key,
-    tax_value : tax_value,
-    taxname : taxname,
-    total : total,
     item_code : item_code,
+    item_key: item_key,
     currency_rate: currency_rate,
     to_currency: to_currency
   });
@@ -304,7 +299,7 @@ function pur_add_item_to_table(data, itemid) {
   var item_key = lastAddedItemKey ? lastAddedItemKey += 1 : $("body").find('.invoice-items-table tbody .item').length + 1;
   lastAddedItemKey = item_key;
   $("body").append('<div class="dt-loader"></div>');
-  pur_get_item_row_template('newitems[' + item_key + ']', data.item_code, data.item_text, data.description, data.unit_price,data.quantity, data.unit_name, data.unit_id, data.into_money, item_key, data.tax_value, data.total, data.taxname, currency_rate, to_currency).done(function(output){
+  pur_get_item_row_template('newitems[' + item_key + ']', data.item_code, data.item_text, data.description,data.quantity, item_key, currency_rate, to_currency).done(function(output){
     table_row += output;
 
     $('.invoice-item table.invoice-items-table.items tbody').append(table_row);
@@ -355,12 +350,6 @@ function pur_get_item_preview_values() {
   response.quantity = $('.invoice-item .main input[name="quantity"]').val();
   response.unit_name = $('.invoice-item .main input[name="unit_name"]').val();
   response.unit_id = $('.invoice-item .main input[name="unit_id"]').val();
-  response.unit_price = $('.invoice-item .main input[name="unit_price"]').val();
-  response.taxname = $('.main select.taxes').selectpicker('val');
-  response.tax_rate = $('.invoice-item .main input[name="tax_rate"]').val();
-  response.tax_value = $('.invoice-item .main input[name="tax_value"]').val();
-  response.into_money = $('.invoice-item .main input[name="into_money"]').val();
-  response.total = $('.invoice-item .main input[name="total"]').val();
 
   return response;
 }

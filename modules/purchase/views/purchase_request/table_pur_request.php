@@ -3,7 +3,6 @@
 defined('BASEPATH') or exit('No direct script access allowed');
 
 $aColumns = [
-    'pur_rq_code',
     'pur_rq_name',
     'requester',
     // 'department', 
@@ -147,7 +146,7 @@ foreach ($rResult as $aRow) {
             $_data = $approve_status;
 
         }elseif($aColumns[$i] == 'pur_rq_name'){
-            $name = '<a href="' . admin_url('purchase/view_pur_request/' . $aRow['id'] ).'">'.$aRow['pur_rq_name'] . '</a>';
+            $name = '<a href="' . admin_url('purchase/view_pur_request/' . $aRow['id'] ).'">'.$aRow['pur_rq_code'] . '</a>';
 
             $name .= '<div class="row-options">';
 

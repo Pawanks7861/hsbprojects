@@ -1167,23 +1167,29 @@ class Purchase_model extends App_Model
         unset($data['unit_name']);
         unset($data['request_detail']);
         unset($data['unit_id']);
-
+        unset($data['staff_id']);
+        unset($data['edit_date']);
+        unset($data['hour_attendance']);
+        unset($data['minute_attendance']);
+        unset($data['second_attendance']);
+        unset($data['date_attendance']);
+        unset($data['enable_get_location']);
 
         if (isset($data['send_to_vendors']) && count($data['send_to_vendors']) > 0) {
             $data['send_to_vendors'] = implode(',', $data['send_to_vendors']);
         }
 
-        $data['subtotal'] = reformat_currency_pur($data['subtotal'], $data['currency']);
+        $data['subtotal'] = '';
 
         if (isset($data['total_mn'])) {
-            $data['total'] = reformat_currency_pur($data['total_mn'], $data['currency']);
+            $data['total'] = '';
             unset($data['total_mn']);
         }
 
-        $data['total_tax'] = $data['total'] - $data['subtotal'];
+        $data['total_tax'] = '';
 
 
-        $dpm_name = department_pur_request_name($data['department']);
+        $dpm_name = '';
         $prefix = get_purchase_option('pur_request_prefix');
 
         $this->db->where('pur_rq_code', $data['pur_rq_code']);
@@ -1197,7 +1203,6 @@ class Purchase_model extends App_Model
         }
 
         $data['hash'] = app_generate_hash();
-
         $this->db->insert(db_prefix() . 'pur_request', $data);
         $insert_id = $this->db->insert_id();
         // $this->send_mail_to_approver($data, 'pur_request', 'purchase_request', $insert_id);
@@ -1331,17 +1336,24 @@ class Purchase_model extends App_Model
         unset($data['request_detail']);
         unset($data['isedit']);
         unset($data['unit_id']);
+        unset($data['staff_id']);
+        unset($data['edit_date']);
+        unset($data['hour_attendance']);
+        unset($data['minute_attendance']);
+        unset($data['second_attendance']);
+        unset($data['date_attendance']);
+        unset($data['enable_get_location']);
 
         if (isset($data['send_to_vendors']) && count($data['send_to_vendors']) > 0) {
             $data['send_to_vendors'] = implode(',', $data['send_to_vendors']);
         }
 
         if (isset($data['total_mn'])) {
-            $data['total'] = reformat_currency_pur($data['total_mn'], $data['currency']);
+            $data['total'] = '';
             unset($data['total_mn']);
         }
 
-        $data['total_tax'] = (float)$data['total'] -  (float)$data['subtotal'];
+        $data['total_tax'] = '';
 
         if (isset($data['from_items'])) {
             $data['from_items'] = 1;
@@ -1431,13 +1443,7 @@ class Purchase_model extends App_Model
                 $tax_id = null;
                 $tax_name = null;
 
-                if (isset($rqd['tax_select'])) {
-                    $tax_rate_data = $this->pur_get_tax_rate($rqd['tax_select']);
-                    $tax_rate_value = $tax_rate_data['tax_rate'];
-                    $tax_rate = $tax_rate_data['tax_rate_str'];
-                    $tax_id = $tax_rate_data['tax_id_str'];
-                    $tax_name = $tax_rate_data['tax_name_str'];
-                }
+                
 
                 $dt_data['tax'] = $tax_id;
                 $dt_data['tax_rate'] = $tax_rate;
@@ -1458,7 +1464,6 @@ class Purchase_model extends App_Model
                         $dt_data['item_code'] = $item_id;
                     }
                 }
-
                 $this->db->where('prd_id', $rqd['id']);
                 $this->db->update(db_prefix() . 'pur_request_detail', $dt_data);
                 if ($this->db->affected_rows() > 0) {
@@ -10100,7 +10105,7 @@ class Purchase_model extends App_Model
      * @param      array   $unit_data  The unit data
      * @param      string  $name       The name
      */
-    public function create_purchase_request_row_template($name = '', $item_code = '', $item_text = '', $item_description = '', $unit_price = '', $quantity = '', $unit_name = '', $unit_id = '', $into_money = '', $item_key = '', $tax_value = '', $total = '', $tax_name = '', $tax_rate = '', $tax_id = '', $is_edit = false, $currency_rate = 1, $to_currency = '')
+    public function create_purchase_request_row_template($name = '', $item_code = '', $item_text = '', $item_description = '', $quantity = '', $unit_name = '', $unit_id = '', $item_key = '', $is_edit = false, $currency_rate = 1, $to_currency = '')
     {
         $this->load->model('invoice_items_model');
         $row = '';
@@ -10110,15 +10115,8 @@ class Purchase_model extends App_Model
         $name_item_description = 'description';
         $name_unit_id = 'unit_id';
         $name_unit_name = 'unit_name';
-        $name_unit_price = 'unit_price';
         $name_quantity = 'quantity';
         $name_into_money = 'into_money';
-        $name_tax = 'tax';
-        $name_tax_value = 'tax_value';
-        $name_tax_name = 'tax_name';
-        $name_tax_rate = 'tax_rate';
-        $name_tax_id_select = 'tax_select';
-        $name_total = 'total';
 
         $array_rate_attr = ['min' => '0.0', 'step' => 'any'];
         $array_qty_attr = ['min' => '0.0', 'step' => 'any'];
@@ -10145,15 +10143,7 @@ class Purchase_model extends App_Model
             $name_item_description = $name . '[item_description]';
             $name_unit_id = $name . '[unit_id]';
             $name_unit_name = $name . '[unit_name]';
-            $name_unit_price = $name . '[unit_price]';
             $name_quantity = $name . '[quantity]';
-            $name_into_money = $name . '[into_money]';
-            $name_tax = $name . '[tax]';
-            $name_tax_value = $name . '[tax_value]';
-            $name_tax_name = $name . '[tax_name]';
-            $name_tax_rate = $name . '[tax_rate]';
-            $name_tax_id_select = $name . '[tax_select][]';
-            $name_total = $name . '[total]';
 
             $array_rate_attr = ['onblur' => 'pur_calculate_total();', 'onchange' => 'pur_calculate_total();', 'min' => '0.0', 'step' => 'any', 'data-amount' => 'invoice', 'placeholder' => _l('unit_price')];
 
@@ -10161,45 +10151,21 @@ class Purchase_model extends App_Model
 
             $tax_money = 0;
             $tax_rate_value = 0;
-
-            if ($is_edit) {
-                $invoice_item_taxes = pur_convert_item_taxes($tax_id, $tax_rate, $tax_name);
-                $arr_tax_rate = explode('|', $tax_rate ?? '');
-                foreach ($arr_tax_rate as $key => $value) {
-                    $tax_rate_value += (float)$value;
-                }
-            } else {
-                $invoice_item_taxes = $tax_name;
-                $tax_rate_data = $this->pur_get_tax_rate($tax_name);
-                $tax_rate_value = $tax_rate_data['tax_rate'];
-            }
-
-            if ((float)$tax_rate_value != 0) {
-                $tax_money = (float)$unit_price * (float)$quantity * (float)$tax_rate_value / 100;
-
-                $amount = (float)$unit_price * (float)$quantity + (float)$tax_money;
-            } else {
-
-                $amount = (float)$unit_price * (float)$quantity;
-            }
-
-            $into_money = (float)$unit_price * (float)$quantity;
-            $total = $amount;
         }
 
 
         $row .= '<td class="">' . render_textarea($name_item_text, '', $item_text, ['rows' => 2, 'placeholder' => _l('pur_item_name')]) . '</td>';
         $row .= '<td class="">' . render_textarea($name_item_description, '', $item_description, ['rows' => 2, 'placeholder' => _l('item_description')]) . '</td>';
-        $row .= '<td class="rate">' . render_input($name_unit_price, '', $unit_price, 'number', $array_rate_attr, [], 'no-margin', $text_right_class);
-        if ($unit_price != '') {
-            $original_price = round(($unit_price / $currency_rate), 2);
-            $base_currency = get_base_currency();
-            if ($to_currency != 0 && $to_currency != $base_currency->id) {
-                $row .= render_input('original_price', '', app_format_money($original_price, $base_currency), 'text', ['data-toggle' => 'tooltip', 'data-placement' => 'top', 'title' => _l('original_price'), 'disabled' => true], [], 'no-margin', 'input-transparent text-right pur_input_none');
-            }
+        // $row .= '<td class="rate">' . render_input($name_unit_price, '', $unit_price, 'number', $array_rate_attr, [], 'no-margin', $text_right_class);
+        // if ($unit_price != '') {
+        //     $original_price = round(($unit_price / $currency_rate), 2);
+        //     $base_currency = get_base_currency();
+        //     if ($to_currency != 0 && $to_currency != $base_currency->id) {
+        //         $row .= render_input('original_price', '', app_format_money($original_price, $base_currency), 'text', ['data-toggle' => 'tooltip', 'data-placement' => 'top', 'title' => _l('original_price'), 'disabled' => true], [], 'no-margin', 'input-transparent text-right pur_input_none');
+        //     }
 
-            $row .= '<input class="hide" name="og_price" disabled="true" value="' . $original_price . '">';
-        }
+        //     $row .= '<input class="hide" name="og_price" disabled="true" value="' . $original_price . '">';
+        // }
 
         $row .=  '</td>';
 
@@ -10208,12 +10174,12 @@ class Purchase_model extends App_Model
             render_input($name_unit_name, '', $unit_name, 'text', ['placeholder' => _l('unit'), 'readonly' => true], [], 'no-margin', 'input-transparent text-right pur_input_none') .
             '</td>';
 
-        $row .= '<td class="into_money">' . render_input($name_into_money, '', $into_money, 'number', $array_subtotal_attr, [], '', $text_right_class) . '</td>';
-        $row .= '<td class="taxrate">' . $this->get_taxes_dropdown_template($name_tax_id_select, $invoice_item_taxes, 'invoice', $item_key, true, $manual) . '</td>';
-        $row .= '<td class="tax_value">' . render_input($name_tax_value, '', $tax_value, 'number', $array_subtotal_attr, [], '', $text_right_class) . '</td>';
+        // $row .= '<td class="into_money">' . render_input($name_into_money, '', $into_money, 'number', $array_subtotal_attr, [], '', $text_right_class) . '</td>';
+        // $row .= '<td class="taxrate">' . $this->get_taxes_dropdown_template($name_tax_id_select, $invoice_item_taxes, 'invoice', $item_key, true, $manual) . '</td>';
+        // $row .= '<td class="tax_value">' . render_input($name_tax_value, '', $tax_value, 'number', $array_subtotal_attr, [], '', $text_right_class) . '</td>';
         $row .= '<td class="hide item_code">' . render_input($name_item_code, '', $item_code, 'text', ['placeholder' => _l('item_code')]) . '</td>';
         $row .= '<td class="hide unit_id">' . render_input($name_unit_id, '', $unit_id, 'text', ['placeholder' => _l('unit_id')]) . '</td>';
-        $row .= '<td class="_total">' . render_input($name_total, '', $total, 'number', $array_subtotal_attr, [], '', $text_right_class) . '</td>';
+        // $row .= '<td class="_total">' . render_input($name_total, '', $total, 'number', $array_subtotal_attr, [], '', $text_right_class) . '</td>';
 
         if ($name == '') {
             $row .= '<td><button type="button" onclick="pur_add_item_to_table(\'undefined\',\'undefined\'); return false;" class="btn pull-right btn-info"><i class="fa fa-check"></i></button></td>';
