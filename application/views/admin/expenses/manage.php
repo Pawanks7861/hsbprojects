@@ -11,6 +11,10 @@
                                 <i class="fa-regular fa-plus tw-mr-1"></i>
                                 <?php echo _l('new_expense'); ?>
                             </a>
+                            <a href="javascript:void(0);" data-toggle="modal" data-target="#addcredit" class="btn btn-primary">
+                                <i class="fa-regular fa-plus tw-mr-1"></i>
+                                <?php echo _l('Add credit'); ?>
+                            </a>
                             <!-- <a href="<?php echo admin_url('expenses/import'); ?>" class="btn btn-primary mleft5">
                                 <i class="fa-solid fa-upload tw-mr-1"></i>
                                 <?php echo _l('import_expenses'); ?>
@@ -109,8 +113,90 @@
     <!-- /.modal-dialog -->
 </div>
 <!-- /.modal -->
+
+<div class="modal fade" id="addcredit" tabindex="-1" role="dialog" aria-labelledby="addCreditLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <?php echo form_open('', [
+                'id' => 'add-credit-form'
+            ]); ?>
+
+            <div class="modal-header">
+                <button type="button"
+                    class="close"
+                    data-dismiss="modal"
+                    aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+
+                <h4 class="modal-title" id="addCreditLabel">
+                    <i class="fa-regular fa-plus"></i>
+                    <?php echo _l('Add credit'); ?>
+                </h4>
+            </div>
+
+            <div class="modal-body">
+
+                <div id="add-credit-alert"></div>
+
+                <div class="form-group">
+                    <label for="credit_amount">
+                        <?php echo _l('Amount'); ?>
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <input type="number"
+                        step="0.01"
+                        min="0.01"
+                        name="amount"
+                        id="credit_amount"
+                        class="form-control"
+                        placeholder="Enter credit amount"
+                        required>
+                </div>
+
+                <div class="form-group">
+                    <label for="credit_date">
+                        <?php echo _l('Date and time'); ?>
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <input type="datetime-local"
+                        name="credit_date"
+                        id="credit_date"
+                        class="form-control"
+                        required>
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button type="button"
+                    class="btn btn-default"
+                    data-dismiss="modal">
+                    <?php echo _l('close'); ?>
+                </button>
+
+                <button type="submit"
+                    class="btn btn-primary"
+                    id="save-credit-btn">
+
+
+                    <?php echo _l('Save'); ?>
+
+                </button>
+
+            </div>
+
+            <?php echo form_close(); ?>
+
+        </div>
+    </div>
+</div>
 <script>
-    var hidden_columns = [3,6,9,10,11];
+    var hidden_columns = [3, 6, 9, 10, 11];
 </script>
 <?php init_tail(); ?>
 <?php
@@ -118,11 +204,158 @@ echo '<script src="' . base_url('modules/project_roadmap/assets/js/plugins/highc
 echo '<script src="' . base_url('modules/project_roadmap/assets/js/plugins/highcharts/exporting.js') . '"></script>';
 ?>
 <script>
+    $(document).ready(function() {
+
+        $('#add-credit-form').on('submit', function(e) {
+
+            e.preventDefault();
+
+            var form = $(this);
+            var button = $('#save-credit-btn');
+
+            var amount = $('#credit_amount').val();
+            var creditDate = $('#credit_date').val();
+
+            if (!amount || parseFloat(amount) <= 0) {
+
+                alert_float(
+                    'danger',
+                    'Please enter a valid credit amount.'
+                );
+
+                return;
+            }
+
+            if (!creditDate) {
+
+                alert_float(
+                    'danger',
+                    'Please select date and time.'
+                );
+
+                return;
+            }
+
+            button.prop('disabled', true);
+
+            button.html(
+                '<i class="fa fa-spinner fa-spin"></i> Saving...'
+            );
+
+            $.ajax({
+
+                url: admin_url + 'credits/add_credit',
+
+                type: 'POST',
+
+                dataType: 'json',
+
+                data: {
+                    amount: amount,
+                    credit_date: creditDate,
+                    csrf_token_name: $('input[name="csrf_token_name"]').val()
+                },
+
+                success: function(response) {
+
+                    if (response.success) {
+
+                        alert_float(
+                            'success',
+                            response.message
+                        );
+
+                        $('#addcredit').modal('hide');
+
+                        form[0].reset();
+
+                        // Set current date/time again
+                        var now = new Date();
+
+                        var year = now.getFullYear();
+                        var month = String(now.getMonth() + 1).padStart(2, '0');
+                        var day = String(now.getDate()).padStart(2, '0');
+                        var hours = String(now.getHours()).padStart(2, '0');
+                        var mins = String(now.getMinutes()).padStart(2, '0');
+
+                        $('#credit_date').val(
+                            year + '-' +
+                            month + '-' +
+                            day + 'T' +
+                            hours + ':' +
+                            mins
+                        );
+
+                        /*
+                         * If you have a DataTable, reload it here.
+                         *
+                         * Example:
+                         *
+                         * $('.table-credit').DataTable().ajax.reload(null, false);
+                         */
+
+                        if (typeof initDataTable === 'function') {
+                            // Reload your DataTable here if required
+                        }
+
+                    } else {
+
+                        alert_float(
+                            'danger',
+                            response.message
+                        );
+                    }
+
+                },
+
+                error: function(xhr) {
+
+                    console.log(xhr.responseText);
+
+                    alert_float(
+                        'danger',
+                        'Something went wrong while saving credit.'
+                    );
+
+                },
+
+                complete: function() {
+
+                    button.prop('disabled', false);
+
+                    button.html(
+                        'Save'
+                    );
+
+                }
+
+            });
+
+        });
+
+    });
+</script>
+<script>
+    $(document).ready(function() {
+
+        var now = new Date();
+
+        var year = now.getFullYear();
+        var month = String(now.getMonth() + 1).padStart(2, '0');
+        var day = String(now.getDate()).padStart(2, '0');
+        var hours = String(now.getHours()).padStart(2, '0');
+        var mins = String(now.getMinutes()).padStart(2, '0');
+
+        $('#credit_date').val(
+            year + '-' + month + '-' + day + 'T' + hours + ':' + mins
+        );
+
+    });
     Dropzone.autoDiscover = false;
     $(function() {
         // initDataTable('.table-expenses', admin_url + 'expenses/table', [0], [0], {},
-        //         <?php echo hooks()->apply_filters('expenses_table_default_order', json_encode([6, 'desc'])); ?>)
-        //     .column(1).visible(false, false).columns.adjust();
+        // <?php echo hooks()->apply_filters('expenses_table_default_order', json_encode([6, 'desc'])); ?>)
+        // .column(1).visible(false, false).columns.adjust();
         var table_rec_task;
         var report_from_choose;
         var report_from = $('input[name="report-from"]');
@@ -146,7 +379,7 @@ echo '<script src="' . base_url('modules/project_roadmap/assets/js/plugins/highc
                     <?php echo hooks()->apply_filters('expenses_table_default_order', json_encode([7, 'desc'])); ?>)
                 .column(1).visible(false, false).columns.adjust();
             // initDataTable('.table-expenses', admin_url + 'expenses/table', [0], [0], Params,
-            //     [6, 'desc']);
+            // [6, 'desc']);
             $.each(Params, function(i, obj) {
                 $('select' + obj).on('change', function() {
                     table_rec_task.DataTable().ajax.reload();
@@ -225,8 +458,8 @@ echo '<script src="' . base_url('modules/project_roadmap/assets/js/plugins/highc
             });
 
             // var table_pur_payments = $('.table-expenses');
-            //   var Params = {};
-            //   initDataTable(table_pur_payments, admin_url + 'expenses/table', [], [], Params, [6, 'desc']);
+            // var Params = {};
+            // initDataTable(table_pur_payments, admin_url + 'expenses/table', [], [], Params, [6, 'desc']);
             init_expense();
 
             $('#expense_convert_helper_modal').on('show.bs.modal', function() {
