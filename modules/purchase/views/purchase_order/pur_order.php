@@ -100,13 +100,39 @@
                       ?>
                       <div class="col-md-6 form-group">
                         <label for="pur_request"><?php echo _l('pur_request'); ?></label>
-                        <select name="pur_request" id="pur_request" class="selectpicker" onchange="coppy_pur_request(); return false;" data-live-search="true" data-width="100%" data-none-selected-text="<?php echo _l('ticket_settings_none_assigned'); ?>">
-                          <option value=""></option>
+
+                        <?php
+                        $selected_pur_requests = [];
+
+                        if (isset($pur_order) && !empty($pur_order->pur_request)) {
+                          $selected_pur_requests = array_filter(
+                            array_map('trim', explode(',', $pur_order->pur_request))
+                          );
+                        }
+                        ?>
+
+                        <select name="pur_request[]"
+                          id="pur_request"
+                          class="selectpicker"
+                          onchange="coppy_pur_request(); return false;"
+                          data-live-search="true"
+                          data-width="100%"
+                          data-none-selected-text="<?php echo _l('ticket_settings_none_assigned'); ?>"
+                          multiple>
+
                           <?php foreach ($pur_request as $s) { ?>
-                            <option value="<?php echo pur_html_entity_decode($s['id']); ?>" <?php if (isset($pur_order) && $pur_order->pur_request != '' && $pur_order->pur_request == $s['id']) {
-                                                                                              echo 'selected';
-                                                                                            } ?>><?php echo pur_html_entity_decode($s['pur_rq_code'] . ' - ' . $s['pur_rq_name']); ?></option>
+
+                            <option value="<?php echo pur_html_entity_decode($s['id']); ?>"
+                              <?php echo in_array((string)$s['id'], $selected_pur_requests, true) ? 'selected' : ''; ?>>
+
+                              <?php echo pur_html_entity_decode(
+                                $s['pur_rq_code'] . ' - ' . $s['pur_rq_name']
+                              ); ?>
+
+                            </option>
+
                           <?php } ?>
+
                         </select>
                       </div>
 

@@ -1443,7 +1443,7 @@ class Purchase_model extends App_Model
                 $tax_id = null;
                 $tax_name = null;
 
-                
+
 
                 $dt_data['tax'] = $tax_id;
                 $dt_data['tax_rate'] = $tax_rate;
@@ -2414,6 +2414,13 @@ class Purchase_model extends App_Model
         if (isset($data['grand_total'])) {
             $data['total'] = $data['grand_total'];
             unset($data['grand_total']);
+        }
+        $pur_request = $data['pur_request'];
+        if (is_array($pur_request)) {
+            $pur_request = array_filter(array_map('intval', $pur_request));
+            $data['pur_request'] = implode(',', $pur_request);
+        } else {
+            $data['pur_request'] = '';
         }
 
         $this->db->insert(db_prefix() . 'pur_orders', $data);
