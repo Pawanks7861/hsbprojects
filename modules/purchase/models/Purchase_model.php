@@ -2628,7 +2628,13 @@ class Purchase_model extends App_Model
             }
             unset($data['custom_fields']);
         }
-
+        $pur_request = $data['pur_request'];
+        if (is_array($pur_request)) {
+            $pur_request = array_filter(array_map('intval', $pur_request));
+            $data['pur_request'] = implode(',', $pur_request);
+        } else {
+            $data['pur_request'] = '';
+        }
         $this->db->where('id', $id);
         $this->db->update(db_prefix() . 'pur_orders', $data);
         $this->save_purchase_files('pur_order', $id);
