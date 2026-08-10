@@ -65,7 +65,7 @@
                         $statuses,
                         array('id', 'name'),
                         'approval_status',
-                        ['2'], // Selected value
+                        ['1'], // Selected value
                         array(
                            'data-width' => '100%',
                            'data-none-selected-text' => _l('leads_all'),
