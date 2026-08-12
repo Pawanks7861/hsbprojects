@@ -562,11 +562,8 @@ if ($estimate->currency != 0) {
                         </div>
                      <?php } ?>
 
-                     <?php if ($estimate->terms != '') { ?>
-                        <div class="col-md-12 mtop15">
-                           <p class="bold text-muted"><?php echo _l('terms_and_conditions'); ?></p>
-                           <p><?php echo pur_html_entity_decode($estimate->terms); ?></p>
-                        </div>
+                     <?php if ($estimate->order_summary != '') { $order_summary_with_break = $estimate->order_summary; ?>
+                        <div style="page-break-after:always"> <?= $order_summary_with_break ?><br><b>Payment Terms: </b><?php echo get_payment_term_name($estimate->payment_days) ?></div>
                      <?php } ?>
                   </div>
                </div>
