@@ -274,7 +274,7 @@ function pur_calculate_total(from_discount_money){
       $('input[name="shipping_fee"]').val(0);
     }
 
-  $('.wh-tax-area').remove();
+    $('.wh-tax-area').remove();
 
     $.each(rows, function () {
     var item_discount = 0;

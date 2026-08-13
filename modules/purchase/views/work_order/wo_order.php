@@ -251,7 +251,7 @@
                     <div class="row">
 
 
-                      <!-- <div class="col-md-12 ">
+                      <div class="col-md-12 ">
                         <div class="form-group select-placeholder">
                           <label for="discount_type"
                             class="control-label"><?php echo _l('discount_type'); ?></label>
@@ -273,7 +273,7 @@
                                                       } ?>><?php echo _l('discount_type_after_tax'); ?></option>
                           </select>
                         </div>
-                      </div> -->
+                      </div>
                     </div>
                   </div>
                 </div>
