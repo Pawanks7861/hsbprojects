@@ -70,14 +70,16 @@ if (
     $this->ci->input->post('from_date')
     && $this->ci->input->post('from_date') != ''
 ) {
-    array_push($where, 'AND order_date >= "' . $this->ci->input->post('from_date') . '"');
+    $from_date = to_sql_date($this->ci->input->post('from_date'));
+    array_push($where, 'AND order_date >= "' . $from_date . '"');
 }
 
 if (
     $this->ci->input->post('to_date')
     && $this->ci->input->post('to_date') != ''
 ) {
-    array_push($where, 'AND order_date <= "' . $this->ci->input->post('to_date') . '"');
+    $to_date = to_sql_date($this->ci->input->post('to_date'));
+    array_push($where, 'AND order_date <= "' . $to_date . '"');
 }
 
 
