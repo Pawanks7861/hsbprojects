@@ -114,10 +114,10 @@
                           <td class="bold" width="30%"><?php echo _l('pur_rq_code'); ?></td>
                           <td><?php echo pur_html_entity_decode($pur_request->pur_rq_code); ?></td>
                        </tr>
-                       <!-- <tr class="project-overview">
+                       <tr class="project-overview">
                           <td class="bold"><?php echo _l('pur_rq_name'); ?></td>
                           <td><?php echo _l($pur_request->pur_rq_name); ?></td>
-                       </tr> -->
+                       </tr>
                        <tr class="project-overview">
                           <td class="bold"><?php echo _l('purchase_requestor'); ?></td>
                           <td><?php $_data = '<a href="' . admin_url('staff/profile/' . $pur_request->requester) . '">' . staff_profile_image($pur_request->requester, [

@@ -30,10 +30,10 @@
                       <?php $pur_rq_code = ( isset($pur_request) ? $pur_request->pur_rq_code : $prefix.'-'.str_pad($next_number,5,'0',STR_PAD_LEFT).'-'.date('Y'));
                       echo render_input('pur_rq_code','pur_rq_code',$pur_rq_code ,'text',array('readonly' => '')); ?>
                     </div>
-                    <!-- <div class="col-md-6">
+                    <div class="col-md-6">
                       <?php $pur_rq_name = ( isset($pur_request) ? $pur_request->pur_rq_name : '');
                       echo render_input('pur_rq_name','pur_rq_name', $pur_rq_name); ?>
-                    </div> -->
+                    </div>
 
                     <?php 
                       $project_id = '';

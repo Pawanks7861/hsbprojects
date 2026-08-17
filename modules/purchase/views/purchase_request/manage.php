@@ -35,6 +35,7 @@
                         </div>
                     </div>
                     <?php render_datatable(array(
+                        
                         _l('pur_rq_name'),
                         _l('requester'),
                         // _l('department'),

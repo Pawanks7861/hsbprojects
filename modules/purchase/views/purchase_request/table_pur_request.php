@@ -146,7 +146,7 @@ foreach ($rResult as $aRow) {
             $_data = $approve_status;
 
         }elseif($aColumns[$i] == 'pur_rq_name'){
-            $name = '<a href="' . admin_url('purchase/view_pur_request/' . $aRow['id'] ).'">'.$aRow['pur_rq_code'] . '</a>';
+            $name = '<a href="' . admin_url('purchase/view_pur_request/' . $aRow['id'] ).'">'.$aRow['pur_rq_name'] .'-'. $aRow['pur_rq_code'] . '</a>';
 
             $name .= '<div class="row-options">';
 
