@@ -12,6 +12,7 @@ $expense_category_name = 'expense_category';
 $payment_mode_name = 'payment_mode';
 $vendor_name = 'vendor';
 $project_name = 'project';
+$wo_item_filter_name = 'wo_item';
 // Get custom fields
 $custom_fields = get_table_custom_fields('expenses');
 
@@ -77,12 +78,21 @@ if ($this->ci->input->post('vendor') && count($this->ci->input->post('vendor')) 
     array_push($where, 'AND ' . db_prefix() . 'expenses.vendor IN (' . implode(',', $this->ci->input->post('vendor')) . ')');
 }
 
+if ($this->ci->input->post('wo_item') && $this->ci->input->post('wo_item') != '') {
+    $wo_item = $this->ci->input->post('wo_item');
+    if ($wo_item == 1) {
+        array_push($where, 'AND (' . db_prefix() . 'expenses.wo_item != "" AND ' . db_prefix() . 'expenses.wo_item IS NOT NULL)');
+    } elseif ($wo_item == 2) {
+        array_push($where, 'AND (' . db_prefix() . 'expenses.wo_item == "" OR ' . db_prefix() . 'expenses.wo_item IS NULL)');
+    }
+}
+
 $custom_date_select = $this->ci->purchase_model->get_where_report_period('' . db_prefix() . 'expenses.date');
 if ($custom_date_select != '') {
     $custom_date_select = trim($custom_date_select);
     if (!startsWith($custom_date_select, 'AND')) {
         $custom_date_select = 'AND ' . $custom_date_select;
-    } 
+    }
     array_push($where, $custom_date_select);
 }
 // Staff permissions
@@ -105,6 +115,9 @@ update_module_filter($module_name, $vendor_name, $vendor_name_value);
 
 $project_name_value = !empty($this->ci->input->post('project')) ? implode(',', $this->ci->input->post('project')) : NULL;
 update_module_filter($module_name, $project_name, $project_name_value);
+
+$wo_item_filter_name_value = !empty($this->ci->input->post('wo_item')) ? $this->ci->input->post('wo_item') : NULL;
+update_module_filter($module_name, $wo_item_filter_name, $wo_item_filter_name_value);
 
 $result = data_tables_init(
     $aColumns,
@@ -144,7 +157,7 @@ foreach ($rResult as $aRow) {
     if (is_numeric($CI->input->post('clientid'))) {
         $categoryOutput = '<a href="' . admin_url('expenses/list_expenses/' . $aRow['id']) . '">' . e($aRow['category_name']) . '</a>';
     } else {
-        $categoryOutput = '<a href="' . admin_url('expenses/list_expenses/' . $aRow['id']) . '" onclick="init_expense(' . $aRow['id'] . ');return false;">' . e($aRow['expense_code'] .'-'. $aRow['category_name']) . '</a>';
+        $categoryOutput = '<a href="' . admin_url('expenses/list_expenses/' . $aRow['id']) . '" onclick="init_expense(' . $aRow['id'] . ');return false;">' . e($aRow['expense_code'] . '-' . $aRow['category_name']) . '</a>';
     }
 
     if ($aRow['billable'] == 1) {

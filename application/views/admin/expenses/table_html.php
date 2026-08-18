@@ -113,7 +113,21 @@ if ($withBulkActions === true && $hasPermission) { ?>
     </select>
   </div>
 
-
+  <div class="col-md-3 form-group">
+    <?php
+    $wo_item_filter = get_module_filter($module_name, 'wo_item');
+    $wo_item_filter_val = !empty($wo_item_filter) ? $wo_item_filter->filter_value : '';
+    $wo_item = [
+      ['id' => 1, 'name' => _l('Yes')],
+      ['id' => 2, 'name' => _l('No')]
+    ];
+    ?>
+    <select name="wo_item" class="selectpicker" data-width="100%" data-none-selected-text="<?php echo _l('wo_item?'); ?>" data-actions-box="true">
+      <option value=""></option>
+      <option value="1" <?php echo ($wo_item_filter_val == 1) ? 'selected' : ''; ?>><?php echo _l('Yes'); ?></option>
+      <option value="2" <?php echo ($wo_item_filter_val == 2) ? 'selected' : ''; ?>><?php echo _l('No'); ?></option>
+    </select>
+  </div>
   <div class="col-md-12 form-group ">
     <a href="javascript:void(0)" class="btn btn-info btn-icon reset_all_ot_filters pull-right">
       <?php echo _l('reset_filter'); ?>

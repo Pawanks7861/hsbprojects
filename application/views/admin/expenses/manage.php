@@ -374,6 +374,7 @@ echo '<script src="' . base_url('modules/project_roadmap/assets/js/plugins/highc
                 "report_from": '[name="report-from"]',
                 "report_to": '[name="report-to"]',
                 "year_requisition": "[name='year_requisition']",
+                "wo_item": "[name='wo_item']"
             };
             initDataTable('.table-expenses', admin_url + 'expenses/table', [0], [0], Params,
                     <?php echo hooks()->apply_filters('expenses_table_default_order', json_encode([7, 'desc'])); ?>)
