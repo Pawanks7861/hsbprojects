@@ -4157,3 +4157,4 @@ $lang['form_detail'] = 'Form detail';
 $lang['purchase_widget'] = 'Purchase Orders';
 $lang['expense_dt_table_heading_vendor'] = 'Vendor';
 $lang['reset_filter'] = 'Reset Filter';
+$lang['wo_item?'] = 'WO Item?';
