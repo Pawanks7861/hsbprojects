@@ -83,7 +83,7 @@ if ($this->ci->input->post('wo_item') && $this->ci->input->post('wo_item') != ''
     if ($wo_item == 1) {
         array_push($where, 'AND (' . db_prefix() . 'expenses.wo_item != "" AND ' . db_prefix() . 'expenses.wo_item IS NOT NULL)');
     } elseif ($wo_item == 2) {
-        array_push($where, 'AND (' . db_prefix() . 'expenses.wo_item == "" OR ' . db_prefix() . 'expenses.wo_item IS NULL)');
+        array_push($where, 'AND (' . db_prefix() . 'expenses.wo_item IS NULL)');
     }
 }
 
