@@ -24,6 +24,7 @@ $(function(){
             vendor: 'required',
             project: 'required',
             pur_request: 'required',
+            wo_item : 'required',
         });
     }
 
