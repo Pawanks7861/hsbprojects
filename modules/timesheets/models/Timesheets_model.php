@@ -3506,7 +3506,7 @@ class timesheets_model extends app_model
 					}
 				} else {
 					$this->db->where('(staff_id = ' . $staff . ' or staff_id = 0)');
-					$this->db->where('number', $Day);
+					$this->db->where('number', $day_number);
 					$this->db->where('work_shift_id', $value['id']);
 					$shift_detail = $this->db->get(db_prefix() . 'work_shift_detail_number_day')->row();
 					if ($shift_detail) {
@@ -3519,6 +3519,7 @@ class timesheets_model extends app_model
 		}
 		return $list_shift_id;
 	}
+	
 
 	/**
 	 * get shift work staff by date

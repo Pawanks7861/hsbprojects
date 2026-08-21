@@ -19,34 +19,29 @@ $valid_cur_date = $this->timesheets_model->get_next_shift_date(get_staff_user_id
               <div class="scroller arrow-right"><i class="fa fa-angle-right"></i></div>
               <div class="horizontal-tabs">
                 <ul class="nav nav-tabs nav-tabs-horizontal mbot15" role="tablist">
-                  <li role="presentation" class="<?php if (!isset($tab) || (isset($tab) && $tab == 'registration_on_leave')) {
+                  <li role="presentation" class="<?php if (!isset($tab)) {
                                                     echo 'active';
                                                   } ?>">
                     <a href="#registration_on_leave" aria-controls="registration_on_leave" role="tab" data-toggle="tab">
                       <span class="glyphicon glyphicon-align-justify"></span>&nbsp;<?php echo _l('registration_on_leave'); ?>
                     </a>
                   </li>
-                  <li role="presentation" class="<?php if (isset($tab) && $tab == 'missed_punch') {
-                                                    echo 'active';
-                                                  } ?>">
-                    <a href="#missed_punch" aria-controls="missed_punch" role="tab" data-toggle="tab">
-                      <span class="glyphicon glyphicon-time"></span>&nbsp;<?php echo _l('Miss Punch'); ?>
-                    </a>
-                  </li>
-                  <li role="presentation" class="<?php if (isset($tab) && $tab == 'additional_timesheets') {
-                                                    echo 'active';
-                                                  } ?>">
-                    <a href="#additional_timesheets" aria-controls="additional_timesheets" role="tab" data-toggle="tab">
-                      <span class="glyphicon glyphicon-pencil"></span>&nbsp;<?php echo _l('Comp Off Approval'); ?>
-                    </a>
-                  </li>
+                  <?php if ($data_timekeeping_form == 'timekeeping_manually') { ?>
+                    <li role="presentation" class="<?php if (isset($tab)) {
+                                                      echo 'active';
+                                                    } ?>">
+                      <a href="#additional_timesheets" aria-controls="additional_timesheets" role="tab" data-toggle="tab">
+                        <span class="glyphicon glyphicon-pencil"></span>&nbsp;<?php echo _l('additional_timesheets'); ?>
+                      </a>
+                    </li>
+                  <?php } ?>
                 </ul>
               </div>
             </div>
             <input type="hidden" name="userid" value="<?php echo html_entity_decode($userid); ?>">
 
             <div class="tab-content active">
-              <div role="tabpanel" class="tab-pane <?php if (!isset($tab) || (isset($tab) && $tab == 'registration_on_leave')) {
+              <div role="tabpanel" class="tab-pane <?php if (!isset($tab)) {
                                                       echo 'active';
                                                     } ?>" id="registration_on_leave">
                 <div class="row">
@@ -139,7 +134,6 @@ $valid_cur_date = $this->timesheets_model->get_next_shift_date(get_staff_user_id
                   _l('reason'),
                   _l('Type'),
                   _l('status'),
-                  _l('Available Leave'),
                   _l('date_created'),
                   _l('options'),
                 );
@@ -154,56 +148,19 @@ $valid_cur_date = $this->timesheets_model->get_next_shift_date(get_staff_user_id
                   )
                 ); ?>
               </div>
-              <div role="tabpanel" class="tab-pane <?php if (isset($tab) && $tab == 'missed_punch') {
-                                                      echo 'active';
-                                                    } ?>" id="missed_punch">
-                <div class="row mtop15">
-                  <div class="col-md-12">
-                    <a href="#" onclick="btn_missed_punch(); return false;" class="btn mright5 btn-info pull-left display-block">
-                      <?php echo _l('add'); ?>
-                    </a>
-                  </div>
-                  <div class="clearfix"></div>
-                  <br>
-                  <br>
-                </div>
-
-                <div class="row">
-                  <div class="col-md-3">
-                    <select name="chose_mp" class="selectpicker" id="chose_mp" data-width="100%" data-none-selected-text="<?php echo _l('filter_by'); ?>">
-                      <option value="all"><?php echo _l('all') ?></option>
-                      <option value="my_approve"><?php echo _l('my_approve') ?></option>
-                    </select>
-                  </div>
-                  <div class="col-md-3">
-                    <select name="status_filter_mp[]" class="selectpicker" id="status_filter_mp" multiple data-width="100%" data-none-selected-text="<?php echo _l('filter_by_status'); ?>">
-                      <option value="0"><?php echo _l('status_0') ?></option>
-                      <option value="1"><?php echo _l('status_1') ?></option>
-                      <option value="2"><?php echo _l('status_-1') ?></option>
-                    </select>
-                  </div>
-                  <div class="col-md-3 leads-filter-column pull-left">
-                    <select name="department_mp[]" class="selectpicker" id="department_mp" data-width="100%" multiple data-live-search="true" data-none-selected-text="<?php echo _l('filter_by_department'); ?>">
-                      <?php foreach ($departments as $dpm) { ?>
-                        <option value="<?php echo html_entity_decode($dpm['departmentid']); ?>"><?php echo html_entity_decode($dpm['name']); ?></option>
-                      <?php } ?>
-                    </select>
-
-                  </div>
-                </div>
-                <div class="clearfix"></div>
-                <br>
-                <?php $this->load->view('missed_punch'); ?>
-              </div>
-              <div role="tabpanel" class="tab-pane <?php if (isset($tab) && $tab == 'additional_timesheets') {
+              <div role="tabpanel" class="tab-pane <?php if (isset($tab)) {
                                                       echo 'active';
                                                     } ?>" id="additional_timesheets">
 
                 <div class="row mtop15">
                   <div class="col-md-12">
-                    <a href="#" onclick="btn_additional_timesheets(); return false;" class="btn mright5 btn-info pull-left display-block">
-                      <?php echo _l('add'); ?>
-                    </a>
+                    <?php
+                    if (has_permission('additional_timesheets_management', '', 'view') || has_permission('additional_timesheets_management', '', 'view_own') || is_admin()) {
+                    ?>
+                      <a href="#" onclick="btn_additional_timesheets(); return false;" class="btn mright5 btn-info pull-left display-block">
+                        <?php echo _l('add'); ?>
+                      </a>
+                    <?php } ?>
                   </div>
                   <div class="clearfix"></div>
                   <br>
@@ -381,29 +338,19 @@ $valid_cur_date = $this->timesheets_model->get_next_shift_date(get_staff_user_id
                                     <input type="number" id="number_of_leaving_day" name="number_of_leaving_day" class="form-control" step="0.5" value="<?php echo html_entity_decode($value_number_day); ?>" aria-invalid="false">
                                   </div>
                                 </div>
-                                <div class="col-md-12 mtop10">
-                                  <lable class="control-label"> Number of Holidays: <span id="holidayCount">0</span></lable>
-                                </div>
-                                <div class="col-md-12 mtop10" id="number_days_off_new">
-                                  <label class="control-label "><?php echo _l('number_of_days_off') . ': <span class="sunday-count">0</span> '; ?></label><br>
-                                </div>
                                 <div class="col-md-12 mtop10" id="number_days_off_2">
-                                  <!-- <label class="control-label "><?php echo _l('number_of_days_off') . ': ' . $days_off; ?></label><br> -->
-
+                                  <label class="control-label "><?php echo _l('number_of_days_off') . ': ' . $days_off; ?></label><br>
                                   <label class="control-label <?php if ($number_day_off == 0) {
                                                                 echo 'text-danger';
                                                               } ?>"><?php echo _l('number_of_leave_days_allowed') . ': ' . $number_day_off; ?></label>
-                                  <!-- <input type="hidden" name="number_day_off" value="<?php echo html_entity_decode($number_day_off); ?>"> -->
-                                </div>
-                                <div class="col-md-12 hide" id="comfoff">
-                                  <label class="control-label text-danger"><span style="color : red">This request can only be submitted if you have a comp off available.</span></label>
+                                  <input type="hidden" name="number_day_off" value="<?php echo html_entity_decode($number_day_off); ?>">
                                 </div>
                               </div>
                               <br>
                               <div class="row mtop10 date_input">
 
                                 <div class="col-md-6 end_time">
-                                  <?php echo render_date_input('end_time', 'To_Date', _d($valid_cur_date), ['readonly' => true]) ?>
+                                  <?php echo render_date_input('end_time', 'To_Date', _d($valid_cur_date),['readonly' => true]) ?>
                                 </div>
                               </div>
 
@@ -522,8 +469,7 @@ $valid_cur_date = $this->timesheets_model->get_next_shift_date(get_staff_user_id
           <?php echo render_date_input('additional_day', 'additional_day'); ?>
           <?php echo render_input('time_in', 'time_in', '', 'time'); ?>
           <?php echo render_input('time_out', 'time_out', '', 'time'); ?>
-          <?php echo render_input('timekeeping_value', 'timekeeping_value', '', '', ['readonly' => true]); ?>
-          <?php echo render_input('comoff_value', 'comoff_value', '', '', ['readonly' => true]); ?>
+          <?php echo render_input('timekeeping_value', 'timekeeping_value', ''); ?>
           <?php echo render_textarea('reason', 'reason_'); ?>
         </div>
         <div class="clearfix"></div>
@@ -531,37 +477,6 @@ $valid_cur_date = $this->timesheets_model->get_next_shift_date(get_staff_user_id
       <div class="modal-footer">
         <button type="" class="btn btn-default" data-dismiss="modal"><?php echo _l('close'); ?></button>
         <button class="btn btn-info btn-additional-timesheets"><?php echo _l('submit'); ?></button>
-      </div>
-      <?php echo form_close(); ?>
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div>
-
-<div class="modal fade" id="missed_punch_modalss" tabindex="-1" role="dialog">
-  <div class="modal-dialog">
-    <?php echo form_open(admin_url('timesheets/send_missed_punch'), array('id' => 'edit_missed_punch-form')); ?>
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4>
-          <?php echo _l('Add Missed Punch'); ?>
-        </h4>
-      </div>
-      <div class="modal-body">
-        <div class="col-md-12">
-
-          <?php if (is_admin() || has_permission('additional_timesheets_specific_employees', '', 'create')) { ?>
-            <?php echo render_select('staff_id', $staffs, ['staffid', ['firstname', 'lastname']], '<i class="fa fa-question-circle i_tooltip" data-toggle="tooltip" title="" data-original-title="' . _l('ts_specific_employees_tooltip') . '"></i> ' . _l('ts_specific_employees')); ?>
-          <?php } ?>
-
-          <?php echo render_date_input('additional_day', 'additional_day'); ?>
-          <?php echo render_textarea('reason', 'reason_'); ?>
-        </div>
-        <div class="clearfix"></div>
-      </div>
-      <div class="modal-footer">
-        <button type="" class="btn btn-default" data-dismiss="modal"><?php echo _l('close'); ?></button>
-        <button class="btn btn-info btn-missed-punch"><?php echo _l('submit'); ?></button>
       </div>
       <?php echo form_close(); ?>
     </div><!-- /.modal-content -->
@@ -604,28 +519,6 @@ $valid_cur_date = $this->timesheets_model->get_next_shift_date(get_staff_user_id
         <button type="submit" class="btn btn-primary" id="saveEditLeave">Update</button>
       </div>
       <?php echo form_close(); ?>
-    </div>
-  </div>
-</div>
-<div class="modal fade" id="staffLeavesModal" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-        <h4 class="modal-title"><?php echo _l('staff_leaves_balance'); ?></h4>
-      </div>
-      <div class="modal-body">
-        <div class="text-center">
-          <i class="fa fa-spinner fa-spin fa-2x"></i>
-          <br>
-          <!-- <span>' . _l('please_wait') . '</span> -->
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal"><?php echo _l('close'); ?></button>
-      </div>
     </div>
   </div>
 </div>

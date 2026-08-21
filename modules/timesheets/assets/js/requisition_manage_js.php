@@ -2,7 +2,6 @@
   var addnewkpi;
   var table_registration_leave = $('table.table-table_registration_leave');
   var table_additional_timesheets = $('table.table-table_additional_timesheets');
-  var table_missed_punch = $('table.table-table_missed_punch');
   var rest_time = 0;
   var time = 0;
   var hour_working;
@@ -58,12 +57,6 @@
       "department_ats": "[name='department_ats[]']",
     };
 
-    var missedpunchServerParams = {
-      "status_filter_mp": "[name='status_filter_mp[]']",
-      "chose_mp": "[name='chose_mp']",
-      "department_mp": "[name='department_mp[]']",
-    };
-
     initDataTable(table_additional_timesheets, admin_url + 'timesheets/table_additional_timesheets', [0], [0], addtimesheetServerParams, [3, 'desc']);
     $.each(addtimesheetServerParams, function() {
       $('#status_filter_ats').on('change', function() {
@@ -86,27 +79,6 @@
 
       $('#department_ats').on('change', function() {
         table_additional_timesheets.DataTable().ajax.reload()
-          .columns.adjust()
-          .responsive.recalc();
-      });
-    });
-
-    initDataTable(table_missed_punch, admin_url + 'timesheets/table_missed_punch', [0], [0], missedpunchServerParams, [2, 'desc']);
-    $.each(addtimesheetServerParams, function() {
-      $('#status_filter_mp').on('change', function() {
-        table_missed_punch.DataTable().ajax.reload()
-          .columns.adjust()
-          .responsive.recalc();
-      });
-
-      $('#chose_mp').on('change', function() {
-        table_missed_punch.DataTable().ajax.reload()
-          .columns.adjust()
-          .responsive.recalc();
-      });
-
-      $('#department_mp').on('change', function() {
-        table_missed_punch.DataTable().ajax.reload()
           .columns.adjust()
           .responsive.recalc();
       });
@@ -316,13 +288,6 @@
             $('#timekeeping_value').val(time.toFixed(2));
           }
         }
-        if (time) {
-          if (time < 4.5) {
-            $('#comoff_value').val(0.5);
-          } else {
-            $('#comoff_value').val(1);
-          }
-        }
       }
     });
 
@@ -350,13 +315,6 @@
             $('#timekeeping_value').val(0);
           } else {
             $('#timekeeping_value').val(time.toFixed(2));
-          }
-        }
-        if (time) {
-          if (time < 4.5) {
-            $('#comoff_value').val(0.5);
-          } else {
-            $('#comoff_value').val(1);
           }
         }
       }
@@ -511,17 +469,6 @@
       additional_day: 'required'
     });
 
-    $("#edit_missed_punch-form").submit(function(e) {
-      "use strict";
-      if ($("#edit_missed_punch-form").valid()) {
-        $('.btn-missed-punch').text('Processing ...');
-        $('.btn-missed-punch').attr('disabled', true);
-      }
-    });
-    appValidateForm($('#edit_missed_punch-form'), {
-      additional_day: 'required'
-    });
-
     $('input[name="start_time_s"]').change(function() {
       start_time_check('input[name="start_time_s"]', 'input[name="end_time_s"]');
     });
@@ -533,23 +480,19 @@
     $('input[name="start_time"]').change(function() {
       var res = start_time_check('input[name="start_time"]', 'input[name="end_time"]');
       if (res) {
-        get_day_from_date();
+        // get_day_from_date();
       }
     });
 
     $('input[name="end_time"]').change(function() {
       var res = end_time_check('input[name="start_time"]', 'input[name="end_time"]');
       if (res) {
-        get_day_from_date();
+        // get_day_from_date();
       }
     });
 
     $('input[name="number_of_leaving_day"]').change(function() {
       get_date(this);
-      setTimeout(() => {
-        calculateSundays();
-        calculateHolidays();
-      }, 3000);
     });
 
     $('input[name="number_of_leaving_day"]').focusin(function() {
@@ -576,9 +519,8 @@
       $('#requisition-form .btn-submit').attr('disabled', true);
     }
     $('input[name="userid"]').val(staff_id);
-    $('#comfoff').addClass('hide');
     var current_date = $('input[name="current_date"]').val();
-    // $('input[name="number_of_leaving_day"]').val(0.5);
+    $('input[name="number_of_leaving_day"]').val(0.5);
     $.post(admin_url + 'timesheets/get_remain_day_of/' + staff_id + '/' + type_of_leave).done(function(response) {
       response = JSON.parse(response);
       $('#number_days_off_2').html(response.html);
@@ -588,14 +530,10 @@
       if (rel_type == '1') {
         var number_day_off = $('input[name="number_day_off"]').val();
         var number_of_leaving_day = $('input[name="number_of_leaving_day"]').val();
-        if (type_of_leave == 'compensatory-off') {
-          if (parseFloat(number_of_leaving_day) > parseFloat(number_day_off)) {
-            $('#requisition-form .btn-submit').attr('disabled', 'true');
-            $('#comfoff').removeClass('hide');
-          } else {
-            $('#requisition-form .btn-submit').removeAttr('disabled');
-            $('#comfoff').addClass('hide');
-          }
+        if (parseFloat(number_of_leaving_day) > parseFloat(number_day_off)) {
+          $('#requisition-form .btn-submit').attr('disabled', 'true');
+        } else {
+          $('#requisition-form .btn-submit').removeAttr('disabled');
         }
       }
     });
@@ -604,11 +542,6 @@
   function btn_additional_timesheets() {
     "use strict";
     $('#additional_timesheets_modalss').modal();
-  }
-
-  function btn_missed_punch() {
-    "use strict";
-    $('#missed_punch_modalss').modal();
   }
 
   function new_requisition() {
@@ -984,147 +917,12 @@
     }
     return result;
   }
-
-  function edit_leave(staff_id, start_time, end_time, leave_id) {
+  function edit_leave(staff_id,start_time,end_time,leave_id) {
     "use strict";
     $('#editLeaveModal').modal('show');
     $('#update_staff_id').val(staff_id);
     $('#update_start_time').val(start_time);
     $('#update_end_time').val(end_time);
     $('#update_leave_id').val(leave_id);
-  }
-
-
-  function view_missed_punch(id) {
-    "use strict";
-    $.post(admin_url + 'timesheets/get_data_missed_punch/' + id).done(function(response) {
-      response = JSON.parse(response);
-      $('#missed_punch_modal').html('');
-
-      $('#missed_punch_modal').append(response.html);
-
-      $('#missed_punch_modal').modal('show');
-      $('select[name="approver_c"]').selectpicker('refresh');
-    });
-  }
-
-  function calculateSundays() {
-    // Get start_time and end_time values
-    const startTime = document.getElementById('start_time').value;
-    const endTime = $('input[name="end_time"]').val();
-    console.log(endTime);
-    // If either value is empty, return
-    if (!startTime || !endTime) {
-      return;
-    }
-
-    // Parse DD-MM-YYYY format
-    function parseDMMY(dateString) {
-      const parts = dateString.split('-');
-      if (parts.length === 3) {
-        const day = parseInt(parts[0], 10);
-        const month = parseInt(parts[1], 10) - 1; // Months are 0-indexed in JavaScript
-        const year = parseInt(parts[2], 10);
-        return new Date(year, month, day);
-      }
-      return new Date(dateString); // Fallback to default parsing
-    }
-
-    // Convert to Date objects
-    const startDate = parseDMMY(startTime);
-    const endDate = parseDMMY(endTime);
-
-    // Validate dates
-    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
-      alert('Invalid date format');
-      return;
-    }
-
-    if (startDate > endDate) {
-      alert('Start date cannot be after end date');
-      return;
-    }
-
-    let sundayCount = 0;
-    const currentDate = new Date(startDate);
-
-    // Loop through each day from start to end date
-    while (currentDate <= endDate) {
-      // Check if current day is Sunday (0 = Sunday in JavaScript)
-      if (currentDate.getDay() === 0) {
-        sundayCount++;
-      }
-
-      // Move to next day
-      currentDate.setDate(currentDate.getDate() + 1);
-    }
-
-    // Update the HTML element
-    const daysOffElement = document.getElementById('number_days_off_new');
-
-    // Update or create the display text
-    let displayText = daysOffElement.querySelector('.sunday-count');
-    if (!displayText) {
-      displayText = document.createElement('span');
-      displayText.className = 'sunday-count';
-      daysOffElement.appendChild(displayText);
-    }
-
-    displayText.textContent = sundayCount;
-
-    return sundayCount;
-  }
-
-  function calculateHolidays() {
-    let startDateVal = $('input[name="start_time"]').val();
-    let endDateVal = $('input[name="end_time"]').val();
-
-    if (!startDateVal || !endDateVal) {
-      console.log('Start date or end date is missing');
-      return;
-    }
-
-    // If your dates are already in YYYY-MM-DD format, use them directly
-    // If they're in another format, convert them here
-
-    // For example, if dates are in DD/MM/YYYY format:
-    // startDateVal = convertDateFormat(startDateVal);
-    // endDateVal = convertDateFormat(endDateVal);
-
-    $.ajax({
-      url: '<?php echo base_url("timesheets/get_holidays"); ?>',
-      type: 'POST',
-      dataType: 'json',
-      data: {
-        start_date: startDateVal, // Use directly if already in correct format
-        end_date: endDateVal
-      },
-      success: function(response) {
-        if (response.success) {
-          let holidayCount = response.holiday_count;
-          $('#holidayCount').text(holidayCount);
-          console.log('Number of holidays: ' + holidayCount);
-        } else {
-          console.log('Error fetching holidays');
-        }
-      },
-      error: function(xhr, status, error) {
-        console.log('AJAX error: ' + error);
-      }
-    });
-  }
-
-  function openStaffLeavesModal(staffId) {
-    $.ajax({
-      url: admin_url + 'timesheets/get_staff_leaves_balance/' + staffId,
-      type: 'GET',
-      success: function(response) {
-        $('#staffLeavesModal .modal-body').html(response);
-        $('#staffLeavesModal').modal('show');
-      },
-      error: function(error) {
-        alert_float('danger', 'Failed to load leaves data');
-      }
-    });
   }
 </script>
