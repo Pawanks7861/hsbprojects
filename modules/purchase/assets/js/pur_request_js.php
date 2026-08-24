@@ -14,7 +14,7 @@ function validate_purrequest_form(selector) {
     selector = typeof(selector) == 'undefined' ? '#add_edit_pur_request-form' : selector;
 
     appValidateForm($(selector), {
-        pur_rq_code:'required', currency:'required', project:'required'
+        pur_rq_code:'required', currency:'required', project:'required', pur_rq_name:'required'
     });
 }
 
