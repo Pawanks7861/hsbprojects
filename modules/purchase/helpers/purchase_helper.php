@@ -3382,13 +3382,13 @@ function get_by_deafult_order_summary()
 <p><b>7. Quantities</b></p>
 <p class="p14">Quantities mentioned in BOQ are estimated Quantities subject to variation &amp; omission at any extent. Actual executed quantities will be paid. Variation of the quantities to any extent shall not attract any compensation or any rise in Item Rates.</p>
 <p><b>8. Payment Terms</b></p>
-<ul class="ul1">
-<li class="li3"><span class="s3"></span>20% of the contract value will be paid to the contractor as a mobilization advance.</li>
-<li class="li3"><span class="s3"></span>40% Payment Against Material delivery @ prorate basis.</li>
-<li class="li3"><span class="s3"></span>25% Against Approved Running Bill as per work done.</li>
-<li class="li3"><span class="s3"></span>10% payment upon successful completion and handover.</li>
-<li class="li3"><span class="s3"></span>5% Cash Retention during Contract in each RA Bill and Final bill, which will be released on successful completion of Defects liability period.</li>
-</ul>
+<p>100% after final bill certification every month.
+The Contractor shall provide a weekly labour advance (Kharchi) of ₹1,500/- to each labour.
+Deduction of ₹500/- if anyone obey safety laws.
+TDS of 1.00% in every bill amount will be deducted.
+Administration charges of 2.00% in every RA bill for the manpower enegaged.
+Safety debit of Rs 2000 will be applicable, if any worker find defaulter.
+In case of Any accident or fatalities, the worker and contractor are responsible.</p>
 <p class="p21">Payment will be affected as per actual delivery/execution at site. Payment of final bill will be done in 30 working days from the date of Certification from Engineer and receiving all supporting documents.</p>
 <p><b>9. Payment of Final Bill</b></p>
 <p class="p14">30 days commencing on certification and receiving all supporting documents.</p>
