@@ -2704,7 +2704,9 @@ class purchase extends AdminController
             $type = 'I';
         }
 
-        $pdf->Output('purchase_order.pdf', $type);
+        $pur_order = $this->purchase_model->get_pur_order($id);
+        $pdf_name = $pur_order->pur_order_number . '-' . $pur_order->pur_order_name . '.pdf';
+        $pdf->Output($pdf_name, $type);
     }
 
     /**
@@ -7434,7 +7436,7 @@ class purchase extends AdminController
         $to_currency = $this->input->post('to_currency');
         $item_key = $this->input->post('item_key');
 
-        echo $this->purchase_model->create_purchase_request_row_template($name, $item_code, $item_text, $item_description, $quantity, $unit_name, $unit_id,$item_key, false, $currency_rate, $to_currency);
+        echo $this->purchase_model->create_purchase_request_row_template($name, $item_code, $item_text, $item_description, $quantity, $unit_name, $unit_id, $item_key, false, $currency_rate, $to_currency);
     }
 
     /**
@@ -9491,7 +9493,8 @@ class purchase extends AdminController
         $this->app->get_table_data(module_views_path('purchase', 'boq/table_boq_items'));
     }
 
-    public function boq_view($id){
+    public function boq_view($id)
+    {
         $data['wo_order_details'] = $this->purchase_model->get_wo_order_detail_with_id($id);
         $data['wo_order'] = $this->purchase_model->get_wo_order_for_boq($id);
         $data['get_vendor_list_by_name'] = $this->purchase_model->get_vendor_list_by_name($id);
@@ -9579,5 +9582,4 @@ class purchase extends AdminController
             return $this->load->view('work_order/wo_order_preview', $data, true);
         }
     }
-
 }
