@@ -2469,7 +2469,7 @@ class Warehouse_model extends App_Model
 		$data_update = [];
 
 		switch ($rel_type) {
-				//case 1: stock_import
+			//case 1: stock_import
 			case '1':
 				$data_update['approval'] = $status;
 				$this->db->where('id', $rel_id);
@@ -3157,7 +3157,7 @@ class Warehouse_model extends App_Model
 		// <td class="text_left"><b>' . _l('total_money') . '</b></td>
 		// <td class="text_right">' . $base_currency->symbol . app_format_money((float) $goods_receipt->total_money, '') . '</td>
 		// </tr>
-		
+
 		// </tbody>
 		// </table>
 		// <br><br><br>
@@ -3245,7 +3245,7 @@ class Warehouse_model extends App_Model
 		$additional_data = $data['rel_type'];
 		$object_type = $data['rel_type'];
 		switch ($data['rel_type']) {
-				// case '1 : stock_import':
+			// case '1 : stock_import':
 			case '1':
 				$type = _l('stock_import');
 				$staff_addedfrom = $this->get_goods_receipt($data['rel_id'])->addedfrom;
@@ -4080,7 +4080,7 @@ class Warehouse_model extends App_Model
 			// <td class="text_left"><b>' . _l('total_money') . '</b></td>
 			// <td class="text_right">......................................</td>
 			// </tr>
-			
+
 			// </tbody>
 			// </table>
 			// <br><br><br>
@@ -5335,9 +5335,9 @@ class Warehouse_model extends App_Model
 		/*add data tblinventory*/
 		if ($insert_id) {
 			$next_number = get_item_option('next_item_number');
-			$new_number = $next_number + 1;		
+			$new_number = $next_number + 1;
 			$this->db->where('option_name', 'next_item_number');
-            $this->db->update(db_prefix() . 'item_option',['option_val' =>  $new_number]);	
+			$this->db->update(db_prefix() . 'item_option', ['option_val' =>  $new_number]);
 			$data_inventory_min['commodity_id'] = $insert_id;
 			$data_inventory_min['commodity_code'] = $data['commodity_code'];
 			$data_inventory_min['commodity_name'] = $data['description'];
@@ -10626,7 +10626,7 @@ class Warehouse_model extends App_Model
 		unset($data['into_money']);
 		unset($data['serial_number']);
 
-		if(isset($data['save_as_draft'])) {
+		if (isset($data['save_as_draft'])) {
 			unset($data['save_as_draft']);
 			$data['approval'] = 0;
 		} else {
@@ -10834,7 +10834,7 @@ class Warehouse_model extends App_Model
 		unset($data['into_money']);
 		unset($data['serial_number']);
 
-		if(isset($data['save_as_draft'])) {
+		if (isset($data['save_as_draft'])) {
 			unset($data['save_as_draft']);
 			$data['approval'] = 0;
 		} else {
@@ -19653,10 +19653,27 @@ class Warehouse_model extends App_Model
 		return $check_status;
 	}
 
+	// public function get_all_approved_goods_receipt()
+	// {
+	// 	$this->db->where('approval', '1');
+	// 	return $this->db->get(db_prefix() . 'goods_receipt')->result_array();
+	// }
+
 	public function get_all_approved_goods_receipt()
 	{
 		$this->db->where('approval', '1');
-		return $this->db->get(db_prefix() . 'goods_receipt')->result_array();
+		$goods_receipts = $this->db->get(db_prefix() . 'goods_receipt')->result_array();
+
+		// Add concatenated display value to each record
+		foreach ($goods_receipts as &$receipt) {
+			// Get the PR order name from helper function
+			$pr_name = get_pur_name_by_id_for_wh($receipt['pr_order_id']);
+
+			// Concatenate goods_receipt_code with PR name
+			$receipt['display_text'] = $receipt['goods_receipt_code'] . ' - ' . $pr_name;
+		}
+
+		return $goods_receipts;
 	}
 
 	public function copy_manage_receipt($goods_receipt_id)

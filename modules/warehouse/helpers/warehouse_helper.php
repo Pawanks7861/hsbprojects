@@ -2098,3 +2098,11 @@ function get_item_option($name)
 function item_html_entity_decode($str){
     return html_entity_decode($str ?? '');
 }
+
+function get_pur_name_by_id_for_wh($pur_id){
+    $CI = & get_instance();
+    $CI->db->select('pur_order_number,pur_order_name');
+    $CI->db->where('id', $pur_id);
+    $pur = $CI->db->get(db_prefix() . 'pur_orders')->row();
+    return $pur->pur_order_number . ' - ' . $pur->pur_order_name;
+}
