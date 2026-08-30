@@ -9582,4 +9582,137 @@ class purchase extends AdminController
             return $this->load->view('work_order/wo_order_preview', $data, true);
         }
     }
+
+    public function table_pur_order_boq($wo_item_id = 0)
+    {
+        $aColumns = [
+            db_prefix() . 'pur_orders.pur_order_number',
+            db_prefix() . 'pur_vendor.company as vendor',
+            db_prefix() . 'pur_orders.order_date',
+
+            '(SELECT SUM(quantity)
+            FROM ' . db_prefix() . 'pur_order_detail
+            WHERE ' . db_prefix() . 'pur_order_detail.pur_order = ' . db_prefix() . 'pur_orders.id
+        ) as ordered_qty',
+
+            db_prefix() . 'pur_orders.pur_order_name',
+            db_prefix() . 'pur_orders.subtotal',
+            db_prefix() . 'pur_orders.total_tax',
+            db_prefix() . 'pur_orders.total',
+        ];
+
+        $sIndexColumn = 'id';
+
+        $sTable = db_prefix() . 'pur_orders';
+
+        $join = [
+            'LEFT JOIN ' . db_prefix() . 'pur_vendor
+            ON ' . db_prefix() . 'pur_vendor.userid = ' . db_prefix() . 'pur_orders.vendor',
+        ];
+
+        /*
+     * ONLY APPROVED PURCHASE ORDERS
+     */
+        $where = [
+            'AND ' . db_prefix() . 'pur_orders.approve_status = 2',
+        ];
+
+        /*
+     * FILTER BY WORK ORDER ITEM
+     */
+        $wo_item_id = (int) $wo_item_id;
+
+        if ($wo_item_id > 0) {
+            $where[] = 'AND ' . db_prefix() . 'pur_orders.wo_item = ' . $wo_item_id;
+        }
+
+        $result = data_tables_init(
+            $aColumns,
+            $sIndexColumn,
+            $sTable,
+            $join,
+            $where,
+            [
+                db_prefix() . 'pur_orders.id as id',
+                db_prefix() . 'pur_orders.pur_order_number as pur_order_number',
+                db_prefix() . 'pur_orders.order_date as order_date',
+                db_prefix() . 'pur_orders.pur_order_name as pur_order_name',
+                db_prefix() . 'pur_orders.subtotal as subtotal',
+                db_prefix() . 'pur_orders.total_tax as total_tax',
+                db_prefix() . 'pur_orders.total as total',
+                db_prefix() . 'pur_vendor.company as vendor',
+
+                '(SELECT SUM(quantity)
+                FROM ' . db_prefix() . 'pur_order_detail
+                WHERE ' . db_prefix() . 'pur_order_detail.pur_order = ' . db_prefix() . 'pur_orders.id
+            ) as ordered_qty',
+            ]
+        );
+
+        $output  = $result['output'];
+        $rResult = $result['rResult'];
+
+        $base_currency = get_base_currency_pur();
+
+        foreach ($rResult as $aRow) {
+
+            $row = [];
+
+            /*
+         * Purchase Order
+         */
+            $row[] = '<a href="' . admin_url('purchase/purchase_order/' . $aRow['id']) . '"
+            onclick="init_pur_order(' . $aRow['id'] . '); return false;">'
+                . $aRow['pur_order_number'] .
+                '</a>';
+
+            /*
+         * Vendor
+         */
+            $row[] = $aRow['vendor'];
+
+            /*
+         * Order Date
+         */
+            $row[] = _d($aRow['order_date']);
+
+            /*
+         * Ordered Quantity
+         */
+            $row[] = $aRow['ordered_qty'] ?? 0;
+
+            /*
+         * PO Description
+         */
+            $row[] = $aRow['pur_order_name'];
+
+            /*
+         * PO Value
+         */
+            $row[] = app_format_money(
+                $aRow['subtotal'],
+                $base_currency->symbol
+            );
+
+            /*
+         * Tax Value
+         */
+            $row[] = app_format_money(
+                $aRow['total_tax'],
+                $base_currency->symbol
+            );
+
+            /*
+         * PO Value Including Tax
+         */
+            $row[] = app_format_money(
+                $aRow['total'],
+                $base_currency->symbol
+            );
+
+            $output['aaData'][] = $row;
+        }
+
+        echo json_encode($output);
+    }
 }

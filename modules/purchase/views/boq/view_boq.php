@@ -835,69 +835,29 @@
                         <div class="k-card">
                             <h3 class="k-card-title">Purchase Order Details</h3>
                             <div class="k-table-wrap">
-                                <table class="k-table k-table-sm">
+                                <table class="k-table k-table-sm table_pur_order_boq" style="width:718px; height:272px; display:block;">
                                     <thead>
                                         <tr>
-                                            <th>PO No</th>
-                                            <th>Date</th>
-                                            <th>Vendor</th>
-                                            <th>Ordered Qty</th>
-                                            <th>Rate (₹)</th>
-                                            <th>Amount (₹)</th>
-                                            <th>Received Qty</th>
-                                            <th>Balance Qty</th>
+                                            <th><?= _l('purchase_order') ?></th>
+                                            <th><?= _l('vendor') ?></th>
+                                            <th><?= _l('order_date') ?></th>
+                                            <th><?= _l('Ordered Qty') ?></th>
+                                            <th><?= _l('po_description') ?></th>
+                                            <th><?= _l('po_value') ?></th>
+                                            <th><?= _l('tax_value') ?></th>
+                                            <th><?= _l('po_value_included_tax') ?></th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>PO-0012</td>
-                                            <td>10-Jul-2026</td>
-                                            <td>ABC Constructions Pvt. Ltd.</td>
-                                            <td>20.00</td>
-                                            <td>5,000</td>
-                                            <td>1,00,000</td>
-                                            <td>18.00</td>
-                                            <td>2.00</td>
-                                        </tr>
-                                        <tr>
-                                            <td>PO-0013</td>
-                                            <td>11-Jul-2026</td>
-                                            <td>ABC Constructions Pvt. Ltd.</td>
-                                            <td>30.00</td>
-                                            <td>5,000</td>
-                                            <td>1,50,000</td>
-                                            <td>28.00</td>
-                                            <td>2.00</td>
-                                        </tr>
-                                        <tr>
-                                            <td>PO-0014</td>
-                                            <td>12-Jul-2026</td>
-                                            <td>ABC Constructions Pvt. Ltd.</td>
-                                            <td>40.00</td>
-                                            <td>5,000</td>
-                                            <td>2,00,000</td>
-                                            <td>36.00</td>
-                                            <td>4.00</td>
-                                        </tr>
-                                        <tr>
-                                            <td>PO-0015</td>
-                                            <td>13-Jul-2026</td>
-                                            <td>ABC Constructions Pvt. Ltd.</td>
-                                            <td>-</td>
-                                            <td>-</td>
-                                            <td>3,70,000</td>
-                                            <td>-</td>
-                                            <td>-</td>
-                                        </tr>
                                         <tr class="k-total">
                                             <td>Total</td>
                                             <td></td>
                                             <td></td>
-                                            <td>90.00</td>
                                             <td></td>
-                                            <td>8,20,000</td>
-                                            <td>82.00</td>
-                                            <td>8.00</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -1353,8 +1313,19 @@
             }]
         });
     })();
-</script>
+    var table_rec_task;
 
+    $(function() {
+
+
+        var Params = {
+
+        };
+        initDataTable('.table_pur_order_boq', admin_url + 'purchase/table_pur_order_boq/<?php echo $wo_order_details->id; ?>', [], [], Params, [2, 'desc']);
+
+
+    });
+</script>
 </body>
 
 </html>
