@@ -9662,7 +9662,7 @@ class purchase extends AdminController
          * Purchase Order
          */
             $row[] = '<a href="' . admin_url('purchase/purchase_order/' . $aRow['id']) . '"
-            onclick="init_pur_order(' . $aRow['id'] . '); return false;">'
+            onclick="init_pur_order(' . $aRow['id'] . '); return false;" target="_blank">'
                 . $aRow['pur_order_number'] .
                 '</a>';
 
@@ -9712,6 +9712,107 @@ class purchase extends AdminController
 
             $output['aaData'][] = $row;
         }
+
+        echo json_encode($output);
+    }
+
+    public function table_expense_boq($wo_item_id = 0)
+    {
+        $aColumns = [
+            db_prefix() . 'expenses.id as id',
+            db_prefix() . 'expenses.expense_code as expense_code',
+            db_prefix() . 'expenses.date as expense_date',
+            db_prefix() . 'expenses_categories.name as category_name',
+            db_prefix() . 'expenses.expense_name as description',
+            db_prefix() . 'expenses.amount as amount',
+        ];
+
+        $sIndexColumn = 'id';
+
+        $sTable = db_prefix() . 'expenses';
+
+        $join = [
+            'JOIN ' . db_prefix() . 'expenses_categories
+            ON ' . db_prefix() . 'expenses_categories.id = ' . db_prefix() . 'expenses.category',
+        ];
+
+        /*
+     * Filter only expenses belonging to this Work Order Item
+     */
+        $where = [];
+
+        $wo_item_id = (int) $wo_item_id;
+
+        if ($wo_item_id > 0) {
+            $where[] = 'AND ' . db_prefix() . 'expenses.wo_item = ' . $wo_item_id;
+        }
+
+        $result = data_tables_init(
+            $aColumns,
+            $sIndexColumn,
+            $sTable,
+            $join,
+            $where,
+            [
+                db_prefix() . 'expenses.id as id',
+                db_prefix() . 'expenses.expense_code as expense_code',
+                db_prefix() . 'expenses.date as expense_date',
+                db_prefix() . 'expenses_categories.name as category_name',
+                db_prefix() . 'expenses.expense_name as description',
+                db_prefix() . 'expenses.amount as amount',
+            ]
+        );
+
+        $output  = $result['output'];
+        $rResult = $result['rResult'];
+
+        $total_amount = 0;
+
+        foreach ($rResult as $aRow) {
+
+            $row = [];
+
+            /*
+         * Expense No
+         */
+            $row[] = '<a href="' . admin_url('expenses/list_expenses/' . $aRow['id']) . '" target="_blank">' . e($aRow['expense_code']) . '</a>';
+
+            /*
+         * Date
+         */
+            $row[] = !empty($aRow['expense_date'])
+                ? date('d M, Y', strtotime($aRow['expense_date']))
+                : '';
+
+            /*
+         * Category
+         */
+            $row[] = e($aRow['category_name']);
+
+            /*
+         * Description
+         */
+            $row[] = e($aRow['description']);
+
+            /*
+         * Amount
+         */
+            $row[] = app_format_money(
+                $aRow['amount'],
+                '₹'
+            );
+
+            $total_amount += (float) $aRow['amount'];
+
+            $output['aaData'][] = $row;
+        }
+
+        /*
+     * Total
+     */
+        $output['sums'] = [
+            'total_amount' => app_format_money($total_amount, '₹'),
+        ];
 
         echo json_encode($output);
     }

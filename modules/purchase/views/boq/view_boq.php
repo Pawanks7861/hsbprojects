@@ -684,7 +684,7 @@
                             <div class="k-chart-wrap"><canvas id="budgetChart"></canvas></div>
                             <div class="k-chart-legend" id="budgetLegend"></div>
                         </div>
-                        <div class="k-card">
+                        <!-- <div class="k-card">
                             <h3 class="k-card-title">Material Flow (Quantity)</h3>
                             <div class="k-flow">
                                 <div class="k-flow-step">
@@ -746,7 +746,7 @@
                                     <div class="k-flow-label">Balance Qty (Cum)</div>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                         <div class="k-card">
                             <h3 class="k-card-title">Cost Distribution</h3>
                             <div class="k-chart-wrap"><canvas id="costDistChart"></canvas></div>
@@ -866,7 +866,7 @@
                         <div class="k-card">
                             <h3 class="k-card-title">Expense Details</h3>
                             <div class="k-table-wrap">
-                                <table class="k-table k-table-sm">
+                                <table class="k-table k-table-sm table_expense_boq">
                                     <thead>
                                         <tr>
                                             <th>Expense No</th>
@@ -874,47 +874,10 @@
                                             <th>Category</th>
                                             <th>Description</th>
                                             <th>Amount (₹)</th>
-                                            <th>Status</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>EXP-0004</td>
-                                            <td>13-Jul-2026</td>
-                                            <td>Transport</td>
-                                            <td>Transport Charges</td>
-                                            <td>12,000</td>
-                                            <td><span class="k-status k-status-green">Paid</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td>EXP-0005</td>
-                                            <td>14-Jul-2026</td>
-                                            <td>Logistics</td>
-                                            <td>Site Unloading</td>
-                                            <td>15,000</td>
-                                            <td><span class="k-status k-status-green">Paid</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td>EXP-0006</td>
-                                            <td>18-Jul-2026</td>
-                                            <td>Labour</td>
-                                            <td>Loading Charges</td>
-                                            <td>8,000</td>
-                                            <td><span class="k-status k-status-green">Paid</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td>EXP-0007</td>
-                                            <td>19-Jul-2026</td>
-                                            <td>Miscellaneous</td>
-                                            <td>Other Expenses</td>
-                                            <td>20,000</td>
-                                            <td><span class="k-status k-status-green">Paid</span></td>
-                                        </tr>
-                                        <tr class="k-total">
-                                            <td colspan="4">Total Expenses</td>
-                                            <td>55,000</td>
-                                            <td></td>
-                                        </tr>
+                                        
                                     </tbody>
                                 </table>
                             </div>
@@ -922,7 +885,7 @@
                     </div>
 
                     <div class="k-row-2">
-                        <div class="k-card">
+                        <!-- <div class="k-card">
                             <h3 class="k-card-title">Vendor Payment Details</h3>
                             <div class="k-table-wrap">
                                 <table class="k-table k-table-sm">
@@ -983,7 +946,7 @@
                                     </tbody>
                                 </table>
                             </div>
-                        </div>
+                        </div> -->
                         <!-- <div class="k-card">
                             <h3 class="k-card-title">Goods Receipt Details</h3>
                             <div class="k-table-wrap">
@@ -1313,18 +1276,24 @@
             }]
         });
     })();
-    var table_rec_task;
 
     $(function() {
-
-
         var Params = {
 
         };
         initDataTable('.table_pur_order_boq', admin_url + 'purchase/table_pur_order_boq/<?php echo $wo_order_details->id; ?>', [], [], Params, [2, 'desc']);
 
+    });
+
+    $(function() {
+        var ParamsExp = {
+
+        };
+        initDataTable('.table_expense_boq', admin_url + 'purchase/table_expense_boq/<?php echo $wo_order_details->id; ?>', [], [], ParamsExp, [2, 'desc']);
 
     });
+
+
 </script>
 </body>
 
