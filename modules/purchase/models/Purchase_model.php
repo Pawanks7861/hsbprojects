@@ -6245,6 +6245,7 @@ class Purchase_model extends App_Model
                     $dt_data['total_money'] = $rqd['total_money'];
                     $dt_data['discount_money'] = $rqd['discount_money'];
                     $dt_data['discount_percent'] = $rqd['discount'];
+                    $dt_data['hsn_code'] = $rqd['hsn_code'];
 
                     $tax_money = 0;
                     $tax_rate_value = 0;
@@ -6402,6 +6403,7 @@ class Purchase_model extends App_Model
                 $dt_data['discount_money'] = $rqd['discount_money'];
                 $dt_data['discount_percent'] = $rqd['discount'];
                 $dt_data['description'] = nl2br($rqd['item_description']);
+                $dt_data['hsn_code'] = $rqd['hsn_code'];
 
                 $tax_money = 0;
                 $tax_rate_value = 0;
@@ -6446,6 +6448,7 @@ class Purchase_model extends App_Model
                 $dt_data['discount_money'] = $rqd['discount_money'];
                 $dt_data['discount_percent'] = $rqd['discount'];
                 $dt_data['description'] = nl2br($rqd['item_description']);
+                $dt_data['hsn_code'] = $rqd['hsn_code'];
 
                 $tax_money = 0;
                 $tax_rate_value = 0;
@@ -12916,8 +12919,10 @@ class Purchase_model extends App_Model
         $row .= '<td class="">' . render_textarea($name_item_name, '', $item_name, ['rows' => 2, 'placeholder' => _l('pur_item_name')]) . '</td>';
 
         $row .= '<td class="">' . render_textarea($name_item_description, '', $item_description, ['rows' => 2, 'placeholder' => _l('item_description')]) . '</td>';
-        $hsn_sac_codes = $this->get_hsn_sac_code();
-        $row .= '<td class="hsn_code">' . render_select($name_hsn_code, $hsn_sac_codes, ['id', 'name'], '', $hsn_code, ['id']) . '</td>';
+        // $hsn_sac_codes = $this->get_hsn_sac_code();
+        // $row .= '<td class="hsn_code">' . render_select($name_hsn_code, $hsn_sac_codes, ['id', 'name'], '', $hsn_code, ['id']) . '</td>';
+
+        $row .= '<td class="hsn_code">' . render_input($name_hsn_code, '', $hsn_code, 'number', [], [], '') . '</td>';
         $row .= '<td class="rate">' . render_input($name_unit_price, '', $unit_price, 'number', $array_rate_attr, [], 'no-margin', $text_right_class);
         if ($unit_price != '') {
             $original_price = ($currency_rate > 0) ? round(($unit_price / $currency_rate), 2) : 0;

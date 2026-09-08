@@ -4746,7 +4746,7 @@ class purchase extends AdminController
         $data['currencies'] = $this->currencies_model->get();
         $data['projects'] = $this->projects_model->get_items();
         $data['vendors'] = $this->purchase_model->get_vendor();
-        $pur_invoice_row_template = $this->purchase_model->create_purchase_invoice_row_template();
+        $pur_invoice_row_template = $this->purchase_model->create_purchase_invoice_row_template(); 
 
         $data['base_currency'] = $this->currencies_model->get_base_currency();
 
@@ -4777,7 +4777,7 @@ class purchase extends AdminController
                         $item_name = pur_get_item_variatiom($inv_detail['item_code']);
                     }
 
-                    $pur_invoice_row_template .= $this->purchase_model->create_purchase_invoice_row_template('items[' . $index_order . ']',  $item_name, $inv_detail['description'], $inv_detail['quantity'], $unit_name, $inv_detail['unit_price'], $taxname, $inv_detail['item_code'], $inv_detail['unit_id'], $inv_detail['tax_rate'],  $inv_detail['total_money'], $inv_detail['discount_percent'], $inv_detail['discount_money'], $inv_detail['total'], $inv_detail['into_money'], $inv_detail['tax'], $inv_detail['tax_value'], $inv_detail['id'], true, $currency_rate, $to_currency);
+                    $pur_invoice_row_template .= $this->purchase_model->create_purchase_invoice_row_template('items[' . $index_order . ']',  $item_name, $inv_detail['description'], $inv_detail['quantity'], $unit_name, $inv_detail['unit_price'], $taxname, $inv_detail['item_code'], $inv_detail['unit_id'], $inv_detail['tax_rate'],  $inv_detail['total_money'], $inv_detail['discount_percent'], $inv_detail['discount_money'], $inv_detail['total'], $inv_detail['into_money'], $inv_detail['tax'], $inv_detail['tax_value'], $inv_detail['id'], true, $currency_rate, $to_currency, $inv_detail['hsn_code']);
                 }
             } else {
                 $item_name = $data['pur_invoice']->invoice_number;
@@ -8365,8 +8365,9 @@ class purchase extends AdminController
         $item_key = $this->input->post('item_key');
         $currency_rate = $this->input->post('currency_rate');
         $to_currency = $this->input->post('to_currency');
+        $hsn_code = $this->input->post('hsn_code');
 
-        echo $this->purchase_model->create_purchase_invoice_row_template($name, $item_name, $item_description, $quantity, $unit_name, $unit_price, $taxname, $item_code, $unit_id, $tax_rate, '', $discount, '', '', '', '', '', $item_key, false, $currency_rate, $to_currency);
+        echo $this->purchase_model->create_purchase_invoice_row_template($name, $item_name, $item_description, $quantity, $unit_name, $unit_price, $taxname, $item_code, $unit_id, $tax_rate, '', $discount, '', '', '', '', '', $item_key, false, $currency_rate, $to_currency, $hsn_code);
     }
 
     /**

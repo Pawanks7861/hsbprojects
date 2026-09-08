@@ -7,8 +7,8 @@ Module Name: Spreadsheet Online
 Description: A powerful spreadsheet editor that lets you do pretty much everything you can do with contemporary spreadsheet software like Excel.
 Version: 1.0.8
 Requires at least: 2.3.*
-Author: Buildify360
-Author URI: 
+Author: GreenTech Solutions
+Author URI: https://codecanyon.net/user/greentech_solutions
 */
 
 define('SPREAD_ONLINE_MODULE_NAME', 'spreadsheet_online');
