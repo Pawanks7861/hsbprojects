@@ -4746,7 +4746,7 @@ class purchase extends AdminController
         $data['currencies'] = $this->currencies_model->get();
         $data['projects'] = $this->projects_model->get_items();
         $data['vendors'] = $this->purchase_model->get_vendor();
-        $pur_invoice_row_template = $this->purchase_model->create_purchase_invoice_row_template(); 
+        $pur_invoice_row_template = $this->purchase_model->create_purchase_invoice_row_template();
 
         $data['base_currency'] = $this->currencies_model->get_base_currency();
 
@@ -9816,5 +9816,75 @@ class purchase extends AdminController
         ];
 
         echo json_encode($output);
+    }
+    // In your controller (e.g., Vendors.php or appropriate controller)
+    // public function check_vendor_name()
+    // {
+    //     $vendor_name = trim($this->input->post('vendor_name'));
+
+    //     if (empty($vendor_name)) {
+    //         echo json_encode([
+    //             'status' => 'error'
+    //         ]);
+    //         return;
+    //     }
+
+    //     $this->db->select('userid');
+    //     $this->db->from(db_prefix() . 'pur_vendor');
+    //     $this->db->where('LOWER(company)', strtolower($vendor_name));
+    //     $this->db->limit(1);
+
+    //     $vendor = $this->db->get()->row();
+
+    //     if ($vendor) {
+
+    //         echo json_encode([
+    //             'status' => 'exists',
+    //             'vendor_id' => $vendor->userid
+    //         ]);
+    //     } else {
+
+    //         echo json_encode([
+    //             'status' => 'available'
+    //         ]);
+    //     }
+    // }
+    public function check_vendor_name()
+    {
+        $vendor_name = trim($this->input->post('vendor_name'));
+
+        if (empty($vendor_name)) {
+            echo json_encode([
+                'status' => 'error'
+            ]);
+            return;
+        }
+
+        $this->db->select('userid, company');
+        $this->db->from(db_prefix() . 'pur_vendor');
+
+        // Case-insensitive exact match
+        $this->db->where(
+            'LOWER(company) =',
+            strtolower($vendor_name)
+        );
+
+        $this->db->limit(1);
+
+        $vendor = $this->db->get()->row();
+
+        if ($vendor) {
+
+            echo json_encode([
+                'status'    => 'exists',
+                'vendor_id' => $vendor->userid,
+                'company'   => $vendor->company
+            ]);
+        } else {
+
+            echo json_encode([
+                'status' => 'available'
+            ]);
+        }
     }
 }
