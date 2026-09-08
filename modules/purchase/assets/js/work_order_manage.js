@@ -15,7 +15,8 @@ var expenseDropzone;
         "project": "[name='project[]']",
         "department": "[name='department[]']",
         "delivery_status": "[name='delivery_status[]']",
-        "purchase_request": "[name='pur_request[]']"
+        "purchase_request": "[name='pur_request[]']",
+        "wo_type": "[name='wo_type[]']",
     };
 
     initDataTable('.table-table_wo_order', admin_url+'purchase/table_wo_order', [], [], Params,[2, 'desc']);
