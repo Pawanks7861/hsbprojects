@@ -140,6 +140,7 @@ function validate_debit_note_form(selector) {
         vendorid: 'required',
         date: 'required',
         currency: 'required',
+        inv_no: 'required',
         number: {
             required: true,
         }

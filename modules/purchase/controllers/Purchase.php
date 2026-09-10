@@ -6644,7 +6644,7 @@ class purchase extends AdminController
             $data['items']     = [];
             $data['ajaxItems'] = true;
         }
-
+        $data['pur_inv'] = $this->purchase_model->get_pur_invoice();
         $data['title']     = $title;
         $data['bodyclass'] = 'credit-note';
         $this->load->view('debit_notes/debit_note', $data);
