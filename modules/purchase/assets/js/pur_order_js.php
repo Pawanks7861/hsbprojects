@@ -659,8 +659,8 @@ function pur_add_item_to_table(data, itemid) {
 
   data = typeof (data) == 'undefined' || data == 'undefined' ? pur_get_item_preview_values() : data;
 
-  if (data.quantity == "" || data.item_code == "" ) {
-    
+  if (data.quantity == "" || data.item_code == "" || data.unit_price <= 0) {
+    alert_float('warning', "<?php echo _l('Quantity and Unit price is required'); ?>");
     return;
   }
   var currency_rate = $('input[name="currency_rate"]').val();
