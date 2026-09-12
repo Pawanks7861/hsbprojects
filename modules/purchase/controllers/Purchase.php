@@ -9202,7 +9202,9 @@ class purchase extends AdminController
             $type = 'I';
         }
 
-        $pdf->Output('work_order.pdf', $type);
+        $wo_order = $this->purchase_model->get_wo_order($id);
+        $pdf_name = $wo_order->wo_order_number . '-' . $wo_order->wo_order_name . '.pdf';
+        $pdf->Output($pdf_name, $type);
     }
 
     public function delete_wo_order($id)
